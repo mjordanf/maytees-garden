@@ -145,8 +145,10 @@ async function fetchWikiSummary(title: string): Promise<{ imageUrl: string | nul
     const data: any = await res.json()
     const thumb    = data.thumbnail?.source  as string | undefined
     const original = data.originalimage?.source as string | undefined
-    // Use thumbnail bumped to 800 px; fall back to original
-    const imageUrl = thumb ? thumb.replace(/\/\d+px-/, '/800px-') : (original ?? null)
+    // Use direct file URL (strip /thumb/ and size suffix) — thumbnail URLs return HTTP 400
+    const imageUrl = thumb
+      ? thumb.replace('/thumb/', '/').replace(/\/\d+px-[^/]+$/, '')
+      : (original ?? null)
     // First paragraph, max 450 chars
     const extract  = (data.extract ?? '').split('\n')[0].slice(0, 450)
     return { imageUrl, extract }

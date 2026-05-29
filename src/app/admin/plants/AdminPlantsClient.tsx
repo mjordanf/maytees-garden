@@ -57,7 +57,7 @@ async function fetchPlantImage(name: string): Promise<string | null> {
     // Prefer thumbnail (fast, reasonable size), bump to 800px; fall back to original
     const thumb = data.thumbnail?.source as string | undefined
     const original = data.originalimage?.source as string | undefined
-    if (thumb) return thumb.replace(/\/\d+px-/, '/800px-')
+    if (thumb) return thumb.replace('/thumb/', '/').replace(/\/\d+px-[^/]+$/, '')
     if (original) return original
     return null
   } catch {
