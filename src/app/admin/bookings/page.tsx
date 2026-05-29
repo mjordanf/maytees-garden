@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { prisma } from '@/lib/prisma'
 import { formatDate, formatTime } from '@/lib/utils'
 import AdminBookingsClient from './AdminBookingsClient'

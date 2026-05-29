@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { prisma } from '@/lib/prisma'
 import { Users, Calendar, MessageSquare, Leaf, TrendingUp, Clock } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
