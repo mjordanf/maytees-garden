@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { sendContactAlert } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
@@ -12,6 +13,8 @@ export async function POST(req: NextRequest) {
   const submission = await prisma.contactSubmission.create({
     data: { name, email, phone, zipCode, service, message },
   })
+
+  sendContactAlert({ name, email, phone, service, message }).catch(() => {})
 
   return NextResponse.json({ success: true, id: submission.id })
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
+import { sendWelcomeEmail } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   const { name, email, password, phone, zip, newsletter } = await req.json()
@@ -27,5 +28,8 @@ export async function POST(req: NextRequest) {
   }
 
   await prisma.auditLog.create({ data: { action: 'user.register', entity: 'User', entityId: user.id } })
+
+  sendWelcomeEmail({ name: name ?? email, email }).catch(() => {})
+
   return NextResponse.json({ success: true })
 }

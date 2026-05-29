@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { sendBookingConfirmation, sendBookingAlert } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
@@ -13,6 +14,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   }
 
+  const service = serviceId
+    ? await prisma.service.findUnique({ where: { id: serviceId }, select: { nameEn: true } })
+    : null
+
   const booking = await prisma.booking.create({
     data: {
       userId: (session?.user as any)?.id ?? null,
@@ -22,6 +27,13 @@ export async function POST(req: NextRequest) {
       status: 'pending',
     },
   })
+
+  const date = new Date(appointmentDate)
+  const serviceName = service?.nameEn ?? 'Garden Consultation'
+
+  // Fire-and-forget — don't block the response on email
+  sendBookingConfirmation({ clientName, clientEmail, serviceName, appointmentDate: date, notes }).catch(() => {})
+  sendBookingAlert({ clientName, clientEmail, clientPhone, serviceName, appointmentDate: date, zipCode, notes }).catch(() => {})
 
   return NextResponse.json({ booking })
 }
