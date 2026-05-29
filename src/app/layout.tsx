@@ -2,9 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
-import Navbar from '@/components/layout/Navbar'
-import Footer from '@/components/layout/Footer'
-import AIChatWidget from '@/components/chat/AIChatWidget'
+import MainLayout from '@/components/layout/MainLayout'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -52,10 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="bg-cream font-sans antialiased">
         <Providers>
-          <Navbar />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-          <AIChatWidget />
+          <MainLayout>{children}</MainLayout>
         </Providers>
       </body>
     </html>

@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
+
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -19,8 +20,13 @@ export default function LoginPage() {
     setLoading(true); setError('')
     const res = await signIn('credentials', { email, password, redirect: false })
     setLoading(false)
-    if (res?.error) setError('Invalid email or password. Please try again.')
-    else router.push('/portal')
+    if (res?.error) {
+      setError('Invalid email or password. Please try again.')
+    } else {
+      const session = await getSession()
+      const role = (session?.user as any)?.role
+      router.push(role === 'superadmin' ? '/superadmin' : '/portal')
+    }
   }
 
   return (
@@ -50,7 +56,7 @@ export default function LoginPage() {
             <div>
               <div className="flex justify-between items-center mb-1.5">
                 <label className="label mb-0">Password</label>
-                <a href="#" className="text-xs text-green-600 hover:underline">Forgot password?</a>
+                <Link href="/auth/forgot-password" className="text-xs text-green-600 hover:underline">Forgot password?</Link>
               </div>
               <div className="relative">
                 <input className="input pr-12" type={showPw ? 'text' : 'password'} name="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" />
@@ -72,11 +78,6 @@ export default function LoginPage() {
           </div>
 
           {/* Test credentials hint */}
-          <div className="mt-4 bg-green-50 rounded-xl p-3 text-xs text-green-700">
-            <p className="font-semibold mb-1">🧪 Test accounts:</p>
-            <p>Admin: maytee@mayteesgarden.com / Admin2024!</p>
-            <p>Customer: test@customer.com / Customer2024!</p>
-          </div>
         </div>
       </div>
     </div>

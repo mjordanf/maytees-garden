@@ -76,7 +76,7 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
         {filtered.map(plant => (
           <div key={plant.id} id={plant.id} className="card plant-card-hover group cursor-pointer" onClick={() => setSelected(plant)}>
             <div className="relative h-52 overflow-hidden">
-              <Image src={plant.imageUrl} alt={plant.nameEn} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+              <Image src={plant.imageUrl} alt={plant.nameEn} unoptimized fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
               <div className="absolute top-3 left-3">
                 <span className={cn('badge', plant.inStock ? 'bg-white/90 text-green-700' : 'bg-white/90 text-red-500')}>
                   {plant.inStock ? '● In Stock' : '○ Out of Stock'}
@@ -124,7 +124,7 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setSelected(null)}>
           <div className="bg-white rounded-3xl overflow-hidden max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="relative h-72">
-              <Image src={selected.imageUrl} alt={selected.nameEn} fill className="object-cover" />
+              <Image src={selected.imageUrl} alt={selected.nameEn} unoptimized fill className="object-cover" />
               <button onClick={() => setSelected(null)} className="absolute top-4 right-4 w-9 h-9 bg-black/40 text-white rounded-full flex items-center justify-center font-bold hover:bg-black/60">×</button>
             </div>
             <div className="p-8">

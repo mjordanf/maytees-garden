@@ -103,6 +103,11 @@ export default function Navbar() {
                         <Shield className="w-4 h-4" /> {t('nav.admin')}
                       </Link>
                     )}
+                    {role === 'superadmin' && (
+                      <Link href="/superadmin" className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-50 text-amber-600 font-medium" onClick={() => setUserMenu(false)}>
+                        <Shield className="w-4 h-4" /> Super Admin
+                      </Link>
+                    )}
                     <button
                       onClick={() => { signOut({ callbackUrl: '/' }); setUserMenu(false) }}
                       className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-50 text-red-500 w-full"
@@ -152,6 +157,9 @@ export default function Navbar() {
                 <Link href="/portal" className="block text-center py-2 text-sm text-green-700 font-medium" onClick={() => setOpen(false)}>{t('nav.portal')}</Link>
                 {(role === 'admin' || role === 'staff') && (
                   <Link href="/admin" className="block text-center py-2 text-sm text-green-700 font-medium" onClick={() => setOpen(false)}>{t('nav.admin')}</Link>
+                )}
+                {role === 'superadmin' && (
+                  <Link href="/superadmin" className="block text-center py-2 text-sm text-amber-600 font-semibold" onClick={() => setOpen(false)}>Super Admin</Link>
                 )}
                 <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full text-center py-2 text-sm text-red-500 font-medium">{t('nav.logout')}</button>
               </>

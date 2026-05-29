@@ -6,6 +6,25 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Seeding Maytee\'s Garden database...')
 
+  // ── Superadmin ────────────────────────────────────────
+  const superadminPassword = process.env.SUPERADMIN_PASSWORD
+  if (superadminPassword) {
+    const superadminHash = await bcrypt.hash(superadminPassword, 12)
+    await prisma.user.upsert({
+      where: { email: 'maytee@mayteesgardencenter.com' },
+      update: { role: 'superadmin', passwordHash: superadminHash },
+      create: {
+        email: 'maytee@mayteesgardencenter.com',
+        name: 'Maytee',
+        passwordHash: superadminHash,
+        role: 'superadmin',
+      },
+    })
+    console.log('✅ Superadmin seeded')
+  } else {
+    console.log('⚠️  SUPERADMIN_PASSWORD not set — skipping superadmin seed')
+  }
+
   // ── Users ─────────────────────────────────────────────
   const adminPass  = await bcrypt.hash('Admin2024!', 12)
   const staffPass  = await bcrypt.hash('Staff2024!', 12)

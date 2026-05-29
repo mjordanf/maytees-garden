@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   const body    = await req.json()
 
-  const { serviceId, appointmentDate, clientName, clientEmail, clientPhone, zipCode, notes } = body
+  const { serviceId, appointmentDate, clientName, clientEmail, clientPhone, zipCode, notes, meetingPreference } = body
 
   if (!clientName || !clientEmail || !appointmentDate) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
       serviceId: serviceId || null,
       appointmentDate: new Date(appointmentDate),
       clientName, clientEmail, clientPhone, zipCode, notes,
+      customerPreference: meetingPreference || 'in-person',
       status: 'pending',
     },
   })
@@ -31,9 +32,11 @@ export async function POST(req: NextRequest) {
   const date = new Date(appointmentDate)
   const serviceName = service?.nameEn ?? 'Garden Consultation'
 
+  const customerPreference = meetingPreference || 'in-person'
+
   // Fire-and-forget — don't block the response on email
-  sendBookingConfirmation({ clientName, clientEmail, serviceName, appointmentDate: date, notes }).catch(() => {})
-  sendBookingAlert({ clientName, clientEmail, clientPhone, serviceName, appointmentDate: date, zipCode, notes }).catch(() => {})
+  sendBookingConfirmation({ clientName, clientEmail, serviceName, appointmentDate: date, notes, customerPreference }).catch(() => {})
+  sendBookingAlert({ clientName, clientEmail, clientPhone, serviceName, appointmentDate: date, zipCode, notes, customerPreference }).catch(() => {})
 
   return NextResponse.json({ booking })
 }
@@ -45,7 +48,8 @@ export async function GET(req: NextRequest) {
   const userId = (session.user as any).id
   const role   = (session.user as any).role
 
-  const bookings = role === 'admin' || role === 'staff'
+  const isStaff = ['staff', 'admin', 'superadmin'].includes(role)
+  const bookings = isStaff
     ? await prisma.booking.findMany({ include: { service: true, user: true }, orderBy: { appointmentDate: 'desc' } })
     : await prisma.booking.findMany({ where: { userId }, include: { service: true }, orderBy: { appointmentDate: 'desc' } })
 
@@ -55,9 +59,18 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   const session = await getServerSession(authOptions)
   const role    = (session?.user as any)?.role
-  if (!session || (role !== 'admin' && role !== 'staff')) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+  const isStaffOrAbove = ['staff', 'admin', 'superadmin'].includes(role)
+  if (!session || !isStaffOrAbove) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
-  const { id, status } = await req.json()
-  const booking = await prisma.booking.update({ where: { id }, data: { status } })
+  const { id, status, consultationType, videoCallLink, consultationNotes } = await req.json()
+  const booking = await prisma.booking.update({
+    where: { id },
+    data: {
+      ...(status !== undefined && { status }),
+      ...(consultationType !== undefined && { consultationType }),
+      ...(videoCallLink !== undefined && { videoCallLink }),
+      ...(consultationNotes !== undefined && { consultationNotes }),
+    },
+  })
   return NextResponse.json({ booking })
 }

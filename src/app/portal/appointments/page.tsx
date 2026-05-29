@@ -2,20 +2,32 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import { Calendar, Clock, MapPin, Plus } from 'lucide-react'
+import { Calendar, Clock, MapPin, Video } from 'lucide-react'
 import { formatDate, formatTime } from '@/lib/utils'
+import MessageMayteeButton from './MessageMayteeButton'
 
 const STATUS_STYLES: Record<string, string> = {
   pending:   'bg-yellow-100 text-yellow-700',
   confirmed: 'bg-green-100 text-green-700',
-  completed: 'bg-blue-100 text-blue-700',
+  completed: 'bg-gray-100 text-gray-500',
   cancelled: 'bg-red-100 text-red-500',
+}
+
+const PREF_LABELS: Record<string, string> = {
+  'in-person':   '🏡 In-Person Visit',
+  'facetime':    '📱 FaceTime',
+  'whatsapp':    '💬 WhatsApp Video',
+  'google-meet': '🎥 Google Meet',
 }
 
 export default async function AppointmentsPage() {
   const session = await getServerSession(authOptions)
   const userId  = (session?.user as any)?.id
-  const bookings = await prisma.booking.findMany({ where: { userId }, include: { service: true }, orderBy: { appointmentDate: 'desc' } })
+  const bookings = await prisma.booking.findMany({
+    where: { userId },
+    include: { service: true },
+    orderBy: { appointmentDate: 'desc' },
+  })
 
   const now = new Date()
   const upcoming = bookings.filter(b => new Date(b.appointmentDate) >= now)
@@ -23,14 +35,9 @@ export default async function AppointmentsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-3xl font-bold text-green-800">My Appointments</h1>
-          <p className="text-gray-500 text-sm mt-1">{bookings.length} total appointment{bookings.length !== 1 ? 's' : ''}</p>
-        </div>
-        <Link href="/booking" className="btn-primary text-sm gap-2">
-          <Plus className="w-4 h-4" /> New Booking
-        </Link>
+      <div>
+        <h1 className="font-serif text-3xl font-bold text-green-800">My Appointments</h1>
+        <p className="text-gray-500 text-sm mt-1">{bookings.length} total appointment{bookings.length !== 1 ? 's' : ''}</p>
       </div>
 
       {bookings.length === 0 ? (
@@ -59,9 +66,41 @@ export default async function AppointmentsPage() {
                       </div>
                       <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-400">
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{formatTime(b.appointmentDate)}</span>
-                        <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />15196 SW 184th St, Miami</span>
+                        {(!b.consultationType || b.consultationType === 'in-person') && (
+                          <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />15196 SW 184th St, Miami</span>
+                        )}
                       </div>
+
+                      {/* Preference / confirmed type */}
+                      {b.customerPreference && !b.consultationType && (
+                        <p className="text-xs text-gray-500 mt-2">
+                          Your preference: {PREF_LABELS[b.customerPreference] ?? b.customerPreference}
+                        </p>
+                      )}
+                      {b.consultationType && (
+                        <p className="text-xs text-green-700 font-medium mt-2">
+                          Confirmed: {PREF_LABELS[b.consultationType] ?? b.consultationType}
+                        </p>
+                      )}
+
+                      {/* Join link */}
+                      {b.videoCallLink && (
+                        <a
+                          href={b.videoCallLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 mt-2 text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 transition-colors font-medium"
+                        >
+                          <Video className="w-3 h-3" />
+                          Join Meeting
+                        </a>
+                      )}
+
                       {b.notes && <p className="text-xs text-gray-400 italic mt-2 truncate">"{b.notes}"</p>}
+
+                      <div className="mt-3">
+                        <MessageMayteeButton bookingId={b.id} />
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -89,6 +128,12 @@ export default async function AppointmentsPage() {
               </div>
             </div>
           )}
+
+          <div className="text-center pt-2">
+            <Link href="/booking" className="text-sm text-green-700 hover:underline">
+              Book another consultation →
+            </Link>
+          </div>
         </>
       )}
     </div>

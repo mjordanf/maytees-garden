@@ -2,24 +2,28 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
-import { LayoutDashboard, Users, Leaf, Calendar, MessageSquare, BarChart3, FileText, Shield } from 'lucide-react'
-
-const navItems = [
-  { href: '/admin',        icon: LayoutDashboard, label: 'Dashboard'    },
-  { href: '/admin/bookings', icon: Calendar,      label: 'Bookings'     },
-  { href: '/admin/plants',  icon: Leaf,           label: 'Plant Catalog' },
-  { href: '/admin/users',   icon: Users,          label: 'Customers'    },
-  { href: '/admin/leads',   icon: MessageSquare,  label: 'Leads'        },
-  { href: '/admin/logs',    icon: FileText,       label: 'Audit Logs'   },
-]
+import { prisma } from '@/lib/prisma'
+import { LayoutDashboard, Users, Leaf, Calendar, MessageSquare, FileText, Shield, Inbox } from 'lucide-react'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions)
   const role    = (session?.user as any)?.role
 
-  if (!session || (role !== 'admin' && role !== 'staff')) {
+  if (!session || (role !== 'admin' && role !== 'staff' && role !== 'superadmin')) {
     redirect('/')
   }
+
+  const unreadCount = await prisma.inboxMessage.count({ where: { read: false } })
+
+  const navItems = [
+    { href: '/admin',          icon: LayoutDashboard, label: 'Dashboard',    badge: null },
+    { href: '/admin/inbox',    icon: Inbox,           label: 'Inbox',        badge: unreadCount > 0 ? unreadCount : null },
+    { href: '/admin/bookings', icon: Calendar,        label: 'Bookings',     badge: null },
+    { href: '/admin/plants',   icon: Leaf,            label: 'Plant Catalog',badge: null },
+    { href: '/admin/users',    icon: Users,           label: 'Customers',    badge: null },
+    { href: '/admin/leads',    icon: MessageSquare,   label: 'Leads',        badge: null },
+    { href: '/admin/logs',     icon: FileText,        label: 'Audit Logs',   badge: null },
+  ]
 
   return (
     <div className="pt-20 min-h-screen bg-gray-50">
@@ -38,14 +42,19 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               </div>
 
               <nav className="space-y-1">
-                {navItems.map(({ href, icon: Icon, label }) => (
+                {navItems.map(({ href, icon: Icon, label, badge }) => (
                   <Link
                     key={href}
                     href={href}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-green-200 hover:bg-green-700 hover:text-white transition-colors font-medium"
                   >
                     <Icon className="w-4 h-4" />
-                    {label}
+                    <span className="flex-1">{label}</span>
+                    {badge !== null && (
+                      <span className="bg-amber-400 text-amber-900 text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center">
+                        {badge}
+                      </span>
+                    )}
                   </Link>
                 ))}
               </nav>

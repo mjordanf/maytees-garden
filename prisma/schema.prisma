@@ -14,7 +14,7 @@ model User {
   emailVerified      DateTime?
   passwordHash       String?
   image              String?
-  role               String    @default("customer") // "customer" | "staff" | "admin"
+  role               String    @default("customer") // "customer" | "staff" | "admin" | "superadmin"
   languagePreference String    @default("en")
   phone              String?
   zipCode            String?
@@ -29,6 +29,7 @@ model User {
   favorites     Favorite[]
   orders        Order[]
   auditLogs     AuditLog[]
+  inboxMessages InboxMessage[]
 }
 
 model Account {
@@ -110,18 +111,23 @@ model Booking {
   plantId         String?
   appointmentDate DateTime
   duration        Int       @default(60)
-  status          String    @default("pending") // "pending"|"confirmed"|"completed"|"cancelled"
-  notes           String?
-  clientName      String
-  clientEmail     String
-  clientPhone     String?
-  zipCode         String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  status              String    @default("pending") // "pending"|"confirmed"|"completed"|"cancelled"
+  notes               String?
+  clientName          String
+  clientEmail         String
+  clientPhone         String?
+  zipCode             String?
+  customerPreference  String?   // "in-person" | "facetime" | "whatsapp" | "google-meet"
+  consultationType    String?   // set by admin on confirmation
+  videoCallLink       String?   // for video consultations
+  consultationNotes   String?   // admin-facing internal notes
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
-  user    User?    @relation(fields: [userId], references: [id])
-  service Service? @relation(fields: [serviceId], references: [id])
-  plant   Plant?   @relation(fields: [plantId], references: [id])
+  user          User?         @relation(fields: [userId], references: [id])
+  service       Service?      @relation(fields: [serviceId], references: [id])
+  plant         Plant?        @relation(fields: [plantId], references: [id])
+  inboxMessages InboxMessage[]
 }
 
 model Order {
@@ -211,4 +217,27 @@ model AuditLog {
   createdAt DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  email     String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model InboxMessage {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  fromUserId String?
+  bookingId  String?
+  subject    String
+  body       String
+  read       Boolean  @default(false)
+  type       String   @default("customer-message")
+
+  fromUser   User?    @relation(fields: [fromUserId], references: [id], onDelete: SetNull)
+  booking    Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
 }

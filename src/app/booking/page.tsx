@@ -29,6 +29,7 @@ export default function BookingPage() {
   const [phone, setPhone]   = useState('')
   const [zip, setZip]       = useState('')
   const [notes, setNotes]   = useState('')
+  const [meetingPreference, setMeetingPreference] = useState('in-person')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError]     = useState('')
@@ -67,7 +68,7 @@ export default function BookingPage() {
     const res = await fetch('/api/bookings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ serviceId, appointmentDate, clientName: name, clientEmail: email, clientPhone: phone, zipCode: zip, notes }),
+      body: JSON.stringify({ serviceId, appointmentDate, clientName: name, clientEmail: email, clientPhone: phone, zipCode: zip, notes, meetingPreference }),
     })
 
     setLoading(false)
@@ -114,6 +115,38 @@ export default function BookingPage() {
                     <span className="text-sm text-gray-700">{s.label}</span>
                   </label>
                 ))}
+              </div>
+            </div>
+
+            {/* Meeting Preference */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <h2 className="font-serif text-xl font-bold text-green-800 mb-4">How would you prefer to meet?</h2>
+              <div className="space-y-2">
+                {[
+                  { value: 'in-person',   label: '🏡 In-Person Visit' },
+                  { value: 'facetime',    label: '📱 FaceTime' },
+                  { value: 'whatsapp',    label: '💬 WhatsApp Video' },
+                  { value: 'google-meet', label: '🎥 Google Meet' },
+                ].map(opt => (
+                  <label
+                    key={opt.value}
+                    className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border-2 transition-all ${meetingPreference === opt.value ? 'border-green-600 bg-green-50' : 'border-gray-100 hover:border-green-200'}`}
+                  >
+                    <input
+                      type="radio"
+                      name="meetingPreference"
+                      value={opt.value}
+                      checked={meetingPreference === opt.value}
+                      onChange={() => setMeetingPreference(opt.value)}
+                      className="text-green-600"
+                    />
+                    <span className="text-sm text-gray-700">{opt.label}</span>
+                  </label>
+                ))}
+                <div className="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 opacity-50 cursor-not-allowed">
+                  <input type="radio" disabled className="text-gray-300" />
+                  <span className="text-sm text-gray-400">Microsoft Teams — coming soon</span>
+                </div>
               </div>
             </div>
 

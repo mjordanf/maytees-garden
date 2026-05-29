@@ -54,12 +54,20 @@ async function sendEmail(to: string, subject: string, html: string): Promise<voi
 
 // ── Booking confirmation → client ──────────────────────────────────────────
 
+const PREF_LABELS: Record<string, string> = {
+  'in-person':   'In-Person Visit',
+  'facetime':    'FaceTime',
+  'whatsapp':    'WhatsApp Video',
+  'google-meet': 'Google Meet',
+}
+
 export async function sendBookingConfirmation(opts: {
   clientName: string
   clientEmail: string
   serviceName: string
   appointmentDate: Date
   notes?: string | null
+  customerPreference?: string | null
 }) {
   const date = opts.appointmentDate.toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
@@ -67,28 +75,31 @@ export async function sendBookingConfirmation(opts: {
   const time = opts.appointmentDate.toLocaleTimeString('en-US', {
     hour: '2-digit', minute: '2-digit',
   })
+  const prefLabel = opts.customerPreference ? (PREF_LABELS[opts.customerPreference] ?? opts.customerPreference) : null
 
   const body = `
     <p>Hi <strong>${opts.clientName}</strong>,</p>
-    <p>Your appointment request has been received! Here are the details:</p>
+    <p>Your consultation request has been received! Here are the details:</p>
     <table style="width:100%;border-collapse:collapse;margin:16px 0">
       <tr><td style="padding:8px 12px;background:#f0fdf4;border-radius:8px 8px 0 0;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Service</td>
           <td style="padding:8px 12px;background:#f0fdf4;border-radius:0 8px 0 0">${opts.serviceName}</td></tr>
       <tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Date</td>
           <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none">${date}</td></tr>
-      <tr><td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 0 8px;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Time</td>
-          <td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 0">${time}</td></tr>
+      <tr><td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Time</td>
+          <td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none">${time}</td></tr>
+      ${prefLabel ? `<tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 0 8px;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Your Preference</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 0">${prefLabel}</td></tr>` : ''}
     </table>
     ${opts.notes ? `<p style="background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:0 8px 8px 0;font-size:14px"><strong>Your notes:</strong> ${opts.notes}</p>` : ''}
-    <p>We'll confirm your appointment within 24 hours. If you need to make changes, please reply to this email or call us at <strong>(305) 555-GARDEN</strong>.</p>
+    <p>We'll confirm your appointment details within 24 hours. If you need to make changes, please reply to this email or call us at <strong>(305) 555-GARDEN</strong>.</p>
     <p>We can't wait to see your garden! 🌺</p>
     <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
   `
 
   await sendEmail(
     opts.clientEmail,
-    `Booking Received — ${opts.serviceName} on ${date}`,
-    layout('Your Booking is Confirmed!', body),
+    `Your consultation request is received — Maytee's Garden Center`,
+    layout('Your Consultation Request is Received!', body),
   )
 }
 
@@ -102,6 +113,7 @@ export async function sendBookingAlert(opts: {
   appointmentDate: Date
   zipCode?: string | null
   notes?: string | null
+  customerPreference?: string | null
 }) {
   const date = opts.appointmentDate.toLocaleDateString('en-US', {
     weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
@@ -109,18 +121,20 @@ export async function sendBookingAlert(opts: {
   const time = opts.appointmentDate.toLocaleTimeString('en-US', {
     hour: '2-digit', minute: '2-digit',
   })
+  const prefLabel = opts.customerPreference ? (PREF_LABELS[opts.customerPreference] ?? opts.customerPreference) : '—'
 
   const body = `
     <p>A new booking was just submitted through the website.</p>
     <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
       ${[
-        ['Client',   opts.clientName],
-        ['Email',    opts.clientEmail],
-        ['Phone',    opts.clientPhone ?? '—'],
-        ['Service',  opts.serviceName],
-        ['Date',     `${date} at ${time}`],
-        ['Zip Code', opts.zipCode ?? '—'],
-        ['Notes',    opts.notes ?? '—'],
+        ['Client',      opts.clientName],
+        ['Email',       opts.clientEmail],
+        ['Phone',       opts.clientPhone ?? '—'],
+        ['Service',     opts.serviceName],
+        ['Date',        `${date} at ${time}`],
+        ['Preference',  prefLabel],
+        ['Zip Code',    opts.zipCode ?? '—'],
+        ['Notes',       opts.notes ?? '—'],
       ].map(([k, v], i) => `
         <tr>
           <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb;width:30%;color:#2d6a4f;font-weight:bold">${k}</td>
@@ -166,6 +180,180 @@ export async function sendContactAlert(opts: {
   await sendEmail(SUPPORT, `New Message from ${opts.name}`, layout('New Contact Form Submission', body))
 }
 
+// ── Booking confirmed — in-person → client ─────────────────────────────────
+
+export async function sendBookingConfirmedInPerson(opts: {
+  clientName: string
+  clientEmail: string
+  serviceName: string
+  appointmentDate: Date
+  notes?: string | null
+}) {
+  const date = opts.appointmentDate.toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  })
+  const time = opts.appointmentDate.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit',
+  })
+
+  const body = `
+    <p>Hi <strong>${opts.clientName}</strong>,</p>
+    <p>Great news — your appointment is confirmed! Here are your details:</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+      <tr><td style="padding:8px 12px;background:#f0fdf4;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px;width:30%">Service</td>
+          <td style="padding:8px 12px;background:#f0fdf4">${opts.serviceName}</td></tr>
+      <tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Date</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none">${date}</td></tr>
+      <tr><td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Time</td>
+          <td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none">${time}</td></tr>
+      <tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Location</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none">15196 SW 184th St, Miami, FL 33187</td></tr>
+    </table>
+    ${opts.notes ? `<p style="background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:0 8px 8px 0;font-size:14px"><strong>Notes:</strong> ${opts.notes}</p>` : ''}
+    <p>If you need to reschedule or have questions, reply to this email or call <strong>(305) 555-GARDEN</strong>.</p>
+    <p>See you soon! 🌺</p>
+    <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
+  `
+
+  await sendEmail(
+    opts.clientEmail,
+    `Your appointment is confirmed — Maytee's Garden Center`,
+    layout('Your Appointment is Confirmed!', body),
+  )
+}
+
+// ── Booking confirmed — video → client ─────────────────────────────────────
+
+export async function sendBookingConfirmedVideo(opts: {
+  clientName: string
+  clientEmail: string
+  serviceName: string
+  appointmentDate: Date
+  videoType: string
+  videoCallLink?: string | null
+  notes?: string | null
+}) {
+  const date = opts.appointmentDate.toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  })
+  const time = opts.appointmentDate.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit',
+  })
+  const platformLabel = PREF_LABELS[opts.videoType] ?? opts.videoType
+
+  const body = `
+    <p>Hi <strong>${opts.clientName}</strong>,</p>
+    <p>Your video consultation is confirmed! Here are your details:</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+      <tr><td style="padding:8px 12px;background:#f0fdf4;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px;width:30%">Service</td>
+          <td style="padding:8px 12px;background:#f0fdf4">${opts.serviceName}</td></tr>
+      <tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Date</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none">${date}</td></tr>
+      <tr><td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Time</td>
+          <td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none">${time}</td></tr>
+      <tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Platform</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none">${platformLabel}</td></tr>
+    </table>
+    ${opts.videoCallLink ? `
+    <p style="text-align:center;margin:24px 0">
+      <a href="${opts.videoCallLink}" style="display:inline-block;background:#2d6a4f;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px">Join Meeting</a>
+    </p>
+    <p style="font-size:13px;color:#6b7280;text-align:center">Or copy this link: <a href="${opts.videoCallLink}" style="color:#2d6a4f">${opts.videoCallLink}</a></p>
+    ` : `<p>Maytee will send you the join link before your session.</p>`}
+    ${opts.notes ? `<p style="background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:0 8px 8px 0;font-size:14px"><strong>Notes:</strong> ${opts.notes}</p>` : ''}
+    <p>If you need to reschedule or have questions, reply to this email or call <strong>(305) 555-GARDEN</strong>.</p>
+    <p>Looking forward to our session! 🌺</p>
+    <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
+  `
+
+  await sendEmail(
+    opts.clientEmail,
+    `Your video consultation is confirmed — Maytee's Garden Center`,
+    layout('Your Video Consultation is Confirmed!', body),
+  )
+}
+
+// ── Booking updated → client ───────────────────────────────────────────────
+
+export async function sendBookingUpdated(opts: {
+  clientName: string
+  clientEmail: string
+  serviceName: string
+  appointmentDate: Date
+  consultationType?: string | null
+  videoCallLink?: string | null
+}) {
+  const date = opts.appointmentDate.toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  })
+  const time = opts.appointmentDate.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit',
+  })
+  const typeLabel = opts.consultationType ? (PREF_LABELS[opts.consultationType] ?? opts.consultationType) : null
+
+  const body = `
+    <p>Hi <strong>${opts.clientName}</strong>,</p>
+    <p>Your consultation details have been updated. Here is what's changed:</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+      <tr><td style="padding:8px 12px;background:#f0fdf4;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px;width:30%">Service</td>
+          <td style="padding:8px 12px;background:#f0fdf4">${opts.serviceName}</td></tr>
+      <tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Date</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none">${date}</td></tr>
+      <tr><td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Time</td>
+          <td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none">${time}</td></tr>
+      ${typeLabel ? `<tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Meeting Type</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none">${typeLabel}</td></tr>` : ''}
+    </table>
+    ${opts.videoCallLink ? `
+    <p style="text-align:center;margin:24px 0">
+      <a href="${opts.videoCallLink}" style="display:inline-block;background:#2d6a4f;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px">Join Meeting</a>
+    </p>` : ''}
+    <p>If you have any questions, reply to this email or call <strong>(305) 555-GARDEN</strong>.</p>
+    <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
+  `
+
+  await sendEmail(
+    opts.clientEmail,
+    `Your appointment has been updated — Maytee's Garden Center`,
+    layout('Your Appointment Has Been Updated', body),
+  )
+}
+
+// ── Customer message alert → business ─────────────────────────────────────
+
+export async function sendCustomerMessageAlert(opts: {
+  customerName: string
+  customerEmail: string
+  message: string
+  bookingId?: string | null
+}) {
+  const body = `
+    <p>A customer has sent a message through their portal.</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
+      ${[
+        ['From',    opts.customerName],
+        ['Email',   opts.customerEmail],
+        ['Booking', opts.bookingId ?? '—'],
+      ].map(([k, v], i) => `
+        <tr>
+          <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb;width:30%;color:#2d6a4f;font-weight:bold">${k}</td>
+          <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb">${v}</td>
+        </tr>`).join('')}
+    </table>
+    <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin:16px 0">
+      <p style="margin:0 0 8px;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Message</p>
+      <p style="margin:0;font-size:14px;line-height:1.6">${opts.message}</p>
+    </div>
+    <p><a href="https://mayteesgardencenter.com/admin/inbox" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Inbox</a></p>
+  `
+
+  await sendEmail(
+    SUPPORT,
+    `Message from ${opts.customerName} re: their appointment`,
+    layout('New Customer Message', body),
+  )
+}
+
 // ── Welcome email → new user ───────────────────────────────────────────────
 
 export async function sendWelcomeEmail(opts: { name: string; email: string }) {
@@ -186,4 +374,19 @@ export async function sendWelcomeEmail(opts: { name: string; email: string }) {
   `
 
   await sendEmail(opts.email, 'Welcome to Maytee\'s Garden! 🌿', layout('Welcome to Maytee\'s Garden!', body))
+}
+
+// ── Password reset ─────────────────────────────────────────────────────────
+
+export async function sendPasswordResetEmail(opts: { name: string; email: string; resetUrl: string }) {
+  const body = `
+    <p>Hi <strong>${opts.name}</strong>,</p>
+    <p>We received a request to reset the password for your Maytee's Garden account.</p>
+    <p style="margin:24px 0">
+      <a href="${opts.resetUrl}" style="display:inline-block;background:#2d6a4f;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px">Reset My Password</a>
+    </p>
+    <p style="color:#6b7280;font-size:13px">This link expires in <strong>1 hour</strong>. If you didn't request a password reset, you can safely ignore this email — your password won't change.</p>
+    <p style="color:#6b7280;font-size:12px;margin-top:16px">Or copy this link into your browser:<br><span style="color:#2d6a4f">${opts.resetUrl}</span></p>
+  `
+  await sendEmail(opts.email, 'Reset your password — Maytee\'s Garden Center', layout('Password Reset Request', body))
 }
