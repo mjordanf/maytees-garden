@@ -1,0 +1,147 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "plants": "Plantas",
+    "services": "Servicios",
+    "gallery": "Galería",
+    "about": "Sobre Nosotros",
+    "contact": "Contacto",
+    "booking": "Reservar Consulta",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "portal": "Mi Cuenta",
+    "admin": "Panel Admin",
+    "logout": "Cerrar Sesión"
+  },
+  "hero": {
+    "tagline": "El Vivero Boutique Más Querido de Miami",
+    "headline": "Transforma Tu Espacio al Aire Libre en un Paraíso Tropical",
+    "subheadline": "Maytee rescata, diseña e instala impresionantes jardines del sur de Florida — adaptados a tu hogar, tu clima y tu vida.",
+    "cta_primary": "Reservar una Consulta",
+    "cta_secondary": "Explorar Plantas",
+    "badge": "Vista en TV · El Vivero Boutique #1 del Sur de Florida"
+  },
+  "features": {
+    "title": "Por Qué el Sur de Florida Elige a Maytee",
+    "rescue": { "title": "Rescate Primero", "desc": "Evaluamos antes de remover. El enfoque característico de Maytee salva tus plantas existentes y tu presupuesto." },
+    "local": { "title": "Experta en el Clima de Miami", "desc": "Cada recomendación de planta está adaptada al calor, humedad y lluvia únicos del sur de Florida." },
+    "personal": { "title": "Diseño Profundamente Personal", "desc": "Sin jardines genéricos. Cada diseño refleja tu gusto, estilo de vida y el alma de tu hogar." },
+    "tv": { "title": "Vista en Televisión", "desc": "La experiencia de Maytee ha aparecido en los medios del sur de Florida, llevando conocimiento profesional a cada cliente." }
+  },
+  "plants": {
+    "title": "Del Vivero",
+    "subtitle": "Plantas tropicales, nativas y ornamentales — todas seleccionadas a mano para el clima de Miami",
+    "view_all": "Ver Todas las Plantas",
+    "add_favorite": "Guardar",
+    "in_stock": "En Stock",
+    "out_of_stock": "Agotado",
+    "care_level": "Nivel de Cuidado",
+    "sunlight": "Luz Solar",
+    "water": "Agua",
+    "filter_all": "Todas",
+    "filter_tropical": "Tropicales",
+    "filter_flowering": "Florecientes",
+    "filter_palms": "Palmas",
+    "filter_native": "Nativas de Florida",
+    "filter_edible": "Comestibles",
+    "filter_succulents": "Suculentas"
+  },
+  "services": {
+    "title": "Servicios de Jardín",
+    "subtitle": "Desde el concepto de diseño hasta el cuidado a largo plazo — todo lo que necesita tu jardín del sur de Florida",
+    "book_service": "Reservar Este Servicio",
+    "learn_more": "Saber Más"
+  },
+  "gallery": {
+    "title": "Jardines Completados",
+    "subtitle": "Transformaciones reales en Coral Gables, Pinecrest, Kendall y el gran Miami",
+    "view_all": "Ver Galería Completa",
+    "filter_all": "Todos los Proyectos",
+    "filter_residential": "Residencial",
+    "filter_commercial": "Comercial"
+  },
+  "testimonials": {
+    "title": "Lo Que Dicen los Clientes",
+    "subtitle": "Más de 200 reseñas de cinco estrellas en Google, Yelp e Instagram"
+  },
+  "about": {
+    "title": "Conoce a Maytee",
+    "subtitle": "La Abogada de las Plantas",
+    "bio": "Maydel 'Maytee' Tuya fundó Maytee's Garden Center con una misión que la distingue: rescatar primero, plantar después. Su filosofía — que todo jardín merece una abogada antes que una excavadora — le valió el apodo de 'la abogada de las plantas.' Su experiencia en el clima único del sur de Florida, su pasión por rescatar especímenes olvidados y su ojo para el diseño exuberante y personalizado la han convertido en un referente en la comunidad de jardinería de Miami.",
+    "tv": "Vista en televisión del sur de Florida",
+    "location": "15196 SW 184th St, Miami FL 33187",
+    "hours": "Abierto todos los días 9 AM – 5:30 PM (Vie–Sáb hasta las 6 PM)",
+    "read_more": "Leer la Historia de Maytee"
+  },
+  "contact": {
+    "title": "Ponte en Contacto",
+    "subtitle": "¿Lista para transformar tu jardín? Cuéntanos sobre tu espacio.",
+    "name": "Nombre Completo",
+    "email": "Correo Electrónico",
+    "phone": "Número de Teléfono",
+    "zip": "Código Postal",
+    "service": "Servicio de Interés",
+    "message": "Cuéntanos sobre tu jardín",
+    "submit": "Enviar Mensaje",
+    "success": "¡Gracias! Nos pondremos en contacto en menos de 24 horas.",
+    "address": "15196 SW 184th St, Miami, FL 33187",
+    "phone_display": "(305) 555-GARDEN"
+  },
+  "booking": {
+    "title": "Reservar una Consulta",
+    "subtitle": "Agenda tu sesión personalizada con Maytee",
+    "select_service": "Seleccionar Servicio",
+    "select_date": "Elegir Fecha",
+    "select_time": "Elegir Hora",
+    "your_info": "Tu Información",
+    "notes": "¿Alguna nota o solicitud especial?",
+    "confirm": "Confirmar Reserva",
+    "success": "¡Tu consulta está reservada! Revisa tu correo para la confirmación."
+  },
+  "auth": {
+    "login_title": "Bienvenida de Vuelta",
+    "login_sub": "Inicia sesión en tu cuenta de Maytee's Garden",
+    "register_title": "Crear Cuenta",
+    "register_sub": "Únete a la comunidad de Maytee's Garden",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "name": "Nombre Completo",
+    "login_btn": "Iniciar Sesión",
+    "register_btn": "Crear Cuenta",
+    "no_account": "¿No tienes cuenta?",
+    "have_account": "¿Ya tienes cuenta?",
+    "sign_up": "Regístrate",
+    "sign_in": "Inicia sesión",
+    "forgot": "¿Olvidaste tu contraseña?"
+  },
+  "portal": {
+    "welcome": "Bienvenida de vuelta",
+    "dashboard": "Mi Panel",
+    "favorites": "Plantas Guardadas",
+    "appointments": "Mis Citas",
+    "orders": "Historial de Pedidos",
+    "settings": "Configuración de Cuenta",
+    "upcoming": "Próximas",
+    "past": "Pasadas",
+    "no_favorites": "Aún no has guardado ninguna planta.",
+    "no_appointments": "No hay citas programadas.",
+    "browse_plants": "Explorar Plantas"
+  },
+  "footer": {
+    "tagline": "Maytee's Garden Center — Vivero boutique y diseño paisajístico en Miami, FL.",
+    "hours": "Horario: Lun–Dom 9AM–5:30PM (Vie–Sáb hasta las 6PM)",
+    "address": "15196 SW 184th St, Miami, FL 33187",
+    "links_title": "Enlaces Rápidos",
+    "follow_title": "Síguenos",
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "etsy": "Tienda Etsy",
+    "copyright": "© 2025 Maytee's Garden Center. Todos los derechos reservados."
+  },
+  "chat": {
+    "title": "Pregúntale al Jardín de Maytee",
+    "placeholder": "Pregunta sobre plantas, cuidados o tu jardín...",
+    "send": "Enviar",
+    "welcome": "¡Hola! Soy el asistente de jardín de Maytee. ¡Pregúntame sobre plantas, consejos de cuidado, ideas de diseño o cualquier cosa sobre la jardinería en el sur de Florida! 🌿"
+  }
+}

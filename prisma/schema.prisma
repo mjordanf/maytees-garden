@@ -1,0 +1,214 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String    @id @default(cuid())
+  name               String?
+  email              String    @unique
+  emailVerified      DateTime?
+  passwordHash       String?
+  image              String?
+  role               String    @default("customer") // "customer" | "staff" | "admin"
+  languagePreference String    @default("en")
+  phone              String?
+  zipCode            String?
+  newsletterOptIn    Boolean   @default(false)
+  promotionsOptIn    Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  bookings      Booking[]
+  favorites     Favorite[]
+  orders        Order[]
+  auditLogs     AuditLog[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+model Plant {
+  id          String     @id @default(cuid())
+  nameEn      String
+  nameEs      String
+  descriptionEn String
+  descriptionEs String
+  price       Float
+  imageUrl    String
+  category    String     // "tropical" | "flowering" | "palms" | "succulents" | "edible" | "native"
+  inStock     Boolean    @default(true)
+  stockQty    Int        @default(10)
+  featured    Boolean    @default(false)
+  tags        String     @default("") // comma-separated
+  careLevel   String     @default("easy") // "easy" | "moderate" | "expert"
+  sunlight    String     @default("full") // "full" | "partial" | "shade"
+  water       String     @default("moderate")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  favorites   Favorite[]
+  orderItems  OrderItem[]
+  bookings    Booking[]
+}
+
+model Service {
+  id            String    @id @default(cuid())
+  nameEn        String
+  nameEs        String
+  descriptionEn String
+  descriptionEs String
+  price         Float?
+  priceNote     String?
+  imageUrl      String
+  duration      Int       @default(60) // minutes
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+
+  bookings      Booking[]
+}
+
+model Booking {
+  id              String    @id @default(cuid())
+  userId          String?
+  serviceId       String?
+  plantId         String?
+  appointmentDate DateTime
+  duration        Int       @default(60)
+  status          String    @default("pending") // "pending"|"confirmed"|"completed"|"cancelled"
+  notes           String?
+  clientName      String
+  clientEmail     String
+  clientPhone     String?
+  zipCode         String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user    User?    @relation(fields: [userId], references: [id])
+  service Service? @relation(fields: [serviceId], references: [id])
+  plant   Plant?   @relation(fields: [plantId], references: [id])
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  userId      String
+  total       Float
+  status      String      @default("pending") // "pending"|"processing"|"completed"|"cancelled"
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id])
+  items       OrderItem[]
+}
+
+model OrderItem {
+  id       String @id @default(cuid())
+  orderId  String
+  plantId  String
+  qty      Int
+  price    Float
+
+  order    Order  @relation(fields: [orderId], references: [id])
+  plant    Plant  @relation(fields: [plantId], references: [id])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  plantId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plant Plant @relation(fields: [plantId], references: [id], onDelete: Cascade)
+  @@unique([userId, plantId])
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  zipCode   String?
+  service   String?
+  message   String
+  status    String   @default("new") // "new" | "read" | "replied" | "archived"
+  createdAt DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model GalleryItem {
+  id          String   @id @default(cuid())
+  imageUrl    String
+  captionEn   String?
+  captionEs   String?
+  category    String   @default("residential")
+  featured    Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  location  String?
+  rating    Int      @default(5)
+  textEn    String
+  textEs    String?
+  imageUrl  String?
+  featured  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+}

@@ -1,0 +1,147 @@
+{
+  "nav": {
+    "home": "Home",
+    "plants": "Plants",
+    "services": "Services",
+    "gallery": "Gallery",
+    "about": "About",
+    "contact": "Contact",
+    "booking": "Book a Consultation",
+    "login": "Log In",
+    "register": "Sign Up",
+    "portal": "My Account",
+    "admin": "Admin Panel",
+    "logout": "Log Out"
+  },
+  "hero": {
+    "tagline": "Miami's Most Beloved Nursery & Garden Designer",
+    "headline": "Transform Your Outdoor Space Into a Tropical Paradise",
+    "subheadline": "Maytee rescues, designs, and installs stunning South Florida gardens — tailored to your home, your climate, your life.",
+    "cta_primary": "Book a Consultation",
+    "cta_secondary": "Explore Plants",
+    "badge": "As seen on TV · South Florida's #1 Boutique Nursery"
+  },
+  "features": {
+    "title": "Why South Florida Chooses Maytee",
+    "rescue": { "title": "Plant Rescue First", "desc": "We evaluate before we remove. Maytee's signature approach saves your existing plants and your budget." },
+    "local": { "title": "Miami Climate Expert", "desc": "Every plant recommendation is tailored to South Florida's unique heat, humidity, and rainfall patterns." },
+    "personal": { "title": "Deeply Personal Design", "desc": "No cookie-cutter gardens. Every design reflects your taste, lifestyle, and the soul of your home." },
+    "tv": { "title": "As Seen on TV", "desc": "Maytee's expertise has been featured in South Florida media — bringing professional-grade knowledge to every client." }
+  },
+  "plants": {
+    "title": "From the Nursery",
+    "subtitle": "Curated tropical, native, and ornamental plants — all hand-selected for Miami's climate",
+    "view_all": "View All Plants",
+    "add_favorite": "Save",
+    "in_stock": "In Stock",
+    "out_of_stock": "Out of Stock",
+    "care_level": "Care Level",
+    "sunlight": "Sunlight",
+    "water": "Water",
+    "filter_all": "All",
+    "filter_tropical": "Tropical",
+    "filter_flowering": "Flowering",
+    "filter_palms": "Palms",
+    "filter_native": "Native Florida",
+    "filter_edible": "Edible",
+    "filter_succulents": "Succulents"
+  },
+  "services": {
+    "title": "Garden Services",
+    "subtitle": "From design concept to long-term care — everything your South Florida garden needs",
+    "book_service": "Book This Service",
+    "learn_more": "Learn More"
+  },
+  "gallery": {
+    "title": "Completed Gardens",
+    "subtitle": "Real transformations across Coral Gables, Pinecrest, Kendall, and greater Miami",
+    "view_all": "View Full Gallery",
+    "filter_all": "All Projects",
+    "filter_residential": "Residential",
+    "filter_commercial": "Commercial"
+  },
+  "testimonials": {
+    "title": "What Clients Are Saying",
+    "subtitle": "Over 200 five-star reviews across Google, Yelp, and Instagram"
+  },
+  "about": {
+    "title": "Meet Maytee",
+    "subtitle": "The Lawyer of the Plants",
+    "bio": "Maydel 'Maytee' Tuya founded Maytee's Garden Center at 15196 SW 184th St in Miami with a mission that sets her apart: rescue first, plant second. Her philosophy — that every garden deserves an advocate before a bulldozer — earned her the nickname 'the lawyer of the plants.' Maytee's expertise in South Florida's unique climate, her passion for rescuing overlooked specimens, and her eye for lush, personalized design have made her a fixture in the Miami gardening community and beyond.",
+    "tv": "As seen on South Florida television",
+    "location": "15196 SW 184th St, Miami FL 33187",
+    "hours": "Open Daily 9 AM – 5:30 PM (Fri–Sat until 6 PM)",
+    "read_more": "Read Maytee's Story"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Ready to transform your garden? Tell us about your space.",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "zip": "Zip Code",
+    "service": "Service Interested In",
+    "message": "Tell us about your garden",
+    "submit": "Send Message",
+    "success": "Thank you! We'll be in touch within 24 hours.",
+    "address": "15196 SW 184th St, Miami, FL 33187",
+    "phone_display": "(305) 555-GARDEN"
+  },
+  "booking": {
+    "title": "Book a Consultation",
+    "subtitle": "Schedule your personalized session with Maytee",
+    "select_service": "Select Service",
+    "select_date": "Choose a Date",
+    "select_time": "Choose a Time",
+    "your_info": "Your Information",
+    "notes": "Any notes or special requests?",
+    "confirm": "Confirm Booking",
+    "success": "Your consultation is booked! Check your email for confirmation."
+  },
+  "auth": {
+    "login_title": "Welcome Back",
+    "login_sub": "Log in to your Maytee's Garden account",
+    "register_title": "Create Account",
+    "register_sub": "Join the Maytee's Garden community",
+    "email": "Email address",
+    "password": "Password",
+    "name": "Full Name",
+    "login_btn": "Log In",
+    "register_btn": "Create Account",
+    "no_account": "Don't have an account?",
+    "have_account": "Already have an account?",
+    "sign_up": "Sign up",
+    "sign_in": "Sign in",
+    "forgot": "Forgot password?"
+  },
+  "portal": {
+    "welcome": "Welcome back",
+    "dashboard": "My Dashboard",
+    "favorites": "Saved Plants",
+    "appointments": "My Appointments",
+    "orders": "Order History",
+    "settings": "Account Settings",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "no_favorites": "You haven't saved any plants yet.",
+    "no_appointments": "No appointments scheduled.",
+    "browse_plants": "Browse Plants"
+  },
+  "footer": {
+    "tagline": "Maytee's Garden Center — Boutique nursery & landscape design in Miami, FL.",
+    "hours": "Hours: Mon–Sun 9AM–5:30PM (Fri–Sat until 6PM)",
+    "address": "15196 SW 184th St, Miami, FL 33187",
+    "links_title": "Quick Links",
+    "follow_title": "Follow Along",
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "etsy": "Etsy Shop",
+    "copyright": "© 2025 Maytee's Garden Center. All rights reserved."
+  },
+  "chat": {
+    "title": "Ask Maytee's Garden",
+    "placeholder": "Ask about plants, care tips, or your garden...",
+    "send": "Send",
+    "welcome": "Hi! I'm Maytee's garden assistant. Ask me about plants, care tips, design ideas, or anything about South Florida gardening! 🌿"
+  }
+}
