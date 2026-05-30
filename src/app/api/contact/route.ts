@@ -14,6 +14,21 @@ export async function POST(req: NextRequest) {
     data: { name, email, phone, zipCode, service, message },
   })
 
+  // Also create an InboxMessage so it appears in /admin/inbox
+  await prisma.inboxMessage.create({
+    data: {
+      subject: `New inquiry${service ? `: ${service}` : ''} — ${name}`,
+      body: [
+        `From: ${name} (${email})`,
+        phone ? `Phone: ${phone}` : null,
+        zipCode ? `ZIP: ${zipCode}` : null,
+        ``,
+        message,
+      ].filter(l => l !== null).join('\n'),
+      type: 'contact-form',
+    },
+  })
+
   sendContactAlert({ name, email, phone, service, message }).catch(() => {})
 
   return NextResponse.json({ success: true, id: submission.id })

@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Heart, Search } from 'lucide-react'
 import { useSession } from 'next-auth/react'
@@ -15,11 +15,24 @@ type Plant = {
 const CATEGORIES = ['all','tropical','flowering','palms','native','edible','succulents']
 
 export default function PlantsClient({ plants }: { plants: Plant[] }) {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const [category, setCategory] = useState('all')
   const [search, setSearch]     = useState('')
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [selected, setSelected]   = useState<Plant | null>(null)
+
+  // Load existing favorites from DB when user is authenticated
+  useEffect(() => {
+    if (status !== 'authenticated') return
+    fetch('/api/favorites')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.favorites) {
+          setFavorites(new Set(data.favorites.map((f: any) => f.plantId)))
+        }
+      })
+      .catch(() => {})
+  }, [status])
 
   const filtered = plants.filter(p => {
     const matchCat = category === 'all' || p.category === category
@@ -30,7 +43,9 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
   })
 
   const toggleFavorite = async (plantId: string) => {
-    if (!session) { window.location.href = '/auth/login'; return }
+    // Wait until session is resolved before acting
+    if (status === 'loading') return
+    if (status === 'unauthenticated') { window.location.href = '/auth/login'; return }
     const next = new Set(favorites)
     if (next.has(plantId)) {
       next.delete(plantId)

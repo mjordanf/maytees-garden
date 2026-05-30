@@ -33,7 +33,7 @@ export default function AIChatWidget() {
       const data = await res.json()
       setMessages(prev => [...prev, { role: 'assistant', content: data.reply ?? 'Sorry, I had trouble with that. Please try again!' }])
     } catch {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, something went wrong. Feel free to call us at (305) 555-GARDEN!' }])
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, something went wrong. Feel free to call us at (786) 227-6616!' }])
     } finally {
       setLoading(false)
     }

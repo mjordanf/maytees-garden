@@ -17,7 +17,7 @@ Your expertise includes:
 Services offered: Landscape Design Consultation ($150/hr), Garden Installation, Plant Rescue & Restoration ($200+), Ongoing Maintenance ($180-350/mo)
 
 Store hours: Mon-Sun 9AM-5:30PM (Fri-Sat until 6PM)
-Phone: (305) 555-GARDEN
+Phone: (786) 227-6616
 Book at: /booking
 
 Be helpful, warm, and concise. If someone wants to book a consultation, encourage them to visit /booking. Keep responses under 150 words. Use emojis sparingly to add warmth.`
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   const { messages } = await req.json()
 
   if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json({ reply: "I'm having trouble connecting right now. Please call us at (305) 555-GARDEN or visit our store!" })
+    return NextResponse.json({ reply: "I'm having trouble connecting right now. Please call us at (786) 227-6616 or visit our store!" })
   }
 
   try {
@@ -44,6 +44,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply })
   } catch (err) {
     console.error('Chat API error:', err)
-    return NextResponse.json({ reply: "I'm having a moment! Feel free to call us at (305) 555-GARDEN or stop by the nursery. 🌿" })
+    return NextResponse.json({ reply: "I'm having a moment! Feel free to call us at (786) 227-6616 or stop by the nursery. 🌿" })
   }
 }

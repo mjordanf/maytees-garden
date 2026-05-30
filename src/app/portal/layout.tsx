@@ -2,13 +2,14 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
-import { LayoutDashboard, Heart, Calendar, ShoppingBag, Settings, Leaf } from 'lucide-react'
+import { LayoutDashboard, Heart, Calendar, ShoppingBag, Settings, Leaf, MessageSquare } from 'lucide-react'
 
 const navItems = [
   { href: '/portal',              icon: LayoutDashboard, label: 'Dashboard'         },
   { href: '/portal/favorites',    icon: Heart,           label: 'Saved Plants'      },
   { href: '/portal/appointments', icon: Calendar,        label: 'My Appointments'   },
   { href: '/portal/orders',       icon: ShoppingBag,     label: 'Order History'     },
+  { href: '/portal/messages',     icon: MessageSquare,   label: 'Message Maytee'    },
   { href: '/portal/settings',     icon: Settings,        label: 'Account Settings'  },
 ]
 

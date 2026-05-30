@@ -106,8 +106,8 @@ export default function ContactPage() {
                   {[
                     { icon: MapPin, title: 'Address', text: '15196 SW 184th St\nMiami, FL 33187' },
                     { icon: Clock,  title: 'Hours',   text: 'Monday–Sunday: 9 AM – 5:30 PM\nFriday–Saturday: until 6 PM' },
-                    { icon: Phone,  title: 'Phone',   text: '(305) 555-GARDEN' },
-                    { icon: Mail,   title: 'Email',   text: 'maytee@mayteesgarden.com' },
+                    { icon: Phone,  title: 'Phone',   text: '(786) 227-6616' },
+                    { icon: Mail,   title: 'Email',   text: 'info@mayteesgardencenter.com' },
                   ].map(({ icon: Icon, title, text }) => (
                     <div key={title} className="flex gap-3">
                       <div className="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center shrink-0">

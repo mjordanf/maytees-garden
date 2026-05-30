@@ -30,7 +30,7 @@ export default async function FavoritesPage() {
           {favorites.map(f => (
             <div key={f.id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
               <div className="relative h-48">
-                <Image src={f.plant.imageUrl} alt={f.plant.nameEn} fill className="object-cover" />
+                <Image src={f.plant.imageUrl} alt={f.plant.nameEn} unoptimized fill className="object-cover" />
                 <div className="absolute top-3 right-3 w-8 h-8 bg-terra-500 rounded-full flex items-center justify-center">
                   <Heart className="w-4 h-4 text-white fill-current" />
                 </div>

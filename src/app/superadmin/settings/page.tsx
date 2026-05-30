@@ -17,7 +17,7 @@ export default function SuperAdminSettings() {
             {[
               ['Business Name', "Maytee's Garden Center"],
               ['Address', '15196 SW 184th St, Miami, FL 33187'],
-              ['Phone', '(305) 555-GARDEN'],
+              ['Phone', '(786) 227-6616'],
               ['Business Email', 'info@mayteesgardencenter.com'],
             ].map(([k, v]) => (
               <div key={k} className="flex gap-4">

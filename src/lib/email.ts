@@ -2,8 +2,8 @@ import { Resend } from 'resend'
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
-const FROM    = 'Maytee\'s Garden <noreply@mayteesgardencenter.com>'
-const SUPPORT = process.env.BUSINESS_EMAIL ?? 'info@mayteesgardencenter.com'
+const FROM    = `Maytee's Garden <${process.env.RESEND_FROM_EMAIL ?? 'noreply@mayteesgardencenter.com'}>`
+const SUPPORT = process.env.ADMIN_EMAIL ?? process.env.BUSINESS_EMAIL ?? 'info@mayteesgardencenter.com'
 
 function layout(title: string, body: string): string {
   return `<!DOCTYPE html>
@@ -29,7 +29,7 @@ function layout(title: string, body: string): string {
         <!-- Footer -->
         <tr><td style="background:#f0fdf4;padding:20px 36px;border-top:1px solid #d1fae5">
           <p style="margin:0;color:#6b7280;font-size:12px">
-            Questions? Reply to this email or call <strong>(305) 555-GARDEN</strong><br>
+            Questions? Reply to this email or call <strong>(786) 227-6616</strong><br>
             Mon–Sun 9 AM–5:30 PM · <a href="https://mayteesgardencenter.com" style="color:#2d6a4f">mayteesgardencenter.com</a>
           </p>
         </td></tr>
@@ -91,7 +91,7 @@ export async function sendBookingConfirmation(opts: {
           <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 0">${prefLabel}</td></tr>` : ''}
     </table>
     ${opts.notes ? `<p style="background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:0 8px 8px 0;font-size:14px"><strong>Your notes:</strong> ${opts.notes}</p>` : ''}
-    <p>We'll confirm your appointment details within 24 hours. If you need to make changes, please reply to this email or call us at <strong>(305) 555-GARDEN</strong>.</p>
+    <p>We'll confirm your appointment details within 24 hours. If you need to make changes, please reply to this email or call us at <strong>(786) 227-6616</strong>.</p>
     <p>We can't wait to see your garden! 🌺</p>
     <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
   `
@@ -210,7 +210,7 @@ export async function sendBookingConfirmedInPerson(opts: {
           <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none">15196 SW 184th St, Miami, FL 33187</td></tr>
     </table>
     ${opts.notes ? `<p style="background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:0 8px 8px 0;font-size:14px"><strong>Notes:</strong> ${opts.notes}</p>` : ''}
-    <p>If you need to reschedule or have questions, reply to this email or call <strong>(305) 555-GARDEN</strong>.</p>
+    <p>If you need to reschedule or have questions, reply to this email or call <strong>(786) 227-6616</strong>.</p>
     <p>See you soon! 🌺</p>
     <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
   `
@@ -261,7 +261,7 @@ export async function sendBookingConfirmedVideo(opts: {
     <p style="font-size:13px;color:#6b7280;text-align:center">Or copy this link: <a href="${opts.videoCallLink}" style="color:#2d6a4f">${opts.videoCallLink}</a></p>
     ` : `<p>Maytee will send you the join link before your session.</p>`}
     ${opts.notes ? `<p style="background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:0 8px 8px 0;font-size:14px"><strong>Notes:</strong> ${opts.notes}</p>` : ''}
-    <p>If you need to reschedule or have questions, reply to this email or call <strong>(305) 555-GARDEN</strong>.</p>
+    <p>If you need to reschedule or have questions, reply to this email or call <strong>(786) 227-6616</strong>.</p>
     <p>Looking forward to our session! 🌺</p>
     <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
   `
@@ -308,7 +308,7 @@ export async function sendBookingUpdated(opts: {
     <p style="text-align:center;margin:24px 0">
       <a href="${opts.videoCallLink}" style="display:inline-block;background:#2d6a4f;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px">Join Meeting</a>
     </p>` : ''}
-    <p>If you have any questions, reply to this email or call <strong>(305) 555-GARDEN</strong>.</p>
+    <p>If you have any questions, reply to this email or call <strong>(786) 227-6616</strong>.</p>
     <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
   `
 
@@ -317,6 +317,41 @@ export async function sendBookingUpdated(opts: {
     `Your appointment has been updated — Maytee's Garden Center`,
     layout('Your Appointment Has Been Updated', body),
   )
+}
+
+// ── Booking cancelled by customer → admin ─────────────────────────────────
+
+export async function sendBookingCancelledNotice(opts: {
+  clientName: string
+  clientEmail: string
+  serviceName: string
+  appointmentDate: Date
+}) {
+  const date = opts.appointmentDate.toLocaleDateString('en-US', {
+    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+  })
+  const time = opts.appointmentDate.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit',
+  })
+
+  const body = `
+    <p>A customer has cancelled their upcoming appointment through the customer portal.</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
+      ${[
+        ['Client',  opts.clientName],
+        ['Email',   opts.clientEmail],
+        ['Service', opts.serviceName],
+        ['Date',    `${date} at ${time}`],
+      ].map(([k, v], i) => `
+        <tr>
+          <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb;width:30%;color:#2d6a4f;font-weight:bold">${k}</td>
+          <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb">${v}</td>
+        </tr>`).join('')}
+    </table>
+    <p><a href="https://mayteesgardencenter.com/admin/bookings" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Panel</a></p>
+  `
+
+  await sendEmail(SUPPORT, `Appointment Cancelled — ${opts.clientName} · ${opts.serviceName}`, layout('Appointment Cancelled by Customer', body))
 }
 
 // ── Customer message alert → business ─────────────────────────────────────
@@ -352,6 +387,67 @@ export async function sendCustomerMessageAlert(opts: {
     `Message from ${opts.customerName} re: their appointment`,
     layout('New Customer Message', body),
   )
+}
+
+// ── Lead reply → contact form submitter ───────────────────────────────────
+
+export async function sendLeadReply(opts: {
+  leadName: string
+  leadEmail: string
+  subject: string
+  replyBody: string
+}) {
+  const body = `
+    <p>Hi <strong>${opts.leadName}</strong>,</p>
+    <div style="margin:16px 0;line-height:1.7;font-size:15px">${opts.replyBody.replace(/\n/g, '<br>')}</div>
+    <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
+  `
+  await sendEmail(opts.leadEmail, opts.subject, layout(opts.subject, body))
+}
+
+// ── Newsletter confirmation → subscriber ───────────────────────────────────
+
+export async function sendNewsletterConfirmation(opts: {
+  email: string
+  name?: string | null
+  confirmUrl: string
+  unsubscribeUrl: string
+}) {
+  const greeting = opts.name ? `Hi <strong>${opts.name}</strong>,` : 'Hi there,'
+  const body = `
+    <p>${greeting}</p>
+    <p>Thank you for joining the Maytee's Garden newsletter! We'll send you seasonal plant tips, garden inspiration, and exclusive updates.</p>
+    <p>Please confirm your subscription by clicking the button below:</p>
+    <p style="text-align:center;margin:28px 0">
+      <a href="${opts.confirmUrl}" style="display:inline-block;background:#2d6a4f;color:#fff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px">Confirm My Subscription</a>
+    </p>
+    <p style="color:#6b7280;font-size:13px">If you didn't sign up for this newsletter, you can safely ignore this email.</p>
+    <p style="color:#9ca3af;font-size:12px;margin-top:16px">
+      <a href="${opts.unsubscribeUrl}" style="color:#9ca3af">Unsubscribe</a>
+    </p>
+  `
+  await sendEmail(opts.email, "Confirm your subscription — Maytee's Garden", layout("Welcome to Maytee's Garden Newsletter!", body))
+}
+
+// ── Send newsletter → subscriber ────────────────────────────────────────────
+
+export async function sendNewsletter(opts: {
+  email: string
+  name?: string | null
+  subject: string
+  bodyHtml: string
+  unsubscribeUrl: string
+}) {
+  const greeting = opts.name ? `<p>Hi <strong>${opts.name}</strong>,</p>` : ''
+  const wrappedBody = `
+    ${greeting}
+    ${opts.bodyHtml}
+    <p style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px;text-align:center">
+      You're receiving this because you subscribed to the Maytee's Garden newsletter.<br>
+      <a href="${opts.unsubscribeUrl}" style="color:#9ca3af">Unsubscribe</a>
+    </p>
+  `
+  await sendEmail(opts.email, opts.subject, layout(opts.subject, wrappedBody))
 }
 
 // ── Welcome email → new user ───────────────────────────────────────────────

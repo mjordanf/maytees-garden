@@ -184,7 +184,7 @@ export default function AboutPage() {
             {[
               { icon: <MapPin className="w-5 h-5" />, title: 'Address', text: '15196 SW 184th St\nMiami, FL 33187' },
               { icon: <Clock className="w-5 h-5" />, title: 'Hours', text: 'Mon–Sun: 9 AM – 5:30 PM\nFri–Sat: until 6 PM' },
-              { icon: <Award className="w-5 h-5" />, title: 'Contact', text: '(305) 555-GARDEN\nmaytee@mayteesgarden.com' },
+              { icon: <Award className="w-5 h-5" />, title: 'Contact', text: '(786) 227-6616\ninfo@mayteesgardencenter.com' },
             ].map(c => (
               <div key={c.title} className="bg-green-50 rounded-2xl p-6">
                 <div className="w-10 h-10 bg-green-600 rounded-full text-white flex items-center justify-center mx-auto mb-3">{c.icon}</div>

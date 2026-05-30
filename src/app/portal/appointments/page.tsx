@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Calendar, Clock, MapPin, Video } from 'lucide-react'
 import { formatDate, formatTime } from '@/lib/utils'
 import MessageMayteeButton from './MessageMayteeButton'
+import CancelBookingButton from './CancelBookingButton'
 
 const STATUS_STYLES: Record<string, string> = {
   pending:   'bg-yellow-100 text-yellow-700',
@@ -98,8 +99,9 @@ export default async function AppointmentsPage() {
 
                       {b.notes && <p className="text-xs text-gray-400 italic mt-2 truncate">"{b.notes}"</p>}
 
-                      <div className="mt-3">
+                      <div className="mt-3 flex flex-wrap gap-2">
                         <MessageMayteeButton bookingId={b.id} />
+                        <CancelBookingButton bookingId={b.id} status={b.status} />
                       </div>
                     </div>
                   </div>

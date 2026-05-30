@@ -177,11 +177,14 @@ model ContactSubmission {
 }
 
 model NewsletterSubscriber {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
+  id               String   @id @default(cuid())
+  email            String   @unique
+  name             String?
+  active           Boolean  @default(true)
+  confirmed        Boolean  @default(false)
+  confirmToken     String?  @unique
+  unsubscribeToken String?  @unique @default(cuid())
+  createdAt        DateTime @default(now())
 }
 
 model GalleryItem {
