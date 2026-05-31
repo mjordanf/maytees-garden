@@ -1,7 +1,12 @@
 import { SquareClient, SquareEnvironment } from 'square'
 
-// Use NEXT_PUBLIC_SQUARE_ENVIRONMENT if set, otherwise fall back to NODE_ENV
-const squareEnv = process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT ?? (process.env.NODE_ENV === 'production' ? 'production' : 'sandbox')
+// SQUARE_ENVIRONMENT is a plain server-side env var (no NEXT_PUBLIC_ prefix needed).
+// Set it to "sandbox" in Vercel for testing, "production" when going live.
+// Falls back to NEXT_PUBLIC_SQUARE_ENVIRONMENT, then NODE_ENV.
+const squareEnv =
+  process.env.SQUARE_ENVIRONMENT ??
+  process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT ??
+  (process.env.NODE_ENV === 'production' ? 'production' : 'sandbox')
 const isProd = squareEnv === 'production'
 
 const accessToken = isProd
