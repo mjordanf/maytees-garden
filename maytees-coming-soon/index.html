@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Maytee's Garden Center — Something Beautiful Is Growing</title>
+<meta name="description" content="Maytee's Garden Center — Miami's boutique nursery and landscape design studio. Coming soon to mayteesgardencenter.com" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-deep: #1a3328;
+    --green-mid:  #2d5a3d;
+    --green-warm: #4a7c59;
+    --cream:      #f5f0e8;
+    --cream-dark: #ede7d9;
+    --terra:      #c4622d;
+    --terra-light:#e8956a;
+    --sand:       #d4c9b0;
+    --white:      #faf8f4;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--green-deep);
+    color: var(--cream);
+    overflow-x: hidden;
+  }
+
+  body {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+  }
+
+  /* ── Noise texture overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* ── Split layout ── */
+  .layout {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+  }
+
+  /* ── Left — photo panel ── */
+  .photo-panel {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo-panel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    filter: sepia(15%) contrast(1.05);
+  }
+
+  .photo-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to right,
+      transparent 60%,
+      var(--green-deep) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      var(--green-deep) 0%,
+      transparent 15%,
+      transparent 85%,
+      var(--green-deep) 100%
+    );
+  }
+
+  .photo-caption {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 2;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--sand);
+    opacity: 0.75;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Right — content panel ── */
+  .content-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 4rem 4rem 3rem;
+    position: relative;
+  }
+
+  /* ── Logo / brand ── */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 4rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .brand-mark {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1.5px solid var(--terra);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .brand-mark svg {
+    width: 26px;
+    height: 26px;
+    fill: var(--terra-light);
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+  }
+
+  .brand-sub {
+    font-size: 0.7rem;
+    color: var(--sand);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* ── Main headline ── */
+  .headline-block {
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--terra-light);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .eyebrow::before {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 1px;
+    background: var(--terra);
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--terra-light);
+  }
+
+  .tagline {
+    font-size: 0.95rem;
+    color: var(--sand);
+    line-height: 1.7;
+    margin-top: 1.5rem;
+    max-width: 380px;
+    font-weight: 300;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    width: 3rem;
+    height: 1px;
+    background: var(--terra);
+    margin: 2.5rem 0;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  /* ── Info row ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .info-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--terra-light);
+  }
+
+  .info-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    color: var(--cream);
+    line-height: 1.4;
+  }
+
+  /* ── Email signup ── */
+  .signup-block {
+    margin-top: 2.5rem;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+
+  .signup-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sand);
+    margin-bottom: 0.85rem;
+  }
+
+  .signup-form {
+    display: flex;
+    gap: 0;
+    max-width: 380px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 2px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .signup-form:focus-within {
+    border-color: var(--terra);
+  }
+
+  .signup-form input {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: none;
+    outline: none;
+    padding: 0.85rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--cream);
+    min-width: 0;
+  }
+
+  .signup-form input::placeholder {
+    color: rgba(213,201,176,0.45);
+  }
+
+  .signup-form button {
+    background: var(--terra);
+    border: none;
+    color: var(--white);
+    padding: 0.85rem 1.25rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .signup-form button:hover {
+    background: #b0501f;
+  }
+
+  .signup-success {
+    display: none;
+    font-size: 0.85rem;
+    color: var(--terra-light);
+    font-style: italic;
+    margin-top: 0.75rem;
+  }
+
+  /* ── Social row ── */
+  .social-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    animation: fadeUp 0.8s 0.75s ease both;
+    position: relative;
+    z-index: 10;
+  }
+
+  .social-row a {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sand);
+    text-decoration: none;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+  }
+
+  .social-row a:hover {
+    color: var(--terra-light);
+  }
+
+  .social-row a svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  .social-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(213,201,176,0.3);
+    flex-shrink: 0;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    position: relative;
+    z-index: 0;
+    pointer-events: none;
+    text-align: center;
+    padding: 1.25rem;
+    font-size: 0.7rem;
+    color: rgba(213,201,176,0.35);
+    letter-spacing: 0.08em;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  /* ── Decorative corner plant ── */
+  .corner-deco {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .layout {
+      grid-template-columns: 1fr;
+      grid-template-rows: 45vh 1fr;
+    }
+
+    .photo-panel::after {
+      background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        var(--green-deep) 100%
+      );
+    }
+
+    .content-panel {
+      padding: 2rem 1.75rem 3rem;
+    }
+
+    .brand {
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2.6rem;
+    }
+
+    .info-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .signup-form {
+      max-width: 100%;
+    }
+
+    .photo-caption {
+      display: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Photo panel -->
+  <div class="photo-panel">
+    <img
+      src="maytee-photo.jpg"
+      alt="Maytee at a garden installation site in Miami"
+    />
+    <p class="photo-caption">Maytee on a recent installation — Miami, FL</p>
+  </div>
+
+  <!-- Content panel -->
+  <div class="content-panel">
+
+    <!-- Decorative SVG -->
+    <div class="corner-deco" aria-hidden="true">
+      <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="60" cy="60" r="58" stroke="white" stroke-width="1"/>
+        <path d="M60 20 Q80 40 60 60 Q40 40 60 20Z" fill="white"/>
+        <path d="M60 60 Q80 80 60 100 Q40 80 60 60Z" fill="white"/>
+        <path d="M20 60 Q40 40 60 60 Q40 80 20 60Z" fill="white"/>
+        <path d="M60 60 Q80 40 100 60 Q80 80 60 60Z" fill="white"/>
+      </svg>
+    </div>
+
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C9 2 6 5 6 8c0 2.5 1.5 4.5 3.5 5.5C8 15 7 17 7 19h10c0-2-1-4-2.5-5.5C16.5 12.5 18 10.5 18 8c0-3-3-6-6-6zm0 2c2 0 4 2 4 4 0 1.8-1 3.3-2.5 4.2l-.5.3-.5-.3C11 11.3 10 9.8 10 8c0-2 2-4 2-4z"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Maytee's Garden Center</span>
+        <span class="brand-sub">Miami, Florida</span>
+      </div>
+    </div>
+
+    <!-- Headline -->
+    <div class="headline-block">
+      <p class="eyebrow">Under construction</p>
+      <h1>Something<br /><em>beautiful</em><br />is growing.</h1>
+      <p class="tagline">
+        Miami's most beloved boutique nursery and landscape design studio is building something new online. Stop by in person — we're open daily.
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Info -->
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Visit us</span>
+        <span class="info-value">15196 SW 184th St<br />Miami, FL 33187</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Hours</span>
+        <span class="info-value">Mon–Sun 9 AM – 5:30 PM<br />Fri–Sat until 6 PM</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Call us</span>
+        <span class="info-value">(786) 227-6616</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Email</span>
+        <span class="info-value">info@mayteesgardencenter.com</span>
+      </div>
+    </div>
+
+    <!-- Email signup -->
+    <div class="signup-block">
+      <p class="signup-label">Get notified when we launch</p>
+      <div class="signup-form">
+        <input type="email" id="email-input" placeholder="your@email.com" autocomplete="email" />
+        <button type="button" onclick="handleSignup()">Notify me</button>
+      </div>
+      <p class="signup-success" id="signup-success">
+        ✦ You're on the list — we'll be in touch soon.
+      </p>
+    </div>
+
+    <!-- Social -->
+    <div class="social-row">
+      <a href="https://www.instagram.com/maytees_garden_center/"
+         target="_blank"
+         rel="noopener"
+         onclick="window.open('https://www.instagram.com/maytees_garden_center/','_blank');return false;"
+         style="cursor:pointer;pointer-events:all;position:relative;z-index:999;">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        @maytees_garden_center
+      </a>
+      <span class="social-dot" aria-hidden="true"></span>
+      <a href="https://www.etsy.com/shop/MayteesGarden"
+         target="_blank"
+         rel="noopener"
+         onclick="window.open('https://www.etsy.com/shop/MayteesGarden','_blank');return false;"
+         style="cursor:pointer;pointer-events:all;position:relative;z-index:999;">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.9 6.3V18c0 .6.1.9.8.9h3.8c1.3 0 2-.1 2.5-.7.4-.4.6-.9.9-1.9l.5.1-.5 3.4c-1.3-.1-3.7-.1-5.8-.1H8.6c-.8 0-1.6 0-2.9.1l-.1-.5.9-.2c.6-.1.7-.4.7-1.1V6.6c0-.7-.1-1-.7-1.1l-.9-.2.1-.5c1.3.1 2.1.1 2.9.1h3.8c2.1 0 4.4 0 5.7-.1l.1 3.3-.5.1c-.3-1-.6-1.6-1-2-.5-.5-1.2-.6-2.6-.6H10.7c-.7 0-.8.2-.8.7z"/></svg>
+        Etsy Shop
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  © 2025 Maytee's Garden Center · mayteesgardencenter.com · Miami, FL
+</footer>
+
+<script>
+  function handleSignup() {
+    const input = document.getElementById('email-input');
+    const success = document.getElementById('signup-success');
+    const email = input.value.trim();
+    if (!email || !email.includes('@')) {
+      input.style.borderLeft = '2px solid #c4622d';
+      input.focus();
+      return;
+    }
+    input.style.borderLeft = '';
+    input.disabled = true;
+    document.querySelector('.signup-form button').disabled = true;
+    success.style.display = 'block';
+  }
+
+  document.getElementById('email-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleSignup();
+  });
+</script>
+
+</body>
+</html>
