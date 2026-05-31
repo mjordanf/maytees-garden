@@ -1,5 +1,6 @@
 'use client'
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react'
+import { useSession } from 'next-auth/react'
 
 export type CartItem = {
   plantId: string; plantName: string; plantNameEs: string
@@ -24,13 +25,25 @@ const CartContext = createContext<CartCtx>({
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
+  const { status } = useSession()
+  const prevStatus = useRef<string>('loading')
 
+  // Load from localStorage on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem('maytees-cart')
       if (stored) setItems(JSON.parse(stored))
     } catch {}
   }, [])
+
+  // Clear cart automatically when user logs out
+  useEffect(() => {
+    if (prevStatus.current === 'authenticated' && status === 'unauthenticated') {
+      setItems([])
+      localStorage.removeItem('maytees-cart')
+    }
+    prevStatus.current = status
+  }, [status])
 
   const persist = (next: CartItem[]) => {
     setItems(next)

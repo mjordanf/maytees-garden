@@ -1,10 +1,15 @@
 import { Shippo } from 'shippo'
 
-const shippoClient = process.env.SHIPPO_API_KEY
-  ? new Shippo({ apiKeyHeader: process.env.SHIPPO_API_KEY })
-  : null
+const isProd = process.env.NODE_ENV === 'production'
+const apiKey = isProd
+  ? process.env.SHIPPO_API_KEY
+  : (process.env.SHIPPO_TEST_API_KEY ?? process.env.SHIPPO_API_KEY)
 
-if (!process.env.SHIPPO_API_KEY) console.warn('[shippo] SHIPPO_API_KEY not set — shipping rates will not work')
+if (!apiKey) {
+  console.warn('[shippo] No API key set — shipping rates will use flat-rate fallback')
+}
+
+const shippoClient = apiKey ? new Shippo({ apiKeyHeader: apiKey }) : null
 
 export const FROM_ADDRESS = {
   name:    "Maytee's Garden Center",

@@ -63,14 +63,37 @@ export default function CheckoutPage() {
     }
   }, [session])
 
-  // Initialize Square card when script is loaded and we're on step 3
+  // Initialize Square card when script is loaded and we're on step 3.
+  // Poll for window.Square — the onLoad callback fires when the script
+  // tag executes but window.Square may not be set for a tick or two.
   useEffect(() => {
     if (!scriptLoaded || step !== 3 || cardInitialized) return
-    const appId = process.env.NEXT_PUBLIC_SQUARE_APP_ID ?? process.env.NEXT_PUBLIC_SQUARE_SANDBOX_APP_ID ?? ''
-    const locId  = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID ?? ''
-    if (typeof window === 'undefined' || !(window as any).Square) return
 
-    async function initCard() {
+    const appId = process.env.NEXT_PUBLIC_SQUARE_APPLICATION_ID ?? ''
+    const locId  = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID ?? ''
+
+    if (!appId || !locId) {
+      console.error('[square] Missing NEXT_PUBLIC_SQUARE_APPLICATION_ID or NEXT_PUBLIC_SQUARE_LOCATION_ID')
+      setPayError('Payment configuration error — please contact support.')
+      return
+    }
+
+    let attempts = 0
+    const MAX = 100 // 100 × 100ms = 10s timeout
+
+    const poll = setInterval(async () => {
+      attempts++
+
+      if (typeof window === 'undefined' || !(window as any).Square) {
+        if (attempts >= MAX) {
+          clearInterval(poll)
+          setPayError('Payment form failed to load. Please refresh the page and try again.')
+        }
+        return
+      }
+
+      clearInterval(poll)
+
       try {
         const payments = (window as any).Square.payments(appId, locId)
         paymentsRef.current = payments
@@ -78,11 +101,13 @@ export default function CheckoutPage() {
         await card.attach('#card-container')
         cardRef.current = card
         setCardInitialized(true)
-      } catch (err) {
-        console.error('[square] card init error', err)
+      } catch (err: any) {
+        console.error('[square] card init error:', err)
+        setPayError(err?.message ?? 'Could not load payment form. Please refresh.')
       }
-    }
-    initCard()
+    }, 100)
+
+    return () => clearInterval(poll)
   }, [scriptLoaded, step, cardInitialized])
 
   const setField = (k: keyof ShippingInfo, v: string) =>
@@ -296,12 +321,21 @@ export default function CheckoutPage() {
               {step === 3 && (
                 <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
                   <h2 className="font-serif text-xl font-bold text-green-800">Payment</h2>
-                  {!scriptLoaded && <p className="text-sm text-gray-400">Loading payment form…</p>}
-                  <div id="card-container" className="min-h-[100px]" />
-                  {!cardInitialized && scriptLoaded && (
-                    <p className="text-xs text-gray-400">Initializing secure card form…</p>
+                  {(!scriptLoaded || (!cardInitialized && !payError)) && (
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                      </svg>
+                      {!scriptLoaded ? 'Loading payment form…' : 'Initializing secure card form…'}
+                    </div>
                   )}
-                  {payError && <p className="text-sm text-red-500">{payError}</p>}
+                  <div id="card-container" className={cardInitialized ? 'min-h-[100px]' : 'hidden'} />
+                  {payError && (
+                    <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                      {payError}
+                    </div>
+                  )}
                   <div className="flex gap-3 pt-2">
                     <button onClick={() => setStep(2)} className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50">
                       ← Back

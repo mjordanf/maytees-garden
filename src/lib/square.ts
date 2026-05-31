@@ -1,15 +1,32 @@
 import { SquareClient, SquareEnvironment } from 'square'
 
-const isProd = process.env.NODE_ENV === 'production'
+// Use NEXT_PUBLIC_SQUARE_ENVIRONMENT if set, otherwise fall back to NODE_ENV
+const squareEnv = process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT ?? (process.env.NODE_ENV === 'production' ? 'production' : 'sandbox')
+const isProd = squareEnv === 'production'
+
 const accessToken = isProd
   ? process.env.SQUARE_ACCESS_TOKEN
-  : (process.env.SQUARE_SANDBOX_ACCESS_TOKEN ?? process.env.SQUARE_ACCESS_TOKEN)
+  : process.env.SQUARE_SANDBOX_ACCESS_TOKEN   // do NOT fall back to production token
 
 export const locationId = isProd
   ? (process.env.SQUARE_LOCATION_ID ?? '')
-  : (process.env.SQUARE_SANDBOX_LOCATION_ID ?? process.env.SQUARE_LOCATION_ID ?? '')
+  : (process.env.SQUARE_SANDBOX_LOCATION_ID ?? '')  // do NOT fall back to production location
 
-if (!accessToken) console.warn('[square] No access token set — payments will fail')
+if (!accessToken) {
+  console.warn(
+    isProd
+      ? '[square] SQUARE_ACCESS_TOKEN not set'
+      : '[square] SQUARE_SANDBOX_ACCESS_TOKEN not set — add it to .env to process sandbox payments'
+  )
+}
+
+if (!locationId) {
+  console.warn(
+    isProd
+      ? '[square] SQUARE_LOCATION_ID not set'
+      : '[square] SQUARE_SANDBOX_LOCATION_ID not set — get it from developer.squareup.com → Sandbox → Locations'
+  )
+}
 
 export const squareClient = new SquareClient({
   token: accessToken ?? '',
