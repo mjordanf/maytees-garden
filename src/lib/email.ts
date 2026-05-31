@@ -472,6 +472,103 @@ export async function sendWelcomeEmail(opts: { name: string; email: string }) {
   await sendEmail(opts.email, 'Welcome to Maytee\'s Garden! 🌿', layout('Welcome to Maytee\'s Garden!', body))
 }
 
+// ── Order confirmation → customer ──────────────────────────────────────────
+
+export async function sendOrderConfirmation(opts: {
+  customerName: string; customerEmail: string
+  orderNumber: string; items: { name: string; qty: number; price: number }[]
+  subtotal: number; shippingCost: number; tax: number; total: number
+  shipAddress: string
+}) {
+  const itemRows = opts.items.map((item, i) => `
+    <tr>
+      <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb">${item.name}</td>
+      <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb;text-align:center">${item.qty}</td>
+      <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb;text-align:right">$${(item.price * item.qty).toFixed(2)}</td>
+    </tr>`).join('')
+
+  const body = `
+    <p>Hi <strong>${opts.customerName}</strong>,</p>
+    <p>Thank you for your order! We're getting it ready. Here's your order summary:</p>
+    <p><strong>Order Number:</strong> ${opts.orderNumber}</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
+      <thead>
+        <tr>
+          <th style="padding:8px 12px;background:#f0fdf4;border:1px solid #e5e7eb;text-align:left;color:#2d6a4f">Item</th>
+          <th style="padding:8px 12px;background:#f0fdf4;border:1px solid #e5e7eb;text-align:center;color:#2d6a4f">Qty</th>
+          <th style="padding:8px 12px;background:#f0fdf4;border:1px solid #e5e7eb;text-align:right;color:#2d6a4f">Total</th>
+        </tr>
+      </thead>
+      <tbody>${itemRows}</tbody>
+    </table>
+    <table style="width:100%;border-collapse:collapse;margin:8px 0;font-size:14px;max-width:300px;margin-left:auto">
+      ${[
+        ['Subtotal', `$${opts.subtotal.toFixed(2)}`],
+        ['Shipping', `$${opts.shippingCost.toFixed(2)}`],
+        ['Tax', `$${opts.tax.toFixed(2)}`],
+        ['<strong>Total</strong>', `<strong>$${opts.total.toFixed(2)}</strong>`],
+      ].map(([k, v]) => `<tr><td style="padding:4px 8px;text-align:right;color:#6b7280">${k}</td><td style="padding:4px 8px;text-align:right">${v}</td></tr>`).join('')}
+    </table>
+    <p style="margin-top:16px"><strong>Shipping to:</strong> ${opts.shipAddress}</p>
+    <p>We'll send you a tracking number as soon as your order ships. 🌿</p>
+    <p style="margin-top:24px">Thank you,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
+  `
+  await sendEmail(opts.customerEmail, `Your order is confirmed — ${opts.orderNumber}`, layout('Your Order is Confirmed!', body))
+}
+
+// ── New order alert → admin ────────────────────────────────────────────────
+
+export async function sendOrderAlert(opts: {
+  orderNumber: string; customerName: string; customerEmail: string
+  items: { name: string; qty: number; price: number }[]
+  total: number; channel: string
+}) {
+  const itemList = opts.items.map(i => `${i.name} × ${i.qty}`).join(', ')
+  const body = `
+    <p>A new store order was just placed.</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
+      ${[
+        ['Order #', opts.orderNumber],
+        ['Customer', opts.customerName],
+        ['Email', opts.customerEmail],
+        ['Items', itemList],
+        ['Total', `$${opts.total.toFixed(2)}`],
+        ['Channel', opts.channel],
+      ].map(([k, v], i) => `
+        <tr>
+          <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb;width:30%;color:#2d6a4f;font-weight:bold">${k}</td>
+          <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb">${v}</td>
+        </tr>`).join('')}
+    </table>
+    <p><a href="https://mayteesgardencenter.com/admin/orders" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Panel</a></p>
+  `
+  await sendEmail(SUPPORT, `New Order — ${opts.orderNumber} — ${opts.customerName}`, layout('New Store Order', body))
+}
+
+// ── Shipping confirmation → customer ───────────────────────────────────────
+
+export async function sendShippingConfirmation(opts: {
+  customerName: string; customerEmail: string
+  orderNumber: string; carrier: string; trackingNumber: string
+  trackingUrl?: string
+}) {
+  const body = `
+    <p>Hi <strong>${opts.customerName}</strong>,</p>
+    <p>Great news — your order <strong>${opts.orderNumber}</strong> has been shipped!</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
+      <tr><td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;width:30%;color:#2d6a4f;font-weight:bold">Carrier</td>
+          <td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb">${opts.carrier}</td></tr>
+      <tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;color:#2d6a4f;font-weight:bold">Tracking #</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb"><strong>${opts.trackingNumber}</strong></td></tr>
+    </table>
+    ${opts.trackingUrl ? `<p><a href="${opts.trackingUrl}" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">Track Your Package</a></p>` : ''}
+    <p>If you have any questions about your shipment, reply to this email or call <strong>(786) 227-6616</strong>.</p>
+    <p>Enjoy your new plants! 🌿</p>
+    <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
+  `
+  await sendEmail(opts.customerEmail, `Your order ${opts.orderNumber} has shipped!`, layout('Your Order Has Shipped!', body))
+}
+
 // ── Password reset ─────────────────────────────────────────────────────────
 
 export async function sendPasswordResetEmail(opts: { name: string; email: string; resetUrl: string }) {

@@ -4,9 +4,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useSession, signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
-import { Menu, X, ChevronDown, User, LayoutDashboard, LogOut, Shield } from 'lucide-react'
+import { Menu, X, ChevronDown, User, LayoutDashboard, LogOut, Shield, ShoppingCart } from 'lucide-react'
 import { useI18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
+import { useCart } from '@/lib/cart-context'
 
 export default function Navbar() {
   const { data: session } = useSession()
@@ -23,6 +24,7 @@ export default function Navbar() {
   }, [])
 
   const role = (session?.user as any)?.role
+  const { totalItems } = useCart()
 
   const navLinks = [
     { href: '/plants',   label: t('nav.plants')   },
@@ -75,6 +77,16 @@ export default function Navbar() {
 
             <Link href="/booking" className="btn-primary text-sm py-2">
               {t('nav.booking')}
+            </Link>
+
+            {/* Cart Icon */}
+            <Link href="/shop/cart" className="relative flex items-center justify-center w-9 h-9 text-gray-600 hover:text-green-700 transition-colors">
+              <ShoppingCart className="w-5 h-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center leading-none">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
             </Link>
 
             {session ? (

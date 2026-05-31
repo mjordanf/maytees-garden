@@ -30,6 +30,7 @@ model User {
   orders        Order[]
   auditLogs     AuditLog[]
   inboxMessages InboxMessage[]
+  storeOrders   StoreOrder[]
 }
 
 model Account {
@@ -83,9 +84,18 @@ model Plant {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  favorites   Favorite[]
-  orderItems  OrderItem[]
-  bookings    Booking[]
+  onlineStock   Int      @default(0)
+  onsiteStock   Int      @default(0)
+  onlinePrice   Float?
+  weight        Float?
+  shippingClass String?  @default("standard")
+  etsyListingId String?
+  etsyLastSync  DateTime?
+
+  favorites       Favorite[]
+  orderItems      OrderItem[]
+  bookings        Booking[]
+  storeOrderItems StoreOrderItem[]
 }
 
 model Service {
@@ -243,4 +253,52 @@ model InboxMessage {
 
   fromUser   User?    @relation(fields: [fromUserId], references: [id], onDelete: SetNull)
   booking    Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+}
+
+model StoreOrder {
+  id              String   @id @default(cuid())
+  orderNumber     String   @unique
+  userId          String?
+  status          String   @default("pending")
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  shipAddress1    String
+  shipAddress2    String?
+  shipCity        String
+  shipState       String
+  shipZip         String
+  shipCountry     String   @default("US")
+  shippingCarrier String?
+  shippingService String?
+  shippingCost    Float    @default(0)
+  trackingNumber  String?
+  shippoLabelUrl  String?
+  shippedAt       DateTime?
+  squarePaymentId String?
+  squareOrderId   String?
+  subtotal        Float
+  tax             Float    @default(0)
+  total           Float
+  channel         String   @default("website")
+  etsyOrderId     String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user  User?           @relation(fields: [userId], references: [id])
+  items StoreOrderItem[]
+}
+
+model StoreOrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  plantId   String
+  plantName String
+  qty       Int
+  unitPrice Float
+  total     Float
+
+  order StoreOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  plant Plant      @relation(fields: [plantId], references: [id])
 }

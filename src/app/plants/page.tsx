@@ -11,7 +11,16 @@ export const metadata: Metadata = {
 }
 
 export default async function PlantsPage() {
-  const plants = await prisma.plant.findMany({ orderBy: { featured: 'desc' } })
+  const plants = await prisma.plant.findMany({
+    orderBy: { featured: 'desc' },
+    select: {
+      id: true, nameEn: true, nameEs: true,
+      descriptionEn: true, price: true, imageUrl: true,
+      category: true, inStock: true, featured: true,
+      tags: true, careLevel: true, sunlight: true, water: true,
+      onlineStock: true, onlinePrice: true,
+    },
+  })
 
   return (
     <div className="pt-20 pb-16 min-h-screen bg-cream">

@@ -10,6 +10,9 @@ type Plant = {
   price: number; imageUrl: string; category: string
   inStock: boolean; stockQty: number; featured: boolean; tags: string
   careLevel: string; sunlight: string; water: string
+  onlineStock: number; onsiteStock: number
+  onlinePrice: number | null | undefined; weight: number | null | undefined
+  shippingClass: string | null | undefined
 }
 type PlantForm = Omit<Plant, 'id'>
 
@@ -40,11 +43,15 @@ const PLANT_NAMES = [
   'Yellow Elder','ZZ Plant',
 ]
 
+const SHIPPING_CLASSES = ['standard', 'fragile', 'large']
+
 const BLANK: PlantForm = {
   nameEn:'', nameEs:'', descriptionEn:'', descriptionEs:'',
   price: 25, imageUrl:'', category:'tropical',
   inStock: true, stockQty: 10, featured: false, tags:'',
   careLevel:'easy', sunlight:'full', water:'moderate',
+  onlineStock: 0, onsiteStock: 0, onlinePrice: undefined, weight: undefined,
+  shippingClass: 'standard',
 }
 
 async function fetchPlantImage(name: string): Promise<string | null> {
@@ -84,6 +91,10 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
   const [uploadingImg, setUploadingImg] = useState(false)
   const fileRef   = useRef<HTMLInputElement>(null)
   const timerRef  = useRef<ReturnType<typeof setTimeout>>()
+  // Inline stock editing
+  const [editingStockId, setEditingStockId] = useState<string | null>(null)
+  const [editingStockField, setEditingStockField] = useState<'onlineStock' | 'onsiteStock' | null>(null)
+  const [stockInputVal, setStockInputVal] = useState<string>('')
 
   const set = <K extends keyof PlantForm>(k: K, v: PlantForm[K]) =>
     setForm(f => ({ ...f, [k]: v }))
@@ -142,8 +153,36 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
   const openEdit = (p: Plant) => {
     setEditing(p)
     const { id: _id, ...rest } = p
-    setForm({ ...rest, stockQty: rest.stockQty ?? 10 }); setImgError(false)
+    setForm({
+      ...rest,
+      stockQty: rest.stockQty ?? 10,
+      onlineStock: rest.onlineStock ?? 0,
+      onsiteStock: rest.onsiteStock ?? 0,
+    }); setImgError(false)
     setImgStatus(p.imageUrl ? 'found' : 'idle'); setSaveError(null); setShowModal(true)
+  }
+
+  const startStockEdit = (plantId: string, field: 'onlineStock' | 'onsiteStock', current: number) => {
+    setEditingStockId(plantId)
+    setEditingStockField(field)
+    setStockInputVal(String(current))
+  }
+
+  const saveStockEdit = async (plantId: string) => {
+    const val = parseInt(stockInputVal) || 0
+    const field = editingStockField
+    if (!field) return
+    const res = await fetch(`/api/plants/${plantId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ [field]: val }),
+    })
+    if (res.ok) {
+      const { plant } = await res.json()
+      setPlants(ps => ps.map(p => p.id === plantId ? { ...p, [field]: plant[field] } : p))
+    }
+    setEditingStockId(null)
+    setEditingStockField(null)
   }
 
   const handleSave = async () => {
@@ -267,8 +306,8 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
                 {(isEs
-                  ? ['Planta','Categoría','Precio','Cant.','Disponibilidad','Destacada','Acciones']
-                  : ['Plant','Category','Price','Qty','Availability','Featured','Actions']
+                  ? ['Planta','Categoría','Precio','Online Stock','Onsite Stock','Disponibilidad','Destacada','Acciones']
+                  : ['Plant','Category','Price','Online Stock','Onsite Stock','Availability','Featured','Actions']
                 ).map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
                 ))}
@@ -292,7 +331,47 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
                     <span className="badge badge-green capitalize">{plant.category}</span>
                   </td>
                   <td className="px-4 py-3 font-semibold text-gray-700">{formatCurrency(plant.price)}</td>
-                  <td className="px-4 py-3 text-gray-700">{plant.stockQty ?? 10}</td>
+                  {/* Online Stock — click to edit */}
+                  <td className="px-4 py-3">
+                    {editingStockId === plant.id && editingStockField === 'onlineStock' ? (
+                      <input
+                        autoFocus
+                        type="number" min="0"
+                        className="w-16 text-xs border border-gray-300 rounded px-2 py-1"
+                        value={stockInputVal}
+                        onChange={e => setStockInputVal(e.target.value)}
+                        onBlur={() => saveStockEdit(plant.id)}
+                        onKeyDown={e => e.key === 'Enter' && saveStockEdit(plant.id)}
+                      />
+                    ) : (
+                      <button onClick={() => startStockEdit(plant.id, 'onlineStock', plant.onlineStock ?? 0)} className="text-left">
+                        {(plant.onlineStock ?? 0) === 0
+                          ? <span className="text-xs font-semibold text-red-500">Out of Stock</span>
+                          : (plant.onlineStock ?? 0) <= 3
+                          ? <span className="text-xs font-semibold text-amber-500">Low ({plant.onlineStock})</span>
+                          : <span className="text-xs font-semibold text-green-700">{plant.onlineStock}</span>
+                        }
+                      </button>
+                    )}
+                  </td>
+                  {/* Onsite Stock — click to edit */}
+                  <td className="px-4 py-3">
+                    {editingStockId === plant.id && editingStockField === 'onsiteStock' ? (
+                      <input
+                        autoFocus
+                        type="number" min="0"
+                        className="w-16 text-xs border border-gray-300 rounded px-2 py-1"
+                        value={stockInputVal}
+                        onChange={e => setStockInputVal(e.target.value)}
+                        onBlur={() => saveStockEdit(plant.id)}
+                        onKeyDown={e => e.key === 'Enter' && saveStockEdit(plant.id)}
+                      />
+                    ) : (
+                      <button onClick={() => startStockEdit(plant.id, 'onsiteStock', plant.onsiteStock ?? 0)} className="text-left">
+                        <span className="text-xs text-gray-500">{plant.onsiteStock ?? 0}</span>
+                      </button>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <span className={`badge ${plant.inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-500'}`}>
                       {plant.inStock ? (isEs ? 'Disponible' : 'In Stock') : (isEs ? 'Agotado' : 'Out of Stock')}
@@ -481,6 +560,64 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
                     value={form.stockQty}
                     onChange={e => set('stockQty', parseInt(e.target.value) || 0)}
                   />
+                </div>
+              </div>
+
+              {/* ── Online Inventory ── */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="label">Online Stock</label>
+                  <input
+                    className="input"
+                    type="number" min="0" step="1"
+                    value={form.onlineStock ?? 0}
+                    onChange={e => set('onlineStock', parseInt(e.target.value) || 0)}
+                  />
+                </div>
+                <div>
+                  <label className="label">Onsite Stock</label>
+                  <input
+                    className="input"
+                    type="number" min="0" step="1"
+                    value={form.onsiteStock ?? 0}
+                    onChange={e => set('onsiteStock', parseInt(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+
+              {/* ── Online Price + Shipping ── */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="label">
+                    Online Price ($)
+                    <span className="text-xs font-normal text-gray-400 ml-1">(optional)</span>
+                  </label>
+                  <input
+                    className="input"
+                    type="number" min="0" step="0.01"
+                    placeholder={`Same as base ($${form.price})`}
+                    value={form.onlinePrice ?? ''}
+                    onChange={e => set('onlinePrice', e.target.value ? parseFloat(e.target.value) : undefined)}
+                  />
+                </div>
+                <div>
+                  <label className="label">
+                    Weight (oz)
+                    <span className="text-xs font-normal text-gray-400 ml-1">(optional)</span>
+                  </label>
+                  <input
+                    className="input"
+                    type="number" min="0" step="0.1"
+                    value={form.weight ?? ''}
+                    onChange={e => set('weight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                    placeholder="16"
+                  />
+                </div>
+                <div>
+                  <label className="label">Shipping Class</label>
+                  <select className="input" value={form.shippingClass ?? 'standard'} onChange={e => set('shippingClass', e.target.value)}>
+                    {SHIPPING_CLASSES.map(c => <option key={c} value={c}>{cap(c)}</option>)}
+                  </select>
                 </div>
               </div>
 
