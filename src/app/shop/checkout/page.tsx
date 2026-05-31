@@ -26,7 +26,9 @@ type Rate = {
   price: number; days: number | null; currency: string
 }
 
-const SQUARE_SCRIPT_URL = process.env.NODE_ENV === 'production'
+// Use NEXT_PUBLIC_SQUARE_ENVIRONMENT to pick the right SDK script.
+// NODE_ENV is always 'production' on Vercel, so we can't use it here.
+const SQUARE_SCRIPT_URL = process.env.NEXT_PUBLIC_SQUARE_ENVIRONMENT === 'production'
   ? 'https://web.squarecdn.com/v1/square.js'
   : 'https://sandbox.web.squarecdn.com/v1/square.js'
 
