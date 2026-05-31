@@ -50,19 +50,20 @@ export default function AboutPage() {
             <div>
               <div className="relative rounded-3xl overflow-hidden h-[560px] shadow-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=800&q=80"
-                  alt="Maytee at work in her garden"
-                  fill className="object-cover"
+                  src="/images/maytee-about.jpg"
+                  alt="Maytee examining a plant at her nursery"
+                  unoptimized
+                  fill className="object-cover object-top"
                 />
               </div>
               <div className="mt-4 grid grid-cols-3 gap-3">
                 {[
-                  'https://images.unsplash.com/photo-1598880940371-c756e015fea1?auto=format&fit=crop&w=400&q=70',
-                  'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=400&q=70',
-                  'https://images.unsplash.com/photo-1534710961216-75c88202f43e?auto=format&fit=crop&w=400&q=70',
+                  '/gallery/project-nighttime-tropical-garden-1.jpg',
+                  '/gallery/project-lakeside-garden-black-swans-1.jpg',
+                  '/gallery/project-gray-house-tropical-makeover-1.jpg',
                 ].map((src, i) => (
                   <div key={i} className="relative h-24 rounded-xl overflow-hidden">
-                    <Image src={src} alt="" fill className="object-cover" />
+                    <Image src={src} alt="" unoptimized fill className="object-cover" />
                   </div>
                 ))}
               </div>

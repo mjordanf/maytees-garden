@@ -13,17 +13,33 @@ export const metadata: Metadata = {
 export default async function GalleryPage() {
   const gallery = await prisma.galleryItem.findMany({ orderBy: { sortOrder: 'asc' } })
 
-  // Extra placeholder items in case DB is sparse
-  const extraImages = [
-    { id: 'p1', imageUrl: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=1200&q=80', captionEn: 'Brickell Rooftop Garden', category: 'commercial' },
-    { id: 'p2', imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80', captionEn: 'Palmetto Bay Backyard Oasis', category: 'residential' },
-    { id: 'p3', imageUrl: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=1200&q=80', captionEn: 'Coconut Grove Side Garden', category: 'residential' },
-    { id: 'p4', imageUrl: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1200&q=80', captionEn: 'Doral Commercial Entrance', category: 'commercial' },
-    { id: 'p5', imageUrl: 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?auto=format&fit=crop&w=1200&q=80', captionEn: 'Sunset Islands Front Yard', category: 'residential' },
-    { id: 'p6', imageUrl: 'https://images.unsplash.com/photo-1508022713622-df2d8fb7b4cd?auto=format&fit=crop&w=1200&q=80', captionEn: 'Hialeah Tropical Garden', category: 'residential' },
+  const realPhotos = [
+    { id: 'r1',  imageUrl: '/gallery/project-nighttime-tropical-garden-1.jpg',       captionEn: 'Evening Garden Installation — Miami',               captionEs: 'Instalación de Jardín Nocturno — Miami',              category: 'residential' },
+    { id: 'r2',  imageUrl: '/gallery/project-white-mansion-bougainvillea-1.jpg',      captionEn: 'Coral Gables Estate — Bougainvillea Entrance',       captionEs: 'Finca en Coral Gables — Entrada de Buganvilla',       category: 'residential' },
+    { id: 'r3',  imageUrl: '/gallery/project-curved-brick-path-1.jpg',               captionEn: 'Curved Brick Pathway with Tropical Border',          captionEs: 'Camino de Ladrillo con Borde Tropical',               category: 'residential' },
+    { id: 'r4',  imageUrl: '/gallery/project-red-bromeliads-path-1.jpg',             captionEn: 'Red Bromeliads Along Garden Path',                   captionEs: 'Bromelias Rojas a lo Largo del Sendero',              category: 'residential' },
+    { id: 'r5',  imageUrl: '/gallery/project-mediterranean-house-awnings-1.jpg',     captionEn: 'Mediterranean-Style Residence — Pinecrest',          captionEs: 'Residencia de Estilo Mediterráneo — Pinecrest',       category: 'residential' },
+    { id: 'r6',  imageUrl: '/gallery/project-bromeliad-succulent-garden-1.jpg',      captionEn: 'Bromeliad & Succulent Garden Bed',                   captionEs: 'Jardín de Bromelias y Suculentas',                    category: 'residential' },
+    { id: 'r7',  imageUrl: '/gallery/nursery-orchids-driftwood-display-1.jpg',       captionEn: 'Orchid Driftwood Display — Maytee\'s Garden Center', captionEs: 'Exhibición de Orquídeas en Madera — Vivero',          category: 'nursery' },
+    { id: 'r8',  imageUrl: '/gallery/project-tree-base-bromeliads-black-rocks-1.jpg',captionEn: 'Tree Base Planting with River Rocks',                captionEs: 'Plantación en Base de Árbol con Rocas de Río',        category: 'residential' },
+    { id: 'r9',  imageUrl: '/gallery/project-lakeside-garden-black-swans-1.jpg',     captionEn: 'Lakeside Garden — Bromeliads & Black Swans',         captionEs: 'Jardín Lacustre — Bromelias y Cisnes Negros',         category: 'residential' },
+    { id: 'r10', imageUrl: '/gallery/project-tropical-waterfall-patio-1.jpg',        captionEn: 'Tropical Waterfall & Stone Patio',                   captionEs: 'Cascada Tropical y Patio de Piedra',                  category: 'residential' },
+    { id: 'r11', imageUrl: '/gallery/project-jasmine-pathway-lush-1.jpg',            captionEn: 'Jasmine-Lined Garden Pathway',                       captionEs: 'Sendero de Jardín con Jazmín',                        category: 'residential' },
+    { id: 'r12', imageUrl: '/gallery/project-purple-vine-arbor-path-1.jpg',          captionEn: 'Purple Vine Arbor — Coral Gables',                   captionEs: 'Pérgola con Enredadera Morada — Coral Gables',        category: 'residential' },
+    { id: 'r13', imageUrl: '/gallery/project-spanish-house-fountain-formal-1.jpg',   captionEn: 'Spanish Colonial — Formal Fountain Garden',          captionEs: 'Colonial Español — Jardín Formal con Fuente',         category: 'residential' },
+    { id: 'r14', imageUrl: '/gallery/project-tiki-hut-tropical-pond-1.jpg',          captionEn: 'Tiki Hut Overlooking Tropical Pond',                 captionEs: 'Cabaña con Vista al Estanque Tropical',               category: 'residential' },
+    { id: 'r15', imageUrl: '/gallery/project-garden-swing-pergola-flowers-1.jpg',    captionEn: 'Garden Swing Pergola with Flowering Vines',          captionEs: 'Pérgola con Columpio y Enredaderas Floridas',         category: 'residential' },
+    { id: 'r16', imageUrl: '/gallery/project-gray-house-tropical-makeover-1.jpg',    captionEn: 'Front Yard Transformation — Kendall',                captionEs: 'Transformación de Jardín Delantero — Kendall',        category: 'residential' },
+    { id: 'r17', imageUrl: '/gallery/project-gray-house-sea-grape-tree-1.jpg',       captionEn: 'Sea Grape Tree Landscape — Kendall',                 captionEs: 'Paisajismo con Uva de Mar — Kendall',                 category: 'residential' },
+    { id: 'r18', imageUrl: '/gallery/project-waterfall-pond-garden-1.jpg',           captionEn: 'Waterfall & Koi Pond Installation',                  captionEs: 'Instalación de Cascada y Estanque Koi',               category: 'residential' },
+    { id: 'r19', imageUrl: '/gallery/project-poolside-tropical-garden-1.jpg',        captionEn: 'Poolside Tropical Garden — Doral',                   captionEs: 'Jardín Tropical junto a la Piscina — Doral',          category: 'residential' },
+    { id: 'r20', imageUrl: '/gallery/project-front-yard-palms-formal-1.jpg',         captionEn: 'Formal Front Yard with Royal Palms',                 captionEs: 'Jardín Delantero Formal con Palmas Reales',           category: 'residential' },
+    { id: 'r21', imageUrl: '/gallery/nursery-bromeliads-sago-palm-1.jpg',            captionEn: 'Maytee\'s Garden Center — Plant Selection',          captionEs: 'Centro de Jardín de Maytee — Selección de Plantas',   category: 'nursery' },
+    { id: 'r22', imageUrl: '/gallery/media-tv-appearance-1.jpg',                     captionEn: 'Maytee on Local Television — Garden Expert',         captionEs: 'Maytee en Televisión Local — Experta en Jardines',    category: 'media' },
+    { id: 'r23', imageUrl: '/gallery/maytee-nursery-overalls-full-body-1.jpg',       captionEn: 'Maytee at the Nursery',                              captionEs: 'Maytee en el Vivero',                                 category: 'nursery' },
   ]
 
-  const allItems = [...gallery, ...extraImages.filter(e => !gallery.find(g => g.imageUrl === e.imageUrl))]
+  const allItems = [...gallery, ...realPhotos.filter(r => !gallery.find(g => g.imageUrl === r.imageUrl))]
 
   return (
     <div className="pt-20 bg-cream">
@@ -42,6 +58,7 @@ export default async function GalleryPage() {
                 <Image
                   src={item.imageUrl}
                   alt={item.captionEn ?? 'Garden project'}
+                  unoptimized
                   fill className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

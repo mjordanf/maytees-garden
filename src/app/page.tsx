@@ -223,9 +223,10 @@ export default async function HomePage() {
             <div className="relative">
               <div className="relative rounded-3xl overflow-hidden h-96 lg:h-[520px] shadow-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1585320806297-9794b3e4aaae?auto=format&fit=crop&w=800&q=80"
-                  alt="Maytee in her garden"
-                  fill className="object-cover"
+                  src="/images/maytee-about.jpg"
+                  alt="Maytee at her garden center"
+                  unoptimized
+                  fill className="object-cover object-top"
                 />
               </div>
               <div className="absolute -bottom-6 -right-6 bg-terra-500 text-white rounded-2xl p-5 shadow-xl max-w-[200px]">
