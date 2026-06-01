@@ -7,12 +7,15 @@ import {
   sendBookingConfirmedInPerson, sendBookingConfirmedVideo, sendBookingUpdated,
   sendBookingCancelledNotice,
 } from '@/lib/email'
+import {
+  createCalendarEvent, updateCalendarEvent, deleteCalendarEvent,
+} from '@/lib/microsoft-graph'
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   const body    = await req.json()
 
-  const { serviceId, appointmentDate, clientName, clientEmail, clientPhone, zipCode, notes, meetingPreference } = body
+  const { serviceId, appointmentDate, clientName, clientEmail, clientPhone, zipCode, notes, meetingPreference, slotDate, slotStart, slotEnd } = body
 
   if (!clientName || !clientEmail || !appointmentDate) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -30,6 +33,9 @@ export async function POST(req: NextRequest) {
       clientName, clientEmail, clientPhone, zipCode, notes,
       customerPreference: meetingPreference || 'in-person',
       status: 'pending',
+      slotDate:  slotDate  ? new Date(slotDate) : null,
+      slotStart: slotStart ?? null,
+      slotEnd:   slotEnd   ?? null,
     },
   })
 
@@ -139,10 +145,53 @@ export async function PATCH(req: NextRequest) {
       } else {
         sendBookingConfirmedInPerson(opts).catch(() => {})
       }
+      // Calendar sync — create event
+      try {
+        const calBookingData = {
+          clientName:      booking.clientName,
+          clientEmail:     booking.clientEmail,
+          clientPhone:     booking.clientPhone,
+          serviceName:     booking.service?.nameEn ?? 'Garden Consultation',
+          consultationType: booking.consultationType,
+          videoCallLink:   booking.videoCallLink,
+          appointmentDate: booking.appointmentDate,
+          slotEnd:         booking.slotEnd,
+          notes:           booking.notes,
+          consultationNotes: booking.consultationNotes,
+          zipCode:         booking.zipCode,
+        }
+        const eventId = await createCalendarEvent(calBookingData)
+        if (eventId) {
+          await prisma.booking.update({ where: { id }, data: { calendarEventId: eventId, calendarSynced: true } })
+        }
+      } catch (calErr) {
+        console.error('[bookings] calendar sync failed on confirm:', calErr)
+      }
     }
     // Already confirmed, details changed
     else if (prev.status === 'confirmed' && status === undefined && (consultationType !== undefined || videoCallLink !== undefined)) {
       sendBookingUpdated({ ...opts, consultationType: type, videoCallLink: booking.videoCallLink }).catch(() => {})
+      // Calendar sync — update event
+      if (prev.calendarEventId) {
+        try {
+          const calBookingData = {
+            clientName:      booking.clientName,
+            clientEmail:     booking.clientEmail,
+            clientPhone:     booking.clientPhone,
+            serviceName:     booking.service?.nameEn ?? 'Garden Consultation',
+            consultationType: booking.consultationType,
+            videoCallLink:   booking.videoCallLink,
+            appointmentDate: booking.appointmentDate,
+            slotEnd:         booking.slotEnd,
+            notes:           booking.notes,
+            consultationNotes: booking.consultationNotes,
+            zipCode:         booking.zipCode,
+          }
+          await updateCalendarEvent(prev.calendarEventId, calBookingData)
+        } catch (calErr) {
+          console.error('[bookings] calendar sync failed on update:', calErr)
+        }
+      }
     }
     // Customer cancelled
     else if (status === 'cancelled' && prev.status !== 'cancelled') {
@@ -152,6 +201,14 @@ export async function PATCH(req: NextRequest) {
         serviceName:     booking.service?.nameEn ?? 'Garden Consultation',
         appointmentDate: booking.appointmentDate,
       }).catch(() => {})
+      // Calendar sync — delete event
+      if (prev.calendarEventId) {
+        try {
+          await deleteCalendarEvent(prev.calendarEventId)
+        } catch (calErr) {
+          console.error('[bookings] calendar sync failed on cancel:', calErr)
+        }
+      }
     }
   }
 

@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
-import { Calendar, Clock, MapPin, Video } from 'lucide-react'
+import { Calendar, Clock, MapPin, Video, CalendarPlus } from 'lucide-react'
 import { formatDate, formatTime } from '@/lib/utils'
 import MessageMayteeButton from './MessageMayteeButton'
 import CancelBookingButton from './CancelBookingButton'
@@ -65,6 +65,18 @@ export default async function AppointmentsPage() {
                         <h3 className="font-semibold text-green-800">{b.service?.nameEn ?? 'Garden Consultation'}</h3>
                         <span className={`badge text-xs shrink-0 ${STATUS_STYLES[b.status]}`}>{b.status}</span>
                       </div>
+                      {/* Slot date/time if set */}
+                      {b.slotDate && b.slotStart ? (
+                        <p className="text-sm font-semibold text-green-700 mt-1">
+                          {new Date(b.slotDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })} at {
+                            (() => {
+                              const [h, m] = b.slotStart.split(':').map(Number)
+                              const p = h >= 12 ? 'PM' : 'AM'
+                              return `${h % 12 || 12}:${m.toString().padStart(2,'0')} ${p}`
+                            })()
+                          }
+                        </p>
+                      ) : null}
                       <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-400">
                         <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{formatTime(b.appointmentDate)}</span>
                         {(!b.consultationType || b.consultationType === 'in-person') && (
@@ -102,6 +114,13 @@ export default async function AppointmentsPage() {
                       <div className="mt-3 flex flex-wrap gap-2">
                         <MessageMayteeButton bookingId={b.id} />
                         <CancelBookingButton bookingId={b.id} status={b.status} />
+                        <a
+                          href={`/api/appointments/${b.id}/ics`}
+                          className="inline-flex items-center gap-1.5 text-xs border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg hover:border-green-400 hover:text-green-700 transition-colors font-medium"
+                        >
+                          <CalendarPlus className="w-3 h-3" />
+                          Add to Calendar
+                        </a>
                       </div>
                     </div>
                   </div>
