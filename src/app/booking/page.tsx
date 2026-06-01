@@ -27,7 +27,7 @@ export default function BookingPage() {
 
   const [availableDates, setAvailableDates] = useState<Record<string, Slot[]>>({})
   const [loadingSlots, setLoadingSlots]     = useState(false)
-  const [selectedSlot, setSelectedSlot]     = useState<{ date: string; start: string; end: string } | null>(null)
+  const [selectedSlot, setSelectedSlot]     = useState<{ date: string; start: string; end: string; type: string } | null>(null)
 
   const [serviceId, setServiceId] = useState('')
   const [services, setServices]   = useState<Service[]>([])
@@ -85,13 +85,17 @@ export default function BookingPage() {
   const selectDate = (d: number) => {
     const key = getDateKey(d)
     if (availableDates[key]) {
-      setSelectedSlot(prev => (prev?.date === key && !prev.start) ? null : { date: key, start: '', end: '' })
+      setSelectedSlot(prev => (prev?.date === key && !prev.start) ? null : { date: key, start: '', end: '', type: 'both' })
     }
   }
 
   const selectSlot = (slot: Slot) => {
     const dateKey = selectedSlot?.date ?? ''
-    setSelectedSlot({ date: dateKey, start: slot.start, end: slot.end })
+    setSelectedSlot({ date: dateKey, start: slot.start, end: slot.end, type: slot.type })
+    // Auto-set default meeting preference based on slot type
+    if (slot.type === 'in-person') setMeetingPreference('in-person')
+    else if (slot.type === 'video') setMeetingPreference('facetime')
+    // 'both' keeps current preference
   }
 
   const selectedDateSlots = selectedSlot?.date ? (availableDates[selectedSlot.date] ?? []) : []
@@ -259,11 +263,14 @@ export default function BookingPage() {
               <h2 className="font-serif text-xl font-bold text-green-800 mb-4">How would you prefer to meet?</h2>
               <div className="space-y-2">
                 {[
-                  { value: 'in-person',   label: '🏡 In-Person Visit' },
-                  { value: 'facetime',    label: '📱 FaceTime' },
-                  { value: 'whatsapp',    label: '💬 WhatsApp Video' },
-                  { value: 'google-meet', label: '🎥 Google Meet' },
-                ].map(opt => (
+                  { value: 'in-person',   label: '🏡 In-Person Visit',  showFor: ['in-person', 'both'] },
+                  { value: 'facetime',    label: '📱 FaceTime',          showFor: ['video', 'both'] },
+                  { value: 'whatsapp',    label: '💬 WhatsApp Video',    showFor: ['video', 'both'] },
+                  { value: 'google-meet', label: '🎥 Google Meet',       showFor: ['video', 'both'] },
+                ].filter(opt => {
+                  const slotType = selectedSlot?.type ?? 'both'
+                  return opt.showFor.includes(slotType)
+                }).map(opt => (
                   <label
                     key={opt.value}
                     className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer border-2 transition-all ${
@@ -281,10 +288,12 @@ export default function BookingPage() {
                     <span className="text-sm text-gray-700">{opt.label}</span>
                   </label>
                 ))}
-                <div className="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 opacity-50 cursor-not-allowed">
-                  <input type="radio" disabled className="text-gray-300" />
-                  <span className="text-sm text-gray-400">Microsoft Teams — coming soon</span>
-                </div>
+                {(selectedSlot?.type ?? 'both') !== 'in-person' && (
+                  <div className="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 opacity-50 cursor-not-allowed">
+                    <input type="radio" disabled className="text-gray-300" />
+                    <span className="text-sm text-gray-400">Microsoft Teams — coming soon</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
