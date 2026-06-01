@@ -1,0 +1,3114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maytee's Garden Center — Feature Tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1f18;
+  --green: #2d6a4f;
+  --green-mid: #40916c;
+  --terra: #bc4b35;
+  --cream: #f5f0e8;
+  --sand: #d5c9b0;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  margin: 0;
+  background: #0d1f18;
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+#presentation {
+  width: 100vw;
+  height: calc(100vh - 52px);
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 38% 62%;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+.slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.slide-left {
+  background: #0d1f18;
+  color: var(--cream);
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  overflow-y: auto;
+}
+
+.slide-right {
+  background: #f5f0e8;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.slide-right.dark-bg {
+  background: #1a1a1a;
+}
+
+/* DIVIDER SLIDES */
+.slide-divider {
+  grid-template-columns: 1fr;
+}
+.slide-divider .divider-content {
+  background: radial-gradient(ellipse at center, #1a3a28 0%, #0d1f18 70%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: white;
+  padding: 3rem;
+}
+
+.slide-divider-dark .divider-content {
+  background: radial-gradient(ellipse at center, #1a1a3e 0%, #0d0d0d 70%);
+}
+
+/* Controls */
+#controls {
+  height: 52px;
+  background: #061410;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  color: #d5c9b0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+}
+#controls button {
+  background: #2d6a4f;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+}
+#controls button:hover { background: #40916c; }
+#counter { min-width: 80px; text-align: center; font-size: 0.85rem; font-family: 'DM Sans', sans-serif; }
+
+/* Progress bar */
+#progress-bar {
+  position: fixed;
+  bottom: 52px;
+  left: 0;
+  height: 3px;
+  background: #bc4b35;
+  transition: width 0.35s ease;
+  z-index: 100;
+}
+
+/* LEFT PANEL TEXT COMPONENTS */
+.slide-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(213,201,176,0.5);
+  margin-bottom: 0.5rem;
+}
+.slide-section {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #bc4b35;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.slide-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #f5f0e8;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+.slide-desc {
+  font-size: 0.85rem;
+  color: rgba(245,240,232,0.8);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.slide-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  counter-reset: step;
+}
+.slide-steps li {
+  padding: 0.3rem 0;
+  font-size: 0.8rem;
+  color: rgba(245,240,232,0.75);
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.5;
+}
+.slide-steps li::before {
+  content: counter(step);
+  counter-increment: step;
+  position: absolute;
+  left: 0;
+  color: #40916c;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.tip-box {
+  background: rgba(45,106,79,0.3);
+  border: 1px solid rgba(45,106,79,0.5);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-top: auto;
+  font-size: 0.78rem;
+  color: rgba(245,240,232,0.9);
+  line-height: 1.5;
+}
+.tip-box strong { color: #74c69d; }
+
+/* MOCKUP COMPONENTS */
+.mock-navbar {
+  background: white;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin-bottom: 0.75rem;
+  font-size: 0.73rem;
+}
+.mock-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  margin-bottom: 0.75rem;
+}
+.mock-card-dark {
+  background: #252525;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+  margin-bottom: 0.75rem;
+  color: #e5e5e5;
+}
+.mock-btn {
+  display: inline-block;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: default;
+  font-family: 'DM Sans', sans-serif;
+}
+.mock-btn-green { background: #2d6a4f; color: white; }
+.mock-btn-terra { background: #bc4b35; color: white; }
+.mock-btn-outline { border: 2px solid #2d6a4f; color: #2d6a4f; background: transparent; }
+.mock-btn-amber { background: #d97706; color: white; }
+.mock-btn-blue { background: #1d4ed8; color: white; }
+.mock-btn-sm { padding: 0.25rem 0.6rem; font-size: 0.68rem; }
+.mock-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+.badge-green { background: #d8f3dc; color: #2d6a4f; }
+.badge-red { background: #fee2e2; color: #dc2626; }
+.badge-amber { background: #fef3c7; color: #92400e; }
+.badge-blue { background: #dbeafe; color: #1d4ed8; }
+.badge-gray { background: #f3f4f6; color: #6b7280; }
+.badge-purple { background: #ede9fe; color: #7c3aed; }
+.badge-amber-dark { background: #92400e; color: #fef3c7; }
+.mock-input {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+  width: 100%;
+  color: #374151;
+  font-family: 'DM Sans', sans-serif;
+  background: white;
+}
+.mock-input-dark {
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+  width: 100%;
+  color: #e5e5e5;
+  font-family: 'DM Sans', sans-serif;
+  background: #333;
+}
+.mock-sidebar {
+  background: #1a3a28;
+  width: 180px;
+  min-height: 400px;
+  border-radius: 12px;
+  padding: 1rem;
+  color: white;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+.mock-sidebar-dark {
+  background: #1a1a1a;
+  width: 190px;
+  min-height: 400px;
+  border-radius: 12px;
+  padding: 1rem;
+  color: #e5e5e5;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  border: 1px solid #333;
+}
+.mock-sidebar-item {
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.25rem;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.mock-sidebar-item.active {
+  background: rgba(255,255,255,0.15);
+}
+.mock-sidebar-item.active-dark {
+  background: rgba(255,255,255,0.1);
+}
+.plant-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.plant-card-img {
+  height: 80px;
+  background: linear-gradient(135deg, #2d6a4f, #40916c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.plant-card-body {
+  padding: 0.5rem;
+  font-size: 0.72rem;
+}
+
+/* Leaf SVG icon utility */
+.leaf-icon {
+  opacity: 0.5;
+}
+
+/* COVER SLIDE ANIMATION */
+@keyframes sway {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+.botanical-leaf {
+  animation: sway 4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* Table styles for mockups */
+.mock-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.73rem;
+}
+.mock-table th {
+  background: #f9fafb;
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+.mock-table td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+  vertical-align: middle;
+}
+.mock-table tr:hover td { background: #fafafa; }
+.mock-table-dark {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.73rem;
+}
+.mock-table-dark th {
+  background: #2a2a2a;
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  font-weight: 600;
+  color: #aaa;
+  border-bottom: 1px solid #333;
+}
+.mock-table-dark td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid #2a2a2a;
+  color: #ddd;
+  vertical-align: middle;
+}
+
+/* Divider list style */
+.divider-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0 0;
+  text-align: left;
+  display: inline-block;
+}
+.divider-list li {
+  padding: 0.3rem 0;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.75);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.divider-list li span.num {
+  color: #40916c;
+  font-weight: 600;
+  font-size: 0.8rem;
+  min-width: 1.5rem;
+}
+
+/* Progress steps */
+.progress-steps {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1rem;
+  font-size: 0.72rem;
+}
+.progress-step {
+  flex: 1;
+  text-align: center;
+  padding: 0.4rem 0.3rem;
+  background: #e5e7eb;
+  color: #6b7280;
+  font-weight: 500;
+  position: relative;
+}
+.progress-step:first-child { border-radius: 6px 0 0 6px; }
+.progress-step:last-child { border-radius: 0 6px 6px 0; }
+.progress-step.active {
+  background: #2d6a4f;
+  color: white;
+}
+.progress-step.done {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* Chat bubble */
+.chat-bubble-float {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #2d6a4f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  cursor: default;
+}
+
+/* Calendar */
+.mini-calendar {
+  background: white;
+  border-radius: 10px;
+  padding: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #111;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  font-size: 0.68rem;
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: default;
+}
+.cal-day.header { color: #6b7280; font-weight: 600; }
+.cal-day.available { color: #2d6a4f; font-weight: 600; cursor: pointer; }
+.cal-day.available:hover { background: #d8f3dc; }
+.cal-day.selected { background: #2d6a4f; color: white; border-radius: 50%; }
+.cal-day.unavailable { color: #d1d5db; }
+.cal-day.today { border: 1px solid #2d6a4f; color: #2d6a4f; }
+.cal-day.blocked { color: #fca5a5; text-decoration: line-through; }
+
+/* Step indicator dots */
+.step-dots {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #e5e7eb;
+  color: #9ca3af;
+}
+.step-dot.active { background: #2d6a4f; color: white; }
+.step-dot.done { background: #d1fae5; color: #065f46; }
+.step-dot-label {
+  font-size: 0.65rem;
+  color: #6b7280;
+  margin-top: 0.15rem;
+  text-align: center;
+}
+
+/* Info tile */
+.info-tile {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.72rem;
+  color: #374151;
+  flex: 1;
+  text-align: center;
+}
+.info-tile strong { display: block; font-size: 0.65rem; color: #6b7280; margin-bottom: 0.2rem; font-weight: 500; }
+
+/* Stat card */
+.stat-card {
+  background: white;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  flex: 1;
+}
+.stat-card-dark {
+  background: #252525;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  flex: 1;
+}
+.stat-number { font-size: 1.4rem; font-weight: 700; color: #111; }
+.stat-number-dark { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; }
+.stat-label { font-size: 0.7rem; color: #6b7280; margin-top: 0.1rem; }
+.stat-label-dark { font-size: 0.7rem; color: #888; margin-top: 0.1rem; }
+
+/* Email table */
+.email-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+}
+.email-table th {
+  background: #2d6a4f;
+  color: white;
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  font-weight: 600;
+}
+.email-table td {
+  padding: 0.4rem 0.7rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+}
+.email-table tr:nth-child(even) td { background: #f9fafb; }
+
+/* Form row utility */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.form-group {
+  margin-bottom: 0.5rem;
+}
+.form-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.2rem;
+  display: block;
+}
+.form-label-dark {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #aaa;
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+/* Cover slide */
+.cover-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: linear-gradient(160deg, #0d1f18 0%, #1a3a28 50%, #0d1f18 100%);
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Inbox message card */
+.inbox-card {
+  background: white;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.4rem;
+  border-left: 3px solid transparent;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+  font-size: 0.73rem;
+}
+.inbox-card.unread { border-left-color: #2d6a4f; }
+.inbox-card .inbox-subject { font-weight: 600; color: #111; }
+.inbox-card .inbox-meta { color: #6b7280; margin-top: 0.15rem; font-size: 0.68rem; }
+
+/* Rate card */
+.rate-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  cursor: default;
+  background: white;
+}
+.rate-card.selected { border-color: #2d6a4f; background: #f0fdf4; }
+
+/* Slot time buttons */
+.slot-btn {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.73rem;
+  cursor: default;
+  background: white;
+  color: #374151;
+  display: inline-block;
+  margin: 0.15rem;
+}
+.slot-btn.selected { border-color: #2d6a4f; background: #2d6a4f; color: white; }
+.slot-btn.unavailable { background: #f9fafb; color: #d1d5db; text-decoration: line-through; }
+
+/* Availability grid */
+.avail-row {
+  display: grid;
+  grid-template-columns: 70px 40px 80px 80px 70px 90px;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.72rem;
+}
+.avail-toggle {
+  width: 32px;
+  height: 18px;
+  border-radius: 9px;
+  background: #2d6a4f;
+  position: relative;
+  cursor: default;
+}
+.avail-toggle::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+}
+.avail-toggle.off {
+  background: #d1d5db;
+}
+.avail-toggle.off::after {
+  right: auto;
+  left: 2px;
+}
+
+/* Flow diagram */
+.flow-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.flow-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2d6a4f;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.flow-step-body {
+  background: white;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.73rem;
+  color: #374151;
+  flex: 1;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+}
+.flow-arrow {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 1rem;
+  margin: -0.3rem 0 -0.3rem 0.9rem;
+}
+</style>
+</head>
+<body>
+
+<div id="presentation">
+
+<!-- ============================================================ -->
+<!-- SLIDE 1: COVER -->
+<!-- ============================================================ -->
+<div class="slide active" id="slide-1">
+  <div class="slide-left" style="justify-content: center; gap: 1rem;">
+    <div class="slide-label">Complete Feature Tour · 2026</div>
+    <h1 class="slide-heading" style="font-size: 2rem; line-height: 1.15;">Maytee's Garden Center</h1>
+    <p class="slide-desc" style="font-size: 0.95rem;">A production walkthrough of all 32 screens, 3 portals, and 6 integrated services powering Miami's boutique garden center.</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+      <span class="mock-badge badge-green">✓ 30 User Flows</span>
+      <span class="mock-badge badge-blue">3 Portals</span>
+      <span class="mock-badge badge-amber">6 Services</span>
+    </div>
+    <a style="font-size: 0.78rem; color: #74c69d; text-decoration: none;">🔗 maytees-garden.vercel.app</a>
+    <div class="tip-box" style="margin-top: 1.5rem;">
+      <strong>Navigation:</strong> Use ← → arrow keys or Space to advance. Press <strong>A</strong> to toggle 7-second autoplay. Click ▶ Auto in the controls bar below.
+    </div>
+  </div>
+  <div class="slide-right cover-brand" style="background: linear-gradient(160deg, #0d1f18 0%, #1a3a28 50%, #0d1f18 100%);">
+    <!-- Leaf logo -->
+    <div style="margin-bottom: 1.5rem;">
+      <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+        <circle cx="45" cy="45" r="44" fill="#2d6a4f" stroke="#40916c" stroke-width="1.5"/>
+        <path class="botanical-leaf" d="M45 68 C45 68 25 55 25 38 C25 25 35 18 45 18 C55 18 65 25 65 38 C65 55 45 68 45 68Z" fill="#74c69d" opacity="0.9"/>
+        <path d="M45 68 L45 30" stroke="#1a3a28" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M45 50 C38 45 30 42 28 36" stroke="#1a3a28" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+        <path d="M45 42 C52 37 60 34 62 28" stroke="#1a3a28" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+    </div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; color: #f5f0e8; line-height: 1.1; margin-bottom: 0.4rem;">Maytee's</div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; color: #d5c9b0; letter-spacing: 0.15em; margin-bottom: 2rem; text-transform: uppercase;">Garden Center</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; width: 100%; max-width: 320px; margin-bottom: 1rem;">
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">Next.js 14</div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">PostgreSQL</div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">Square Pay</div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">Shippo</div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">Resend</div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">MS Graph</div>
+    </div>
+    <div style="font-size: 0.75rem; color: rgba(213,201,176,0.5);">Miami, FL · 2026 · mayteesgardencenter.com</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2: PART 1 DIVIDER -->
+<!-- ============================================================ -->
+<div class="slide slide-divider" id="slide-2">
+  <div class="divider-content">
+    <div style="font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: #74c69d; margin-bottom: 0.75rem;">Part 1 of 3</div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 700; color: #f5f0e8; margin-bottom: 1rem;">Customer Flows</div>
+    <div style="width: 60px; height: 2px; background: #bc4b35; margin: 0 auto 1.5rem;"></div>
+    <ul class="divider-list" style="columns: 2; gap: 2rem;">
+      <li><span class="num">01</span> Public Website Navigation</li>
+      <li><span class="num">02</span> AI Chat Widget</li>
+      <li><span class="num">03</span> Account Creation</li>
+      <li><span class="num">04</span> Login</li>
+      <li><span class="num">05</span> Plant Catalog Browse</li>
+      <li><span class="num">06</span> Plant Detail Modal</li>
+      <li><span class="num">07</span> Shopping Cart</li>
+      <li><span class="num">08</span> Checkout: Shipping Info</li>
+      <li><span class="num">09</span> Checkout: Shipping Method</li>
+      <li><span class="num">10</span> Checkout: Payment</li>
+      <li><span class="num">11</span> Order Confirmation</li>
+      <li><span class="num">12</span> Book a Consultation</li>
+      <li><span class="num">13</span> Customer Portal</li>
+      <li><span class="num">14</span> Appointments & Messaging</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 3: PUBLIC WEBSITE NAVIGATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-3">
+  <div class="slide-left">
+    <div class="slide-label">Slide 3 · Customer Flow 01</div>
+    <div class="slide-section">Public Website</div>
+    <h2 class="slide-heading">Public Website Navigation</h2>
+    <p class="slide-desc">The public-facing site at <strong style="color:#74c69d;">maytees-garden.vercel.app</strong> — no login required. Five main nav sections plus a hero, featured plant cards, and services overview.</p>
+    <ul class="slide-steps">
+      <li>Navbar: logo, Plants · Services · Gallery · About · Contact links</li>
+      <li>Cart icon with live item count badge, Sign In button</li>
+      <li>Hero: dark green section with headline, two CTA buttons</li>
+      <li>Featured plants grid — 3-column on desktop</li>
+      <li>Footer: address 15196 SW 184th St, Miami FL 33187, phone, hours</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Bilingual:</strong> Language toggle (EN/ES) lives in the customer portal settings — not in the public nav. Plant names and descriptions switch based on <code style="color:#74c69d;">User.languagePreference</code>.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <!-- Navbar -->
+    <div class="mock-navbar" style="justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="13" fill="#2d6a4f"/>
+          <path d="M14 21 C14 21 7 17 7 11 C7 7 10 5 14 5 C18 5 21 7 21 11 C21 17 14 21 14 21Z" fill="#74c69d"/>
+          <path d="M14 21 L14 9" stroke="#1a3a28" stroke-width="1" stroke-linecap="round"/>
+        </svg>
+        <span style="font-weight: 700; color: #111; font-size: 0.8rem;">Maytee's <span style="font-weight: 400; color: #6b7280;">Garden Center</span></span>
+      </div>
+      <div style="display: flex; gap: 0.9rem; color: #374151; font-size: 0.72rem;">
+        <span>Plants</span><span>Services</span><span>Gallery</span><span>About</span><span>Contact</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="background: #e5e7eb; border-radius: 99px; padding: 0.1rem 0.5rem; font-size: 0.65rem; font-weight: 600;">ES</span>
+        <span class="mock-btn mock-btn-green" style="font-size: 0.65rem; padding: 0.3rem 0.7rem;">Book Consultation</span>
+        <div style="position: relative; display: inline-block;">
+          <span style="font-size: 1rem;">🛒</span>
+          <span style="position: absolute; top: -4px; right: -6px; background: #bc4b35; color: white; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 700;">2</span>
+        </div>
+        <span style="font-size: 0.9rem;">👤</span>
+      </div>
+    </div>
+    <!-- Hero -->
+    <div style="background: linear-gradient(135deg, #0d1f18, #1a3a28); border-radius: 10px; padding: 2rem 1.5rem; margin-bottom: 0.75rem; text-align: center;">
+      <div style="font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: #74c69d; margin-bottom: 0.4rem;">Miami's Premier Garden Center</div>
+      <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: #f5f0e8; line-height: 1.2; margin-bottom: 0.75rem;">Transform Your Garden Into<br>a Tropical Paradise</div>
+      <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+        <span class="mock-btn mock-btn-terra">Book a Free Consultation</span>
+        <span class="mock-btn mock-btn-outline" style="color: #f5f0e8; border-color: rgba(255,255,255,0.4);">Explore Plants</span>
+      </div>
+    </div>
+    <!-- Featured plants -->
+    <div style="font-size: 0.75rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Featured Plants</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" class="leaf-icon"><path d="M15 26 C15 26 4 19 4 10 C4 4 9 1 15 1 C21 1 26 4 26 10 C26 19 15 26 15 26Z" fill="white" opacity="0.3"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px;" class="mock-badge badge-amber" style="font-size: 0.6rem;">Tropical</span>
+          <span style="position: absolute; top: 4px; right: 4px; font-size: 0.8rem; color: #bc4b35;">♥</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Bougainvillea</div>
+          <div style="color: #6b7280; font-size: 0.65rem; font-style: italic;">Buganvilla</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.3rem;">
+            <span style="font-weight: 700; color: #2d6a4f;">$35.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Add to Cart</span>
+          </div>
+        </div>
+      </div>
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" class="leaf-icon"><path d="M15 26 C15 26 4 19 4 10 C4 4 9 1 15 1 C21 1 26 4 26 10 C26 19 15 26 15 26Z" fill="white" opacity="0.3"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px;" class="mock-badge" style="background: #dbeafe; color: #1d4ed8; font-size: 0.6rem;">Palm</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111;">Bird of Paradise</div>
+          <div style="color: #6b7280; font-size: 0.65rem; font-style: italic;">Ave del Paraíso</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.3rem;">
+            <span style="font-weight: 700; color: #2d6a4f;">$65.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Add to Cart</span>
+          </div>
+        </div>
+      </div>
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" class="leaf-icon"><path d="M15 26 C15 26 4 19 4 10 C4 4 9 1 15 1 C21 1 26 4 26 10 C26 19 15 26 15 26Z" fill="white" opacity="0.3"/></svg>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111;">Monstera Deliciosa</div>
+          <div style="color: #6b7280; font-size: 0.65rem; font-style: italic;">Costilla de Adán</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.3rem;">
+            <span style="font-weight: 700; color: #2d6a4f;">$65.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Add to Cart</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Footer strip -->
+    <div style="background: #0d1f18; border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; color: rgba(245,240,232,0.6);">
+      <span>📍 15196 SW 184th St, Miami FL 33187</span>
+      <span>📞 (786) 227-6616</span>
+      <span>Mon–Sat 9AM–5PM</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: AI CHAT WIDGET -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-4">
+  <div class="slide-left">
+    <div class="slide-label">Slide 4 · Customer Flow 02</div>
+    <div class="slide-section">AI Chat</div>
+    <h2 class="slide-heading">AI Chat Widget</h2>
+    <p class="slide-desc">A floating green chat button in the bottom-right of every page. Click to open a conversation with the AI garden assistant powered by Anthropic Claude.</p>
+    <ul class="slide-steps">
+      <li>Green circle button always visible bottom-right</li>
+      <li>Click opens 300×420px panel with greeting</li>
+      <li>Claude (claude-3-haiku) with South Florida garden context</li>
+      <li>Multi-turn conversation within the session</li>
+      <li>Fires to <code style="color:#74c69d;">/api/chat</code> — graceful error if key missing</li>
+    </ul>
+    <div class="tip-box">
+      <strong>System prompt</strong> includes business context: services, address, Miami climate, plant specialties. Each page load starts fresh — no cross-session memory.
+    </div>
+  </div>
+  <div class="slide-right" style="position: relative; padding: 1.5rem;">
+    <!-- Blurred page bg -->
+    <div style="filter: blur(2px); opacity: 0.4; margin-bottom: 0.5rem;">
+      <div class="mock-navbar" style="justify-content: space-between;">
+        <span style="font-weight: 700; font-size: 0.8rem;">Maytee's Garden Center</span>
+        <div style="display: flex; gap: 0.9rem; color: #374151; font-size: 0.72rem;"><span>Plants</span><span>Services</span><span>Contact</span></div>
+      </div>
+      <div style="background: linear-gradient(135deg, #0d1f18, #1a3a28); border-radius: 10px; padding: 1.5rem; height: 80px;"></div>
+    </div>
+    <!-- Chat panel -->
+    <div style="position: absolute; bottom: 1.5rem; right: 1.5rem; width: 300px;">
+      <!-- Floating button -->
+      <div style="position: absolute; bottom: -10px; right: 0; z-index: 10;">
+        <div class="chat-bubble-float">💬</div>
+      </div>
+      <!-- Chat panel -->
+      <div style="background: white; border-radius: 14px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); overflow: hidden; margin-bottom: 0.5rem;">
+        <!-- Header -->
+        <div style="background: #2d6a4f; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; color: white; font-size: 0.8rem; font-weight: 600;">
+            <span>🌿</span> Garden Assistant
+          </div>
+          <span style="color: rgba(255,255,255,0.7); font-size: 1rem; cursor: default;">×</span>
+        </div>
+        <!-- Messages -->
+        <div style="padding: 0.75rem; height: 230px; overflow-y: auto; background: #f9fafb;">
+          <!-- AI message -->
+          <div style="display: flex; gap: 0.4rem; margin-bottom: 0.6rem;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: #2d6a4f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0;">🌿</div>
+            <div style="background: white; border-radius: 8px; padding: 0.5rem 0.65rem; font-size: 0.72rem; color: #374151; box-shadow: 0 1px 3px rgba(0,0,0,0.07); max-width: 210px; line-height: 1.4;">
+              Hi! I'm Maytee's garden assistant. Ask me anything about plants, services, or Miami gardening!
+            </div>
+          </div>
+          <!-- User message -->
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 0.6rem;">
+            <div style="background: #2d6a4f; border-radius: 8px; padding: 0.5rem 0.65rem; font-size: 0.72rem; color: white; max-width: 200px; line-height: 1.4;">
+              What plants work well in full sun in Miami?
+            </div>
+          </div>
+          <!-- AI response -->
+          <div style="display: flex; gap: 0.4rem; margin-bottom: 0.6rem;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: #2d6a4f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0;">🌿</div>
+            <div style="background: white; border-radius: 8px; padding: 0.5rem 0.65rem; font-size: 0.72rem; color: #374151; box-shadow: 0 1px 3px rgba(0,0,0,0.07); max-width: 210px; line-height: 1.4;">
+              Great question! For full sun in Miami, I'd recommend <strong>Bougainvillea</strong>, <strong>Bird of Paradise</strong>, or <strong>Croton</strong>. All available at Maytee's! Would you like care tips?
+            </div>
+          </div>
+        </div>
+        <!-- Input -->
+        <div style="padding: 0.5rem; background: white; border-top: 1px solid #e5e7eb; display: flex; gap: 0.4rem;">
+          <input class="mock-input" placeholder="Ask about plants or services..." style="flex: 1; font-size: 0.72rem; padding: 0.35rem 0.6rem;">
+          <button style="background: #2d6a4f; color: white; border: none; border-radius: 6px; padding: 0.35rem 0.6rem; cursor: default; font-size: 0.75rem;">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5: ACCOUNT CREATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-5">
+  <div class="slide-left">
+    <div class="slide-label">Slide 5 · Customer Flow 03</div>
+    <div class="slide-section">Authentication</div>
+    <h2 class="slide-heading">Account Creation</h2>
+    <p class="slide-desc">New customers register at <code style="color:#74c69d;">/auth/register</code>. Passwords are bcrypt-hashed server-side. A welcome email fires immediately upon success.</p>
+    <ul class="slide-steps">
+      <li>Full Name, Email, Password (8+ chars), Phone (optional)</li>
+      <li>Newsletter checkbox triggers double opt-in flow</li>
+      <li>On submit: <code style="color:#74c69d;">POST /api/auth/register</code></li>
+      <li>bcrypt hash (rounds: 10) stored — plain text never saved</li>
+      <li>Redirects to <code style="color:#74c69d;">/portal</code> on success</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Welcome email</strong> via Resend fires to new user. If <code style="color:#74c69d;">newsletterOptIn</code> is checked, a <code>NewsletterSubscriber</code> record is created with <code>confirmed: false</code> pending email confirmation.
+    </div>
+  </div>
+  <div class="slide-right" style="display: flex; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 2rem; width: 340px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+      <!-- Logo -->
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" style="margin-bottom: 0.4rem;">
+          <circle cx="22" cy="22" r="21" fill="#2d6a4f"/>
+          <path d="M22 33 C22 33 11 27 11 18 C11 12 16 9 22 9 C28 9 33 12 33 18 C33 27 22 33 22 33Z" fill="#74c69d"/>
+        </svg>
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: #111;">Maytee's Garden Center</div>
+      </div>
+      <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: #111; text-align: center; margin-bottom: 1.25rem;">Create Your Account</h3>
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input class="mock-input" value="Maikel Jordan" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address *</label>
+        <input class="mock-input" value="mjordanf@gmail.com" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display: flex; justify-content: space-between;">Password * <span style="font-weight: 400; color: #6b7280; font-size: 0.65rem;">8+ characters</span></label>
+        <div style="position: relative;">
+          <input class="mock-input" value="••••••••••" type="password" readonly style="padding-right: 2rem;">
+          <span style="position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #9ca3af; cursor: default;">👁</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Phone <span style="color: #9ca3af; font-weight: 400;">(optional)</span></label>
+          <input class="mock-input" value="(786) 555-0100" readonly>
+        </div>
+        <div>
+          <label class="form-label">ZIP Code <span style="color: #9ca3af; font-weight: 400;">(optional)</span></label>
+          <input class="mock-input" value="33187" readonly>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin: 0.75rem 0; font-size: 0.75rem; color: #374151;">
+        <div style="width: 16px; height: 16px; border-radius: 3px; background: #2d6a4f; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.6rem; flex-shrink: 0;">✓</div>
+        Sign me up for Maytee's newsletter
+      </div>
+      <button class="mock-btn mock-btn-green" style="width: 100%; text-align: center; padding: 0.6rem; font-size: 0.85rem;">Create Account</button>
+      <p style="text-align: center; font-size: 0.72rem; color: #6b7280; margin-top: 0.75rem;">Already have an account? <span style="color: #2d6a4f; cursor: pointer;">Log in</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 6: LOGIN -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-6">
+  <div class="slide-left">
+    <div class="slide-label">Slide 6 · Customer Flow 04</div>
+    <div class="slide-section">Authentication</div>
+    <h2 class="slide-heading">Login</h2>
+    <p class="slide-desc">NextAuth.js credentials provider with JWT session strategy. Sessions persist 30 days. Role is embedded in the JWT on login.</p>
+    <ul class="slide-steps">
+      <li>Email + password → <code style="color:#74c69d;">POST /api/auth/callback/credentials</code></li>
+      <li>bcrypt.compare validates password hash</li>
+      <li>JWT callback injects <code style="color:#74c69d;">token.id</code> and <code style="color:#74c69d;">token.role</code></li>
+      <li>Forgot password → 1-hour reset token emailed</li>
+      <li>Redirect: customer→/portal, admin→/portal (Admin Panel link in nav)</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Role-based redirect:</strong> All roles land at <code>/portal</code>. Superadmin can navigate to <code>/superadmin</code>. Admin/staff see an "Admin Panel" link in the portal sidebar. Role changes take effect on next login (JWT refresh).
+    </div>
+  </div>
+  <div class="slide-right" style="display: flex; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 2rem; width: 320px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" style="margin-bottom: 0.4rem;">
+          <circle cx="22" cy="22" r="21" fill="#2d6a4f"/>
+          <path d="M22 33 C22 33 11 27 11 18 C11 12 16 9 22 9 C28 9 33 12 33 18 C33 27 22 33 22 33Z" fill="#74c69d"/>
+        </svg>
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: #111;">Maytee's Garden Center</div>
+      </div>
+      <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: #111; text-align: center; margin-bottom: 1.25rem;">Welcome Back</h3>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="mock-input" value="mjordanf@gmail.com" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+          Password
+          <span style="font-weight: 400; color: #2d6a4f; font-size: 0.7rem; cursor: pointer;">Forgot password?</span>
+        </label>
+        <div style="position: relative;">
+          <input class="mock-input" value="••••••••••" type="password" readonly style="padding-right: 2rem;">
+          <span style="position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #9ca3af; cursor: default;">👁</span>
+        </div>
+      </div>
+      <button class="mock-btn mock-btn-green" style="width: 100%; text-align: center; padding: 0.6rem; font-size: 0.85rem; margin-top: 0.5rem;">Log In</button>
+      <div style="background: #f0fdf4; border: 1px solid #d1fae5; border-radius: 8px; padding: 0.65rem 0.8rem; margin-top: 1rem; font-size: 0.7rem; color: #065f46; line-height: 1.5;">
+        <strong style="display: block; margin-bottom: 0.2rem;">Role-based redirect after login:</strong>
+        customer → /portal &nbsp;·&nbsp; admin → /portal (Admin Panel link) &nbsp;·&nbsp; superadmin → /superadmin
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7: PLANT CATALOG -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-7">
+  <div class="slide-left">
+    <div class="slide-label">Slide 7 · Customer Flow 05</div>
+    <div class="slide-section">Plant Catalog</div>
+    <h2 class="slide-heading">Plant Catalog Browse & Filter</h2>
+    <p class="slide-desc">The full plant catalog at <code style="color:#74c69d;">/plants</code> — search by English or Spanish name, filter by category, save favorites, and add to cart.</p>
+    <ul class="slide-steps">
+      <li>Search bar: filters by EN/ES name or tags in real time</li>
+      <li>Category pills: All, Tropical, Flowering, Palms, Native FL, Edible, Succulents</li>
+      <li>Heart icon: saves to DB if logged in; prompts login if not</li>
+      <li>Stock badges: 🟢 in stock · 🟡 low (1–3) · 🔴 out of stock</li>
+      <li>Out-of-stock cards show disabled/no button</li>
+    </ul>
+    <div class="tip-box">
+      <strong>90+ plants seeded.</strong> Shop reads <code style="color:#74c69d;">onlineStock</code> (not <code>stockQty</code>). <code>onlinePrice</code> overrides <code>price</code> if set. Hearts sync to <code>Favorite</code> model on login.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.25rem;">
+    <!-- Search -->
+    <div style="position: relative; margin-bottom: 0.75rem;">
+      <span style="position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.8rem;">🔍</span>
+      <input class="mock-input" placeholder="Search plants..." style="padding-left: 2rem;">
+    </div>
+    <!-- Filter pills -->
+    <div style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.75rem;">
+      <span style="background: #2d6a4f; color: white; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem; font-weight: 600;">All Plants</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Tropical</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Flowering</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Palms</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Native FL</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Edible</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Succulents</span>
+    </div>
+    <!-- Plant grid -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+      <!-- Card 1 -->
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.25"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px; background: #fef3c7; color: #92400e; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 600;">Tropical</span>
+          <span style="position: absolute; top: 4px; right: 4px; color: #bc4b35; font-size: 0.9rem;">♥</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Bougainvillea</div>
+          <div style="color: #6b7280; font-size: 0.62rem; font-style: italic;">Buganvilla</div>
+          <div style="color: #d97706; font-size: 0.65rem; font-weight: 600; margin: 0.15rem 0;">Only 3 left!</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #2d6a4f; font-size: 0.72rem;">$35.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Add to Cart</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.25"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px; background: #dbeafe; color: #1d4ed8; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 600;">Tropical</span>
+          <span style="position: absolute; top: 4px; right: 4px; color: #d1d5db; font-size: 0.9rem;">♡</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Bird of Paradise</div>
+          <div style="color: #6b7280; font-size: 0.62rem; font-style: italic;">Ave del Paraíso</div>
+          <div style="color: #16a34a; font-size: 0.65rem; font-weight: 600; margin: 0.15rem 0;">In Stock</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #2d6a4f; font-size: 0.72rem;">$65.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Add to Cart</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.25"/></svg>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Monstera Deliciosa</div>
+          <div style="color: #6b7280; font-size: 0.62rem; font-style: italic;">Costilla de Adán</div>
+          <div style="color: #16a34a; font-size: 0.65rem; font-weight: 600; margin: 0.15rem 0;">In Stock</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #2d6a4f; font-size: 0.72rem;">$65.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Add to Cart</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 4: Out of stock -->
+      <div class="plant-card">
+        <div class="plant-card-img" style="background: linear-gradient(135deg, #6b7280, #9ca3af);">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.15"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px; background: #fee2e2; color: #dc2626; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 600;">Out of Stock</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #6b7280; font-size: 0.72rem;">Coconut Palm</div>
+          <div style="color: #9ca3af; font-size: 0.62rem; font-style: italic;">Palma de Coco</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.3rem;">
+            <span style="font-weight: 700; color: #9ca3af; font-size: 0.72rem;">$149.00</span>
+            <span style="font-size: 0.65rem; color: #dc2626; font-weight: 600;">Unavailable</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 5 -->
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.25"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px; background: #fef3c7; color: #92400e; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 600;">Flowering</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Ixora</div>
+          <div style="color: #6b7280; font-size: 0.62rem; font-style: italic;">Ixora</div>
+          <div style="color: #d97706; font-size: 0.65rem; font-weight: 600; margin: 0.15rem 0;">Only 1 left!</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #2d6a4f; font-size: 0.72rem;">$22.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Add to Cart</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="plant-card">
+        <div class="plant-card-img" style="background: linear-gradient(135deg, #4a7c59, #6aab7a);">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.25"/></svg>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Aloe Vera</div>
+          <div style="color: #6b7280; font-size: 0.62rem; font-style: italic;">Sábila</div>
+          <div style="color: #16a34a; font-size: 0.65rem; font-weight: 600; margin: 0.15rem 0;">In Stock</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #2d6a4f; font-size: 0.72rem;">$25.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Add to Cart</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8: PLANT DETAIL MODAL -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-8">
+  <div class="slide-left">
+    <div class="slide-label">Slide 8 · Customer Flow 06</div>
+    <div class="slide-section">Plant Catalog</div>
+    <h2 class="slide-heading">Plant Detail Modal</h2>
+    <p class="slide-desc">Clicking any plant card opens a detail modal with the full bilingual description, care metadata, tags, and quick actions — without leaving the catalog page.</p>
+    <ul class="slide-steps">
+      <li>Opens on card click — overlays the catalog</li>
+      <li>Bilingual: English name + Spanish name in italic</li>
+      <li>Category badge + freeform tags (comma-separated in DB)</li>
+      <li>Care tiles: Care Level, Sunlight, Water requirements</li>
+      <li>"Book Consultation →" links to /booking</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Heart toggle</strong> in the modal calls <code style="color:#74c69d;">POST /api/favorites</code> when logged in. The heart fills/unfills and syncs with the catalog grid in real time.
+    </div>
+  </div>
+  <div class="slide-right" style="position: relative; padding: 1.25rem;">
+    <!-- Modal overlay -->
+    <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); border-radius: 0; display: flex; align-items: center; justify-content: center; padding: 1rem;">
+      <div style="background: white; border-radius: 14px; width: 100%; max-width: 580px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+        <div style="display: grid; grid-template-columns: 200px 1fr;">
+          <!-- Left: image -->
+          <div style="background: linear-gradient(135deg, #2d6a4f, #40916c); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; min-height: 260px;">
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+              <path d="M30 54 C30 54 8 42 8 22 C8 10 18 4 30 4 C42 4 52 10 52 22 C52 42 30 54 30 54Z" fill="white" opacity="0.3"/>
+              <path d="M30 54 L30 14" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M30 38 C22 33 12 30 10 22" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M30 28 C38 23 48 20 50 12" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 0.3rem 0.7rem; margin-top: 1rem; font-size: 0.7rem; color: white; font-weight: 600;">★ Featured</div>
+          </div>
+          <!-- Right: info -->
+          <div style="padding: 1.25rem; position: relative;">
+            <button style="position: absolute; top: 0.75rem; right: 0.75rem; background: none; border: none; font-size: 1.2rem; color: #9ca3af; cursor: default;">×</button>
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: #111; line-height: 1.1; margin-bottom: 0.2rem;">Bird of Paradise</div>
+            <div style="font-size: 1.3rem; font-weight: 700; color: #bc4b35; margin-bottom: 0.3rem;">$65.00</div>
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-style: italic; color: #6b7280; margin-bottom: 0.6rem;">Ave del Paraíso</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.75rem;">
+              <span class="mock-badge badge-green">Tropical</span>
+              <span class="mock-badge badge-gray">architectural</span>
+              <span class="mock-badge badge-gray">focal-point</span>
+              <span class="mock-badge badge-gray">full-sun</span>
+            </div>
+            <p style="font-size: 0.75rem; color: #374151; line-height: 1.5; margin-bottom: 0.75rem;">A bold, architectural statement plant featuring paddle-shaped leaves. Thrives in South Florida's full sun and heat. Perfect as a focal point in tropical landscaping.</p>
+            <div style="display: flex; gap: 0.4rem; margin-bottom: 0.75rem;">
+              <div class="info-tile"><strong>Care Level</strong>🟢 Easy</div>
+              <div class="info-tile"><strong>Sunlight</strong>☀️ Full Sun</div>
+              <div class="info-tile"><strong>Water</strong>💧💧 Moderate</div>
+            </div>
+            <div style="display: flex; gap: 0.4rem;">
+              <span class="mock-btn mock-btn-outline mock-btn-sm">🤍 Save Plant</span>
+              <span class="mock-btn mock-btn-green mock-btn-sm">Book Consultation →</span>
+              <span class="mock-btn mock-btn-terra mock-btn-sm">Add to Cart</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: CART PAGE -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-9">
+  <div class="slide-left">
+    <div class="slide-label">Slide 9 · Customer Flow 07</div>
+    <div class="slide-section">E-Commerce</div>
+    <h2 class="slide-heading">Shopping Cart</h2>
+    <p class="slide-desc">The cart at <code style="color:#74c69d;">/shop/cart</code> — review items, adjust quantities, and proceed to checkout. Data is persisted in <code>localStorage</code>.</p>
+    <ul class="slide-steps">
+      <li>localStorage persistence — no account required</li>
+      <li>Quantity spinner capped at <code style="color:#74c69d;">onlineStock</code></li>
+      <li>Trash icon removes item; qty spinner updates subtotal live</li>
+      <li>Cart badge in navbar updates in real time via CartContext</li>
+      <li>Cart clears on logout</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Stock cap:</strong> If a user has qty=5 and the admin lowers stock to 3, the next cart load caps the qty at 3 and shows a warning. Proceed triggers checkout Step 1.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <div style="display: grid; grid-template-columns: 1fr 260px; gap: 1rem;">
+      <!-- Cart items -->
+      <div>
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: #111; margin-bottom: 1rem;">Your Cart <span style="color: #6b7280; font-weight: 400; font-size: 1rem;">(2 items)</span></h3>
+        <!-- Item 1 -->
+        <div style="background: white; border-radius: 10px; padding: 0.75rem; margin-bottom: 0.5rem; display: flex; gap: 0.75rem; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.07);">
+          <div style="width: 54px; height: 54px; border-radius: 8px; background: linear-gradient(135deg, #2d6a4f, #40916c); flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 18 C10 18 2 13 2 7 C2 3 6 1 10 1 C14 1 18 3 18 7 C18 13 10 18 10 18Z" fill="white" opacity="0.4"/></svg>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.82rem; color: #111;">Bougainvillea</div>
+            <div style="font-size: 0.7rem; color: #6b7280;">Unit price: $35.00</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem;">
+            <button style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid #e5e7eb; background: white; display: flex; align-items: center; justify-content: center; cursor: default; font-size: 0.75rem; color: #374151;">−</button>
+            <span style="min-width: 20px; text-align: center; font-weight: 600; font-size: 0.82rem;">1</span>
+            <button style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid #e5e7eb; background: white; display: flex; align-items: center; justify-content: center; cursor: default; font-size: 0.75rem; color: #374151;">+</button>
+          </div>
+          <div style="font-weight: 700; color: #111; font-size: 0.85rem; min-width: 50px; text-align: right;">$35.00</div>
+          <span style="color: #dc2626; cursor: default; font-size: 0.9rem; margin-left: 0.3rem;">🗑</span>
+        </div>
+        <!-- Item 2 -->
+        <div style="background: white; border-radius: 10px; padding: 0.75rem; margin-bottom: 0.5rem; display: flex; gap: 0.75rem; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.07);">
+          <div style="width: 54px; height: 54px; border-radius: 8px; background: linear-gradient(135deg, #4a7c59, #6aab7a); flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 18 C10 18 2 13 2 7 C2 3 6 1 10 1 C14 1 18 3 18 7 C18 13 10 18 10 18Z" fill="white" opacity="0.4"/></svg>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.82rem; color: #111;">Ixora</div>
+            <div style="font-size: 0.7rem; color: #6b7280;">Unit price: $22.00</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem;">
+            <button style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid #e5e7eb; background: white; cursor: default; font-size: 0.75rem; color: #374151; display: flex; align-items: center; justify-content: center;">−</button>
+            <span style="min-width: 20px; text-align: center; font-weight: 600; font-size: 0.82rem;">2</span>
+            <button style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid #e5e7eb; background: white; cursor: default; font-size: 0.75rem; color: #374151; display: flex; align-items: center; justify-content: center;">+</button>
+          </div>
+          <div style="font-weight: 700; color: #111; font-size: 0.85rem; min-width: 50px; text-align: right;">$44.00</div>
+          <span style="color: #dc2626; cursor: default; font-size: 0.9rem; margin-left: 0.3rem;">🗑</span>
+        </div>
+        <div style="margin-top: 0.75rem;">
+          <span style="font-size: 0.75rem; color: #2d6a4f; cursor: default;">← Continue Shopping</span>
+        </div>
+      </div>
+      <!-- Order summary -->
+      <div>
+        <div class="mock-card">
+          <div style="font-weight: 700; font-size: 0.85rem; color: #111; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e5e7eb;">Order Summary</div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.35rem;"><span style="color: #374151;">Subtotal</span><span style="font-weight: 600;">$79.00</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.35rem;"><span style="color: #374151;">Shipping</span><span style="color: #6b7280;">Calculated at checkout</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.75rem;"><span style="color: #374151;">Tax (8.5%)</span><span style="color: #6b7280;">—</span></div>
+          <div style="border-top: 1px solid #e5e7eb; padding-top: 0.5rem; display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.75rem;"><span>Total</span><span>$79.00</span></div>
+          <span class="mock-btn mock-btn-green" style="width: 100%; text-align: center; display: block; padding: 0.6rem;">Proceed to Checkout →</span>
+        </div>
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.7rem; color: #065f46;">
+          🔒 Secured checkout via Square
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10: CHECKOUT STEP 1 -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-10">
+  <div class="slide-left">
+    <div class="slide-label">Slide 10 · Customer Flow 08</div>
+    <div class="slide-section">E-Commerce · Checkout Step 1</div>
+    <h2 class="slide-heading">Checkout: Contact & Shipping</h2>
+    <p class="slide-desc">Step 1 of 3 at <code style="color:#74c69d;">/shop/checkout</code> — contact info and shipping address. Pre-filled from session if logged in.</p>
+    <ul class="slide-steps">
+      <li>Name and email pre-filled from NextAuth session</li>
+      <li>Required: Name, Email, Address, City, State, ZIP</li>
+      <li>Address is sent to Shippo <code style="color:#74c69d;">getRates()</code> in Step 2</li>
+      <li>Continue button disabled until required fields are valid</li>
+      <li>Atomic slot availability check fires on final submit</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Guest checkout</strong> is fully supported — no account required. Cart is localStorage-based; orders can be placed without login. Guest orders won't appear in the customer portal order history.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <!-- Progress bar -->
+    <div class="progress-steps" style="margin-bottom: 1.25rem;">
+      <div class="progress-step active" style="font-size: 0.68rem;">1 · Contact & Shipping</div>
+      <div class="progress-step" style="font-size: 0.68rem;">2 · Shipping Method</div>
+      <div class="progress-step" style="font-size: 0.68rem;">3 · Payment</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 230px; gap: 1rem;">
+      <!-- Form -->
+      <div>
+        <div style="font-weight: 700; font-size: 0.88rem; color: #111; margin-bottom: 0.75rem;">Contact Information</div>
+        <div class="form-row">
+          <div>
+            <label class="form-label">Full Name *</label>
+            <input class="mock-input" value="Maikel Jordan" readonly>
+          </div>
+          <div>
+            <label class="form-label">Email Address *</label>
+            <input class="mock-input" value="mjordanf@gmail.com" readonly>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone (optional)</label>
+          <input class="mock-input" value="(786) 555-0100" readonly>
+        </div>
+        <div style="font-weight: 700; font-size: 0.88rem; color: #111; margin: 0.75rem 0;">Shipping Address</div>
+        <div class="form-group">
+          <label class="form-label">Address Line 1 *</label>
+          <input class="mock-input" value="100 Biscayne Blvd" readonly>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address Line 2 (optional)</label>
+          <input class="mock-input" placeholder="Apt, Suite, Unit..." style="color: #9ca3af;">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 80px 90px; gap: 0.4rem;">
+          <div>
+            <label class="form-label">City *</label>
+            <input class="mock-input" value="Miami" readonly>
+          </div>
+          <div>
+            <label class="form-label">State *</label>
+            <select class="mock-input" style="appearance: none;"><option>FL</option></select>
+          </div>
+          <div>
+            <label class="form-label">ZIP *</label>
+            <input class="mock-input" value="33132" readonly>
+          </div>
+        </div>
+        <button class="mock-btn mock-btn-green" style="margin-top: 0.75rem; padding: 0.6rem 1.5rem; font-size: 0.85rem;">Continue to Shipping →</button>
+      </div>
+      <!-- Summary -->
+      <div>
+        <div class="mock-card" style="font-size: 0.75rem;">
+          <div style="font-weight: 700; margin-bottom: 0.5rem; color: #111;">Order Summary</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;"><span style="color: #374151;">Bougainvillea × 1</span><span style="font-weight: 600;">$35.00</span></div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;"><span style="color: #374151;">Ixora × 2</span><span style="font-weight: 600;">$44.00</span></div>
+          <div style="border-top: 1px solid #e5e7eb; margin: 0.5rem 0; padding-top: 0.5rem; display: flex; justify-content: space-between; font-weight: 700;"><span>Subtotal</span><span>$79.00</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 11: CHECKOUT STEP 2: SHIPPING METHOD -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-11">
+  <div class="slide-left">
+    <div class="slide-label">Slide 11 · Customer Flow 09</div>
+    <div class="slide-section">E-Commerce · Checkout Step 2</div>
+    <h2 class="slide-heading">Checkout: Shipping Method</h2>
+    <p class="slide-desc">Step 2 calls Shippo in real time to fetch carrier rates for the entered shipping address and parcel dimensions.</p>
+    <ul class="slide-steps">
+      <li><code style="color:#74c69d;">POST /api/store/shipping-rates</code> → Shippo API</li>
+      <li>Returns carrier name, service level, price, estimated days</li>
+      <li>Rates sorted cheapest first</li>
+      <li>$12.99 flat rate fallback if Shippo not configured</li>
+      <li>Order summary updates with selected shipping cost + tax</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Common failure point:</strong> If Shippo returns no rates (API key missing or address issue), no options appear and the user can't proceed. Ensure <code style="color:#74c69d;">SHIPPO_API_KEY</code> is set and address fields are complete.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <div class="progress-steps" style="margin-bottom: 1.25rem;">
+      <div class="progress-step done" style="font-size: 0.68rem;">1 · Contact & Shipping ✓</div>
+      <div class="progress-step active" style="font-size: 0.68rem;">2 · Shipping Method</div>
+      <div class="progress-step" style="font-size: 0.68rem;">3 · Payment</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 230px; gap: 1rem;">
+      <div>
+        <div style="font-weight: 700; font-size: 0.88rem; color: #111; margin-bottom: 0.75rem;">Select a Shipping Method</div>
+        <div class="rate-card selected">
+          <div style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid #2d6a4f; background: #2d6a4f; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <div style="width: 6px; height: 6px; border-radius: 50%; background: white;"></div>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.8rem; color: #111;">UPS Ground Saver</div>
+            <div style="font-size: 0.7rem; color: #6b7280;">Est. 2 business days</div>
+          </div>
+          <div style="font-weight: 700; color: #2d6a4f; font-size: 0.88rem;">$6.27</div>
+        </div>
+        <div class="rate-card">
+          <div style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid #d1d5db; flex-shrink: 0;"></div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.8rem; color: #111;">UPS Ground</div>
+            <div style="font-size: 0.7rem; color: #6b7280;">Est. 3 business days</div>
+          </div>
+          <div style="font-weight: 700; color: #374151; font-size: 0.88rem;">$8.99</div>
+        </div>
+        <div class="rate-card">
+          <div style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid #d1d5db; flex-shrink: 0;"></div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.8rem; color: #111;">USPS Priority Mail</div>
+            <div style="font-size: 0.7rem; color: #6b7280;">Est. 2 business days</div>
+          </div>
+          <div style="font-weight: 700; color: #374151; font-size: 0.88rem;">$12.50</div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+          <span class="mock-btn mock-btn-outline mock-btn-sm">← Back</span>
+          <span class="mock-btn mock-btn-green" style="padding: 0.45rem 1.2rem; font-size: 0.82rem;">Continue to Payment →</span>
+        </div>
+      </div>
+      <div>
+        <div class="mock-card" style="font-size: 0.75rem;">
+          <div style="font-weight: 700; margin-bottom: 0.5rem; color: #111;">Order Summary</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;"><span style="color:#374151;">Bougainvillea × 1</span><span style="font-weight:600;">$35.00</span></div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;"><span style="color:#374151;">Ixora × 2</span><span style="font-weight:600;">$44.00</span></div>
+          <div style="border-top: 1px solid #e5e7eb; margin: 0.4rem 0; padding-top: 0.4rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span style="color:#374151;">Subtotal</span><span>$79.00</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span style="color:#374151;">Shipping (UPS Gnd Saver)</span><span style="color:#2d6a4f; font-weight:600;">$6.27</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span style="color:#374151;">Tax (8.5%)</span><span>$7.24</span></div>
+            <div style="border-top: 1px solid #e5e7eb; margin-top: 0.4rem; padding-top: 0.4rem; display: flex; justify-content: space-between; font-weight: 700; font-size: 0.85rem;"><span>Total</span><span>$92.51</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 12: CHECKOUT STEP 3: PAYMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-12">
+  <div class="slide-left">
+    <div class="slide-label">Slide 12 · Customer Flow 10</div>
+    <div class="slide-section">E-Commerce · Checkout Step 3</div>
+    <h2 class="slide-heading">Checkout: Payment</h2>
+    <p class="slide-desc">Square Web Payments SDK renders an iframe card form. Card is tokenized client-side; only the token is sent to the server — PCI compliant.</p>
+    <ul class="slide-steps">
+      <li>Square SDK loads from <code style="color:#74c69d;">web.squarecdn.com</code></li>
+      <li>Client tokenizes card → <code style="color:#74c69d;">sourceId</code></li>
+      <li><code style="color:#74c69d;">POST /api/store/checkout</code> with sourceId + cart</li>
+      <li>Server validates stock, charges Square, decrements <code>onlineStock</code></li>
+      <li>Atomic Prisma transaction prevents overselling</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Sandbox test card:</strong> <code style="color:#74c69d;">4111 1111 1111 1111</code>, any future expiry (e.g. 01/29), any CVV (123), any ZIP. Ensure <code>SQUARE_ENVIRONMENT=sandbox</code> in dev.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <div class="progress-steps" style="margin-bottom: 1.25rem;">
+      <div class="progress-step done" style="font-size: 0.68rem;">1 · Contact ✓</div>
+      <div class="progress-step done" style="font-size: 0.68rem;">2 · Shipping ✓</div>
+      <div class="progress-step active" style="font-size: 0.68rem;">3 · Payment</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 230px; gap: 1rem;">
+      <div>
+        <div style="font-weight: 700; font-size: 0.88rem; color: #111; margin-bottom: 0.75rem;">Payment Details</div>
+        <!-- Square card form mockup -->
+        <div style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 1rem; background: white;">
+          <div style="font-size: 0.7rem; color: #6b7280; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+            <span style="background: #1a56db; color: white; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 700;">VISA</span>
+            <span style="background: #f59e0b; width: 16px; height: 16px; border-radius: 50%; display: inline-block;"></span>
+            <span style="background: #dc2626; width: 16px; height: 16px; border-radius: 50%; display: inline-block; margin-left: -8px;"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Card Number</label>
+            <div style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #374151; background: #f9fafb; letter-spacing: 0.1em; display: flex; justify-content: space-between; align-items: center;">
+              <span>4111 1111 1111 1111</span>
+              <span style="font-size: 0.7rem; color: #6b7280;">VISA</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label class="form-label">Expiry</label>
+              <div style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #374151; background: #f9fafb;">01/29</div>
+            </div>
+            <div>
+              <label class="form-label">CVV</label>
+              <div style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #374151; background: #f9fafb;">•••</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Billing ZIP</label>
+            <div style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #374151; background: #f9fafb;">33187</div>
+          </div>
+          <div style="text-align: center; font-size: 0.7rem; color: #6b7280; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.3rem;">🔒 Secured by Square</div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; align-items: center;">
+          <span class="mock-btn mock-btn-outline mock-btn-sm">← Back</span>
+          <button class="mock-btn mock-btn-green" style="padding: 0.55rem 1.5rem; font-size: 0.88rem; font-weight: 700;">Place Order — $92.51</button>
+        </div>
+      </div>
+      <div>
+        <div class="mock-card" style="font-size: 0.75rem;">
+          <div style="font-weight: 700; margin-bottom: 0.5rem; color: #111;">Order Total</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span style="color:#374151;">Subtotal</span><span>$79.00</span></div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span style="color:#374151;">Shipping</span><span>$6.27</span></div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;"><span style="color:#374151;">Tax</span><span>$7.24</span></div>
+          <div style="border-top: 2px solid #2d6a4f; padding-top: 0.5rem; display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; color: #2d6a4f;"><span>Total</span><span>$92.51</span></div>
+        </div>
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.68rem; color: #92400e; line-height: 1.5;">
+          ⚠️ By placing order you agree to our return policy. Plant sales are final.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 13: ORDER CONFIRMATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-13">
+  <div class="slide-left">
+    <div class="slide-label">Slide 13 · Customer Flow 11</div>
+    <div class="slide-section">E-Commerce · Post-Purchase</div>
+    <h2 class="slide-heading">Order Confirmation</h2>
+    <p class="slide-desc">After successful payment, customer lands on <code style="color:#74c69d;">/shop/order/[id]</code> — the full order summary with ICS download and email confirmation sent automatically.</p>
+    <ul class="slide-steps">
+      <li>Order number format: <code style="color:#74c69d;">MG-XXXXXX</code> (unique CUID-based)</li>
+      <li>Confirmation emails: customer (order summary) + admin (new order alert)</li>
+      <li><strong>Add to Calendar</strong> — downloads <code>.ics</code> file</li>
+      <li>Page accessible by order ID in URL (no login required)</li>
+      <li><code>StoreOrder.status</code> → <code>processing</code> after payment</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Stock decremented atomically</strong> in a Prisma transaction — if payment succeeds but stock update fails, the transaction rolls back and the error is surfaced. Admin also receives an InboxMessage of type <code>order-alert</code>.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem; display: flex; align-items: flex-start; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 2rem; width: 100%; max-width: 480px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+      <!-- Success check -->
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; font-size: 1.5rem;">✅</div>
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: #111;">Order Confirmed!</div>
+        <div style="font-size: 0.78rem; color: #6b7280; margin-top: 0.3rem;">Order <strong style="color: #2d6a4f;">#MG-2026-0042</strong></div>
+      </div>
+      <!-- Items table -->
+      <table class="mock-table" style="margin-bottom: 0.75rem;">
+        <thead><tr><th>Item</th><th>Qty</th><th style="text-align:right;">Price</th></tr></thead>
+        <tbody>
+          <tr><td>Bougainvillea</td><td>× 1</td><td style="text-align:right;">$35.00</td></tr>
+          <tr><td>Ixora</td><td>× 2</td><td style="text-align:right;">$44.00</td></tr>
+          <tr style="background: #f9fafb;"><td colspan="2" style="text-align:right; color: #6b7280;">Subtotal</td><td style="text-align:right; font-weight:600;">$79.00</td></tr>
+          <tr><td colspan="2" style="text-align:right; color: #6b7280;">Shipping (UPS)</td><td style="text-align:right;">$6.27</td></tr>
+          <tr><td colspan="2" style="text-align:right; color: #6b7280;">Tax (8.5%)</td><td style="text-align:right;">$7.24</td></tr>
+          <tr style="background: #f0fdf4;"><td colspan="2" style="text-align:right; font-weight: 700; font-size: 0.85rem;">Total</td><td style="text-align:right; font-weight: 700; color: #2d6a4f; font-size: 0.88rem;">$92.51</td></tr>
+        </tbody>
+      </table>
+      <!-- Shipping address -->
+      <div style="background: #f9fafb; border-radius: 8px; padding: 0.65rem 0.85rem; font-size: 0.73rem; color: #374151; margin-bottom: 0.75rem;">
+        <div style="font-weight: 600; margin-bottom: 0.2rem; color: #111;">📦 Shipping To</div>
+        Maikel Jordan<br>100 Biscayne Blvd<br>Miami, FL 33132
+      </div>
+      <!-- Buttons -->
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <span class="mock-btn mock-btn-outline mock-btn-sm">📅 Add to Calendar</span>
+        <span class="mock-btn mock-btn-green mock-btn-sm">View My Orders →</span>
+        <span class="mock-btn" style="background: #f3f4f6; color: #374151; font-size: 0.68rem; padding: 0.25rem 0.6rem;">← Continue Shopping</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 14: BOOKING A CONSULTATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-14">
+  <div class="slide-left">
+    <div class="slide-label">Slide 14 · Customer Flow 12</div>
+    <div class="slide-section">Booking Wizard</div>
+    <h2 class="slide-heading">Book a Consultation</h2>
+    <p class="slide-desc">4-step wizard at <code style="color:#74c69d;">/booking</code> — select service, pick a date/time, choose meeting preference, enter contact info. No account required.</p>
+    <ul class="slide-steps">
+      <li>Step 1: Choose service (from active <code>Service</code> records)</li>
+      <li>Step 2: Calendar — only real available dates shown (templates + overrides)</li>
+      <li>Step 3: Meeting preference (in-person / FaceTime / WhatsApp / Google Meet)</li>
+      <li>Step 4: Contact info — pre-filled from session if logged in</li>
+      <li>Creates <code>Booking { status: "pending" }</code>, fires 2 emails</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Slot type</strong> from <code>AvailabilityTemplate.type</code> controls which preference options appear: "in-person" → only in-person, "video" → only video options, "both" → all four options shown.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.25rem;">
+    <!-- 4-step progress -->
+    <div class="progress-steps" style="margin-bottom: 1rem;">
+      <div class="progress-step done" style="font-size: 0.65rem;">1 · Service ✓</div>
+      <div class="progress-step active" style="font-size: 0.65rem;">2 · Date & Time</div>
+      <div class="progress-step" style="font-size: 0.65rem;">3 · Preference</div>
+      <div class="progress-step" style="font-size: 0.65rem;">4 · Contact</div>
+    </div>
+    <!-- Service selected summary -->
+    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.5rem 0.85rem; margin-bottom: 0.75rem; font-size: 0.75rem; color: #065f46; display: flex; align-items: center; justify-content: space-between;">
+      <span>✓ <strong>Landscape Design Consultation</strong> — $150/hr · 60 min</span>
+      <span style="color: #9ca3af; font-size: 0.68rem; cursor: pointer;">Change</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <!-- Calendar -->
+      <div class="mini-calendar">
+        <div class="cal-header">
+          <span style="cursor:default;">‹</span>
+          <span>June 2026</span>
+          <span style="cursor:default;">›</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-day header">S</div><div class="cal-day header">M</div><div class="cal-day header">T</div><div class="cal-day header">W</div><div class="cal-day header">T</div><div class="cal-day header">F</div><div class="cal-day header">S</div>
+          <!-- Week 1 -->
+          <div class="cal-day unavailable">1</div><div class="cal-day available">2</div><div class="cal-day available">3</div><div class="cal-day available">4</div><div class="cal-day available">5</div><div class="cal-day available">6</div><div class="cal-day unavailable">7</div>
+          <!-- Week 2 -->
+          <div class="cal-day unavailable">8</div><div class="cal-day available">9</div><div class="cal-day available">10</div><div class="cal-day available">11</div><div class="cal-day available">12</div><div class="cal-day available">13</div><div class="cal-day unavailable">14</div>
+          <!-- Week 3 -->
+          <div class="cal-day unavailable">15</div><div class="cal-day selected">16</div><div class="cal-day available">17</div><div class="cal-day available">18</div><div class="cal-day available">19</div><div class="cal-day available">20</div><div class="cal-day unavailable">21</div>
+          <!-- Week 4 -->
+          <div class="cal-day unavailable">22</div><div class="cal-day available">23</div><div class="cal-day available">24</div><div class="cal-day available">25</div><div class="cal-day available">26</div><div class="cal-day available">27</div><div class="cal-day blocked">28</div>
+          <!-- Week 5 -->
+          <div class="cal-day unavailable">29</div><div class="cal-day available">30</div>
+        </div>
+      </div>
+      <!-- Time slots + preference -->
+      <div>
+        <div style="font-size: 0.75rem; font-weight: 600; color: #374151; margin-bottom: 0.4rem;">Available times — Jun 16</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.75rem;">
+          <span class="slot-btn unavailable">9:00 AM</span>
+          <span class="slot-btn">10:00 AM</span>
+          <span class="slot-btn selected">11:00 AM</span>
+          <span class="slot-btn">1:00 PM</span>
+          <span class="slot-btn">2:00 PM</span>
+          <span class="slot-btn">3:00 PM</span>
+        </div>
+        <div style="font-size: 0.75rem; font-weight: 600; color: #374151; margin-bottom: 0.4rem;">Meeting Preference</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+          <div style="border: 2px solid #2d6a4f; border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.72rem; background: #f0fdf4;">🏡<br><strong style="font-size: 0.7rem;">In-Person</strong></div>
+          <div style="border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.72rem; background: white;">📱<br><span style="font-size: 0.7rem; color: #374151;">FaceTime</span></div>
+          <div style="border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.72rem; background: white;">💬<br><span style="font-size: 0.7rem; color: #374151;">WhatsApp</span></div>
+          <div style="border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.72rem; background: white;">🎥<br><span style="font-size: 0.7rem; color: #374151;">Google Meet</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 0.75rem;">
+      <span class="mock-btn mock-btn-green" style="padding: 0.5rem 1.5rem; font-size: 0.85rem;">Continue →</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 15: CUSTOMER PORTAL DASHBOARD -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-15">
+  <div class="slide-left">
+    <div class="slide-label">Slide 15 · Customer Flow 13</div>
+    <div class="slide-section">Customer Portal</div>
+    <h2 class="slide-heading">Customer Portal Dashboard</h2>
+    <p class="slide-desc">The authenticated customer hub at <code style="color:#74c69d;">/portal</code> — shows upcoming appointments, order stats, saved plants, and personalized recommendations.</p>
+    <ul class="slide-steps">
+      <li>Protected by <code>portal/layout.tsx</code> — redirects to login if no session</li>
+      <li>Sidebar persists across all <code>/portal/*</code> sub-pages</li>
+      <li>Stat cards: upcoming appointments, saved plants, orders</li>
+      <li>"Maytee Recommends" — seasonal plant suggestions</li>
+      <li>Admin/staff see "Admin Panel" link at top of sidebar</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Guest bookings</strong> (no login at time of booking) do not appear in the portal — they're linked by email only, with no userId on the Booking record. Encourage customers to log in before booking.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1rem; background: #f5f0e8;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <!-- Sidebar -->
+      <div class="mock-sidebar" style="min-height: 0;">
+        <!-- User info -->
+        <div style="text-align: center; padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.15);">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: #40916c; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.4rem; font-weight: 700; font-size: 0.9rem;">MJ</div>
+          <div style="font-weight: 600; font-size: 0.78rem; color: white;">Maikel Jordan</div>
+          <div style="font-size: 0.65rem; color: rgba(255,255,255,0.5); word-break: break-all;">mjordanf@gmail.com</div>
+        </div>
+        <div class="mock-sidebar-item active">🏠 <span>Dashboard</span></div>
+        <div class="mock-sidebar-item">❤️ <span>Saved Plants</span></div>
+        <div class="mock-sidebar-item">📅 <span>My Appointments</span></div>
+        <div class="mock-sidebar-item">📦 <span>Order History</span></div>
+        <div class="mock-sidebar-item">💬 <span>Message Maytee</span></div>
+        <div class="mock-sidebar-item">⚙️ <span>Settings</span></div>
+      </div>
+      <!-- Main content -->
+      <div style="flex: 1; overflow-y: auto;">
+        <!-- Welcome banner -->
+        <div style="background: linear-gradient(135deg, #0d1f18, #1a3a28); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; color: white;">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700;">Welcome back, Maikel! 🌿</div>
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.65); margin-top: 0.2rem;">Your garden journey continues here.</div>
+        </div>
+        <!-- Stat cards -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.75rem;">
+          <div class="stat-card"><div class="stat-number">1</div><div class="stat-label">Upcoming Appt</div></div>
+          <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Saved Plants</div></div>
+          <div class="stat-card"><div class="stat-number">1</div><div class="stat-label">Orders</div></div>
+        </div>
+        <!-- Upcoming appointment card -->
+        <div style="font-weight: 600; font-size: 0.78rem; color: #374151; margin-bottom: 0.4rem;">Upcoming Appointments</div>
+        <div style="background: white; border-radius: 10px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 0.75rem; display: flex; gap: 0.75rem; align-items: center;">
+          <div style="background: #2d6a4f; border-radius: 8px; padding: 0.5rem; text-align: center; min-width: 44px; flex-shrink: 0;">
+            <div style="font-size: 0.65rem; color: rgba(255,255,255,0.7); text-transform: uppercase;">Jun</div>
+            <div style="font-size: 1.1rem; font-weight: 700; color: white; line-height: 1;">16</div>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.8rem; color: #111;">Landscape Design Consultation</div>
+            <div style="font-size: 0.7rem; color: #6b7280; margin-top: 0.15rem;">11:00 AM · 60 min · 📍 In-Person</div>
+          </div>
+          <span class="mock-badge badge-green">confirmed</span>
+        </div>
+        <!-- Recommendations -->
+        <div style="background: #d8f3dc; border: 1px solid #b7e4c7; border-radius: 10px; padding: 0.75rem; font-size: 0.73rem; color: #1b4332; line-height: 1.5;">
+          <div style="font-weight: 700; margin-bottom: 0.2rem;">🌿 Maytee Recommends</div>
+          Now is the perfect time to plant Bougainvillea and Ixora — peak growing season in Miami. Available in our catalog!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 16: APPOINTMENTS & MESSAGING -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-16">
+  <div class="slide-left">
+    <div class="slide-label">Slide 16 · Customer Flow 14</div>
+    <div class="slide-section">Customer Portal</div>
+    <h2 class="slide-heading">Appointments & Messaging</h2>
+    <p class="slide-desc">Customers manage bookings at <code style="color:#74c69d;">/portal/appointments</code> and send messages to Maytee at <code style="color:#74c69d;">/portal/messages</code>.</p>
+    <ul class="slide-steps">
+      <li>Add to Calendar → downloads ICS file via <code>/api/appointments/[id]/ics</code></li>
+      <li>Cancel → status to cancelled + admin email + Outlook event deleted</li>
+      <li>Messages create <code>InboxMessage { type: "customer-message" }</code></li>
+      <li>Admin replies are sent by email (no in-app thread shown to customer)</li>
+      <li>Cancel button only shows for pending/confirmed future bookings</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Cancellation</strong> is immediate — no undo in UI. Admin can manually change status back via the admin bookings panel if needed. Calendar event is deleted via Microsoft Graph on cancel.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1rem; background: #f5f0e8;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <!-- Sidebar (abbreviated) -->
+      <div class="mock-sidebar" style="min-height: 0; min-width: 150px;">
+        <div style="text-align: center; padding-bottom: 0.6rem; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.15);">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: #40916c; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.3rem; font-weight: 700; font-size: 0.8rem;">MJ</div>
+          <div style="font-size: 0.72rem; color: white; font-weight: 600;">Maikel Jordan</div>
+        </div>
+        <div class="mock-sidebar-item">🏠 Dashboard</div>
+        <div class="mock-sidebar-item">❤️ Saved Plants</div>
+        <div class="mock-sidebar-item active">📅 Appointments</div>
+        <div class="mock-sidebar-item">📦 Orders</div>
+        <div class="mock-sidebar-item">💬 Messages</div>
+        <div class="mock-sidebar-item">⚙️ Settings</div>
+      </div>
+      <!-- Main -->
+      <div style="flex: 1; overflow-y: auto;">
+        <!-- Appointment card -->
+        <div style="font-weight: 700; font-size: 0.82rem; color: #111; margin-bottom: 0.4rem;">My Appointments</div>
+        <div style="background: white; border-radius: 10px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 0.75rem;">
+          <div style="display: flex; gap: 0.6rem; align-items: center; margin-bottom: 0.5rem;">
+            <div style="background: #2d6a4f; border-radius: 8px; padding: 0.45rem; text-align: center; min-width: 40px; flex-shrink: 0;">
+              <div style="font-size: 0.6rem; color: rgba(255,255,255,0.7);">Jun</div>
+              <div style="font-size: 1rem; font-weight: 700; color: white; line-height: 1;">16</div>
+            </div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; font-size: 0.78rem; color: #111;">Landscape Design Consultation</div>
+              <div style="font-size: 0.68rem; color: #6b7280;">11:00 AM · ⏱ 60 min · 📍 In-Person Visit</div>
+            </div>
+            <span class="mock-badge badge-green">confirmed</span>
+          </div>
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+            <span class="mock-btn mock-btn-outline mock-btn-sm">📅 Add to Calendar</span>
+            <span class="mock-btn" style="background: #eff6ff; color: #1d4ed8; font-size: 0.68rem; padding: 0.25rem 0.6rem; border-radius: 6px; font-weight: 600;">💬 Message Maytee</span>
+            <span class="mock-btn" style="background: #fff1f2; color: #dc2626; font-size: 0.68rem; padding: 0.25rem 0.6rem; border-radius: 6px; font-weight: 600;">✕ Cancel</span>
+          </div>
+        </div>
+        <!-- Message form -->
+        <div style="font-weight: 700; font-size: 0.82rem; color: #111; margin-bottom: 0.4rem;">Message Maytee</div>
+        <div style="background: white; border-radius: 10px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07);">
+          <div class="form-group">
+            <label class="form-label">Your Message</label>
+            <textarea class="mock-input" rows="3" style="resize: none; line-height: 1.5;">How should I prepare my garden before the visit?</textarea>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="mock-btn mock-btn-green mock-btn-sm">Send Message</span>
+            <span style="font-size: 0.68rem; color: #6b7280;">Sent May 29 · 10:30 AM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 17: PART 2 DIVIDER — ADMIN FLOWS -->
+<!-- ============================================================ -->
+<div class="slide slide-divider" id="slide-17">
+  <div class="divider-content">
+    <div style="font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: #74c69d; margin-bottom: 0.75rem;">Part 2 of 3</div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 700; color: #f5f0e8; margin-bottom: 1rem;">Admin Flows</div>
+    <div style="width: 60px; height: 2px; background: #bc4b35; margin: 0 auto 1.5rem;"></div>
+    <ul class="divider-list" style="columns: 2; gap: 2rem;">
+      <li><span class="num">15</span> Admin Dashboard</li>
+      <li><span class="num">16</span> Admin Inbox</li>
+      <li><span class="num">17</span> Booking Management</li>
+      <li><span class="num">18</span> Availability: Weekly</li>
+      <li><span class="num">19</span> Availability: Blocked Dates</li>
+      <li><span class="num">20</span> Plant Catalog Management</li>
+      <li><span class="num">21</span> Order Management</li>
+      <li><span class="num">22</span> Customer & Leads</li>
+      <li><span class="num">23</span> Email System</li>
+      <li><span class="num">24</span> Calendar Integration</li>
+      <li><span class="num">25</span> Audit Logs</li>
+      <li><span class="num">26</span> Test Email</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 18: ADMIN DASHBOARD -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-18">
+  <div class="slide-left">
+    <div class="slide-label">Slide 18 · Admin Flow 15</div>
+    <div class="slide-section">Admin Panel</div>
+    <h2 class="slide-heading">Admin Dashboard Overview</h2>
+    <p class="slide-desc">The admin hub at <code style="color:#74c69d;">/admin</code> — accessible by admin, staff, and superadmin roles. Live stats, quick navigation, and unread inbox badge.</p>
+    <ul class="slide-steps">
+      <li>Login: maytee@mayteesgarden.com / Admin2024!</li>
+      <li>Stats: total customers, bookings, pending, leads</li>
+      <li>Sidebar Inbox badge shows unread count from DB on each load</li>
+      <li>Staff role has same access as admin (no superadmin pages)</li>
+      <li>Separate from <code>/superadmin</code> — different visual theme</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Quick tip:</strong> After confirming a booking, the Inbox badge decrements automatically on next page load. The unread count is a server-side DB query — no WebSocket needed.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <!-- Admin sidebar -->
+      <div class="mock-sidebar" style="min-height: 0;">
+        <div style="padding-bottom: 0.6rem; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.15);">
+          <div style="font-weight: 700; font-size: 0.78rem; color: white; display: flex; align-items: center; gap: 0.3rem;">🛡 Admin Panel</div>
+          <div style="font-size: 0.62rem; color: rgba(255,255,255,0.45);">mayteesgarden.com</div>
+        </div>
+        <div class="mock-sidebar-item active">🏠 Dashboard</div>
+        <div class="mock-sidebar-item" style="justify-content: space-between;">
+          <span>📥 Inbox</span>
+          <span style="background: #d97706; color: white; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 700;">3</span>
+        </div>
+        <div class="mock-sidebar-item">📅 Bookings</div>
+        <div class="mock-sidebar-item">🗓 Availability</div>
+        <div class="mock-sidebar-item">📦 Orders</div>
+        <div class="mock-sidebar-item">🌿 Plants</div>
+        <div class="mock-sidebar-item">👥 Customers</div>
+        <div class="mock-sidebar-item">💬 Leads</div>
+        <div class="mock-sidebar-item">📋 Audit Logs</div>
+        <div style="margin-top: auto; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.68rem; color: rgba(255,255,255,0.4); cursor: default;">← Back to Website</div>
+      </div>
+      <!-- Main area -->
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: #f5f0e8; margin-bottom: 0.75rem;">Admin Dashboard</div>
+        <!-- Stat cards -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 0.75rem;">
+          <div class="stat-card"><div class="stat-number">247</div><div class="stat-label">Total Customers</div></div>
+          <div class="stat-card"><div class="stat-number">12</div><div class="stat-label">Bookings This Month</div></div>
+          <div class="stat-card" style="border-left: 3px solid #d97706;"><div class="stat-number" style="color: #d97706;">3</div><div class="stat-label">Pending Bookings</div></div>
+          <div class="stat-card" style="border-left: 3px solid #2d6a4f;"><div class="stat-number" style="color: #2d6a4f;">5</div><div class="stat-label">New Leads</div></div>
+        </div>
+        <!-- Recent bookings -->
+        <div style="font-weight: 600; font-size: 0.78rem; color: #f5f0e8; margin-bottom: 0.4rem;">Recent Bookings</div>
+        <div style="background: #1a2e22; border-radius: 10px; overflow: hidden;">
+          <table class="mock-table" style="color: #d5c9b0;">
+            <thead><tr style="background: rgba(255,255,255,0.05);"><th style="background: transparent; color: #888; border-bottom: 1px solid rgba(255,255,255,0.1);">Name</th><th style="background: transparent; color: #888; border-bottom: 1px solid rgba(255,255,255,0.1);">Service</th><th style="background: transparent; color: #888; border-bottom: 1px solid rgba(255,255,255,0.1);">Date</th><th style="background: transparent; color: #888; border-bottom: 1px solid rgba(255,255,255,0.1);">Status</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.07);"><td style="color: #d5c9b0; border-bottom: none;">Maikel Jordan</td><td style="color: #d5c9b0; border-bottom: none;">Landscape Design</td><td style="color: #d5c9b0; border-bottom: none;">Jun 16</td><td style="border-bottom: none;"><span class="mock-badge badge-amber">pending</span></td></tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.07);"><td style="color: #d5c9b0; border-bottom: none;">Maria Santos</td><td style="color: #d5c9b0; border-bottom: none;">Plant Rescue</td><td style="color: #d5c9b0; border-bottom: none;">Jun 20</td><td style="border-bottom: none;"><span class="mock-badge badge-green">confirmed</span></td></tr>
+              <tr><td style="color: #d5c9b0; border-bottom: none;">Alex Ramirez</td><td style="color: #d5c9b0; border-bottom: none;">Installation</td><td style="color: #d5c9b0; border-bottom: none;">Jun 25</td><td style="border-bottom: none;"><span class="mock-badge badge-amber">pending</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 19: ADMIN INBOX -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-19">
+  <div class="slide-left">
+    <div class="slide-label">Slide 19 · Admin Flow 16</div>
+    <div class="slide-section">Admin Panel · Inbox</div>
+    <h2 class="slide-heading">Admin Inbox</h2>
+    <p class="slide-desc">The unified inbox at <code style="color:#74c69d;">/admin/inbox</code> aggregates 4 message types: customer portal messages, booking alerts, contact form submissions, and order alerts.</p>
+    <ul class="slide-steps">
+      <li>Tabs: All / Unread / Messages / Booking Alerts / Contact Forms / Orders</li>
+      <li>Clicking a card marks it as read, decrements sidebar badge</li>
+      <li>Inline reply sends branded Resend email to sender</li>
+      <li>Booking alert links to <code>/admin/bookings</code></li>
+      <li>Order alert links to <code>/admin/orders</code></li>
+    </ul>
+    <div class="tip-box">
+      <strong>Reply sends email</strong> via <code>sendLeadReply()</code> or <code>sendCustomerMessageAlert()</code> depending on message type. Subject and body are admin-composed. Reply goes to the original sender's email.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <!-- Abbreviated admin sidebar -->
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item">🏠 Dashboard</div>
+        <div class="mock-sidebar-item active" style="justify-content: space-between;">
+          <span>📥 Inbox</span>
+          <span style="background: #d97706; color: white; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.58rem; font-weight: 700;">3</span>
+        </div>
+        <div class="mock-sidebar-item">📅 Bookings</div>
+        <div class="mock-sidebar-item">📦 Orders</div>
+        <div class="mock-sidebar-item">🌿 Plants</div>
+      </div>
+      <!-- Inbox content -->
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.6rem;">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8;">Inbox</div>
+          <div style="font-size: 0.7rem; color: #888;">8 messages · 3 unread</div>
+        </div>
+        <!-- Filter tabs -->
+        <div style="display: flex; gap: 0.3rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+          <span style="background: #2d6a4f; color: white; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; font-weight: 600;">All (8)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; cursor: default;">Unread (3)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; cursor: default;">Messages (2)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; cursor: default;">Alerts (3)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; cursor: default;">Forms (2)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; cursor: default;">Orders (1)</span>
+        </div>
+        <!-- Message list -->
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem;">
+          <div style="border-left: 3px solid #2d6a4f; padding: 0.6rem 0.75rem; border-bottom: 1px solid #2a2a2a; background: #222;">
+            <div style="font-weight: 700; font-size: 0.77rem; color: #f0f0f0;">New booking: Landscape Consultation — Maikel Jordan</div>
+            <div style="font-size: 0.67rem; color: #888; margin-top: 0.15rem;">Booking Alert · Today 2:15 PM</div>
+          </div>
+          <div style="padding: 0.6rem 0.75rem; border-bottom: 1px solid #2a2a2a;">
+            <div style="font-size: 0.77rem; color: #bbb;">Message re: upcoming appointment</div>
+            <div style="font-size: 0.67rem; color: #555; margin-top: 0.15rem;">Customer Message · Today 9:39 AM</div>
+          </div>
+          <div style="padding: 0.6rem 0.75rem; border-bottom: 1px solid #2a2a2a;">
+            <div style="font-size: 0.77rem; color: #bbb;">New inquiry: landscape installation — Alex R.</div>
+            <div style="font-size: 0.67rem; color: #555; margin-top: 0.15rem;">Contact Form · Yesterday 3:22 PM</div>
+          </div>
+          <div style="padding: 0.6rem 0.75rem;">
+            <div style="font-size: 0.77rem; color: #bbb;">New order #MG-2026-0042 — $92.51</div>
+            <div style="font-size: 0.67rem; color: #555; margin-top: 0.15rem;">Order Alert · Jun 1, 11:47 AM</div>
+          </div>
+        </div>
+        <!-- Expanded message -->
+        <div style="background: #1e1e1e; border-radius: 10px; padding: 0.75rem; border: 1px solid #333;">
+          <div style="font-weight: 700; font-size: 0.77rem; color: #f0f0f0; margin-bottom: 0.4rem;">New booking: Landscape Consultation — Maikel Jordan</div>
+          <div style="font-size: 0.72rem; color: #aaa; line-height: 1.5; margin-bottom: 0.5rem;">A new booking was just submitted. Details below.</div>
+          <div style="background: #252525; border-radius: 6px; padding: 0.5rem; font-size: 0.7rem; color: #ccc; margin-bottom: 0.5rem; line-height: 1.6;">
+            <strong style="color: #888;">Client:</strong> Maikel Jordan &nbsp;·&nbsp; <strong style="color: #888;">Email:</strong> mjordanf@gmail.com<br>
+            <strong style="color: #888;">Service:</strong> Landscape Design Consultation &nbsp;·&nbsp; <strong style="color: #888;">Date:</strong> Jun 16, 11:00 AM
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Reply</label>
+            <textarea class="mock-input-dark" rows="2" style="resize: none;">Thanks for booking! We'll confirm shortly.</textarea>
+          </div>
+          <span class="mock-btn mock-btn-blue mock-btn-sm" style="margin-top: 0.3rem;">Send Reply</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 20: BOOKING MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-20">
+  <div class="slide-left">
+    <div class="slide-label">Slide 20 · Admin Flow 17</div>
+    <div class="slide-section">Admin Panel · Bookings</div>
+    <h2 class="slide-heading">Booking Management</h2>
+    <p class="slide-desc">Full lifecycle at <code style="color:#74c69d;">/admin/bookings</code> — confirm pending bookings, select consultation type, sync Outlook calendar, and cancel if needed.</p>
+    <ul class="slide-steps">
+      <li>Filter by: All / Pending / Confirmed / Completed / Cancelled</li>
+      <li>Confirm → modal: select consultation type, paste video link if video</li>
+      <li>On confirm: Outlook calendar event created via Microsoft Graph</li>
+      <li>Customer receives branded confirmation email (in-person or video format)</li>
+      <li>Cancel: status → cancelled, calendar event deleted, admin inbox notified</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Calendar sync</strong> is graceful — if Azure credentials are missing (<code>MICROSOFT_TENANT_ID</code> etc. not set), <code>isConfigured()</code> returns false and bookings still confirm successfully without calendar events.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item">🏠 Dashboard</div>
+        <div class="mock-sidebar-item">📥 Inbox</div>
+        <div class="mock-sidebar-item active">📅 Bookings</div>
+        <div class="mock-sidebar-item">🗓 Availability</div>
+        <div class="mock-sidebar-item">📦 Orders</div>
+        <div class="mock-sidebar-item">🌿 Plants</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8; margin-bottom: 0.6rem;">Bookings</div>
+        <!-- Filter tabs -->
+        <div style="display: flex; gap: 0.3rem; margin-bottom: 0.6rem;">
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">All</span>
+          <span style="background: #d97706; color: white; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; font-weight: 600;">Pending (3)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">Confirmed (5)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">Completed</span>
+        </div>
+        <!-- Table -->
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden; margin-bottom: 0.6rem;">
+          <table class="mock-table-dark">
+            <thead><tr><th>Client</th><th>Service</th><th>Date & Time</th><th>Preference</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #2a2a2a; background: rgba(217,119,6,0.08);">
+                <td>Maikel Jordan</td>
+                <td style="max-width: 100px;">Landscape Design</td>
+                <td>Jun 16, 11:00 AM</td>
+                <td>🏡 In-Person</td>
+                <td><span class="mock-badge badge-amber">pending</span></td>
+                <td><span class="mock-btn mock-btn-green mock-btn-sm">Confirm</span></td>
+              </tr>
+              <tr>
+                <td>Maria Santos</td>
+                <td>Plant Rescue</td>
+                <td>Jun 20, 2:00 PM</td>
+                <td>📱 FaceTime</td>
+                <td><span class="mock-badge badge-green">confirmed</span></td>
+                <td><span class="mock-btn mock-btn-sm" style="background: #333; color: #ccc;">Edit</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Confirm modal expanded -->
+        <div style="background: #1e1e1e; border: 1px solid #3a5a40; border-radius: 10px; padding: 0.75rem;">
+          <div style="font-weight: 700; font-size: 0.8rem; color: #f0f0f0; margin-bottom: 0.6rem;">✓ Confirm Consultation — Maikel Jordan</div>
+          <div class="form-group">
+            <label class="form-label-dark">Consultation Type</label>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; color: #ccc; cursor: default;">
+                <div style="width: 14px; height: 14px; border-radius: 50%; background: #2d6a4f; border: 2px solid #2d6a4f; display: flex; align-items: center; justify-content: center;"><div style="width: 5px; height: 5px; border-radius: 50%; background: white;"></div></div> In-Person
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; color: #888; cursor: default;"><div style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #555;"></div> FaceTime</label>
+              <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; color: #888; cursor: default;"><div style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #555;"></div> WhatsApp</label>
+              <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; color: #888; cursor: default;"><div style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #555;"></div> Google Meet</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Admin Notes (internal only)</label>
+            <textarea class="mock-input-dark" rows="2" style="resize: none;">Customer wants to focus on front yard tropical design.</textarea>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span class="mock-btn mock-btn-green mock-btn-sm">✓ Confirm &amp; Sync Calendar 🗓</span>
+            <span style="font-size: 0.67rem; color: #888;">Confirmation email will be sent to customer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 21: AVAILABILITY MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-21">
+  <div class="slide-left">
+    <div class="slide-label">Slide 21 · Admin Flow 18</div>
+    <div class="slide-section">Admin Panel · Availability</div>
+    <h2 class="slide-heading">Availability Management</h2>
+    <p class="slide-desc">Configure the weekly booking schedule at <code style="color:#74c69d;">/admin/availability</code> — which days are open, start/end times, slot duration, and meeting type per day.</p>
+    <ul class="slide-steps">
+      <li>7-day grid: toggle each day on/off</li>
+      <li>Per-day: Start Time, End Time, Slot Duration (minutes), Type</li>
+      <li>Type controls customer preference options (in-person / video / both)</li>
+      <li>"Apply Mon–Fri" shortcut button for quick setup</li>
+      <li>Changes are immediate — affects live booking calendar</li>
+    </ul>
+    <div class="tip-box">
+      <strong>No template = closed.</strong> If Sunday has no AvailabilityTemplate (or toggle is off), that day shows as fully grayed in the booking calendar. Slot duration of 60 min generates hourly slots from start→end.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item">📅 Bookings</div>
+        <div class="mock-sidebar-item active">🗓 Availability</div>
+        <div class="mock-sidebar-item">📦 Orders</div>
+        <div class="mock-sidebar-item">🌿 Plants</div>
+        <div class="mock-sidebar-item">👥 Customers</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8; margin-bottom: 0.5rem;">Availability</div>
+        <!-- Tabs -->
+        <div style="display: flex; gap: 0.4rem; margin-bottom: 0.75rem;">
+          <span style="background: #2d6a4f; color: white; border-radius: 6px; padding: 0.3rem 0.8rem; font-size: 0.72rem; font-weight: 600;">Weekly Schedule</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 6px; padding: 0.3rem 0.8rem; font-size: 0.72rem; cursor: default;">Blocked Dates</span>
+        </div>
+        <!-- Schedule grid header -->
+        <div style="display: grid; grid-template-columns: 70px 36px 75px 75px 65px 90px; gap: 0.3rem; padding: 0 0 0.3rem 0; border-bottom: 1px solid #333; margin-bottom: 0.3rem; font-size: 0.63rem; color: #666; text-transform: uppercase; font-weight: 600;">
+          <span>Day</span><span>Active</span><span>Start</span><span>End</span><span>Slot</span><span>Type</span>
+        </div>
+        <!-- Days -->
+        <div class="avail-row" style="opacity: 0.4;">
+          <span style="color: #888; font-size: 0.72rem;">Sunday</span>
+          <div class="avail-toggle off"></div>
+          <span style="font-size: 0.7rem; color: #555;">—</span>
+          <span style="font-size: 0.7rem; color: #555;">—</span>
+          <span style="font-size: 0.7rem; color: #555;">—</span>
+          <span style="font-size: 0.7rem; color: #555;">Closed</span>
+        </div>
+        <div class="avail-row">
+          <span style="color: #ccc; font-size: 0.72rem;">Monday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">17:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #74c69d; background: #2a2a2a;">Both ▾</div>
+        </div>
+        <div class="avail-row">
+          <span style="color: #ccc; font-size: 0.72rem;">Tuesday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">17:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #74c69d; background: #2a2a2a;">Both ▾</div>
+        </div>
+        <div class="avail-row">
+          <span style="color: #ccc; font-size: 0.72rem;">Wednesday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">17:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #74c69d; background: #2a2a2a;">Both ▾</div>
+        </div>
+        <div class="avail-row">
+          <span style="color: #ccc; font-size: 0.72rem;">Thursday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">17:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #74c69d; background: #2a2a2a;">Both ▾</div>
+        </div>
+        <div class="avail-row">
+          <span style="color: #ccc; font-size: 0.72rem;">Friday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">17:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #aaa; background: #2a2a2a;">In-Person ▾</div>
+        </div>
+        <div class="avail-row" style="border-bottom: none;">
+          <span style="color: #ccc; font-size: 0.72rem;">Saturday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">14:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #74c69d; background: #2a2a2a;">Both ▾</div>
+        </div>
+        <div style="display: flex; gap: 0.4rem; margin-top: 0.75rem;">
+          <span class="mock-btn mock-btn-sm" style="background: #333; color: #ccc;">Apply Mon–Fri</span>
+          <span class="mock-btn mock-btn-green mock-btn-sm">Save Schedule</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 22: BLOCKED DATES -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-22">
+  <div class="slide-left">
+    <div class="slide-label">Slide 22 · Admin Flow 19</div>
+    <div class="slide-section">Admin Panel · Availability</div>
+    <h2 class="slide-heading">Blocked Dates</h2>
+    <p class="slide-desc">The Blocked Dates tab creates <code>AvailabilityOverride</code> records that gray out specific dates on the booking calendar regardless of the weekly template.</p>
+    <ul class="slide-steps">
+      <li>Date picker + optional reason (admin-facing only)</li>
+      <li>Blocked dates show as unavailable in <code>/booking</code> calendar</li>
+      <li>Existing bookings on blocked dates are NOT cancelled</li>
+      <li>Delete with × button → <code>DELETE /api/availability/overrides/[id]</code></li>
+      <li>Reason field is for internal reference — not shown to customers</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Use case:</strong> Block vacation weeks, public holidays, or days when Maytee has other commitments. The override record has <code>isBlocked: true</code> which the slots endpoint checks before returning available times.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item active">🗓 Availability</div>
+        <div class="mock-sidebar-item">📅 Bookings</div>
+        <div class="mock-sidebar-item">📦 Orders</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8; margin-bottom: 0.5rem;">Availability</div>
+        <!-- Tabs -->
+        <div style="display: flex; gap: 0.4rem; margin-bottom: 0.75rem;">
+          <span style="background: #2a2a2a; color: #888; border-radius: 6px; padding: 0.3rem 0.8rem; font-size: 0.72rem; cursor: default;">Weekly Schedule</span>
+          <span style="background: #2d6a4f; color: white; border-radius: 6px; padding: 0.3rem 0.8rem; font-size: 0.72rem; font-weight: 600;">Blocked Dates</span>
+        </div>
+        <!-- Add blocked date form -->
+        <div style="background: #1e1e1e; border-radius: 10px; padding: 0.75rem; margin-bottom: 0.6rem; border: 1px solid #333;">
+          <div style="font-size: 0.75rem; font-weight: 600; color: #ccc; margin-bottom: 0.5rem;">Block a Date</div>
+          <div class="form-row">
+            <div>
+              <label class="form-label-dark">Date *</label>
+              <input class="mock-input-dark" type="date" value="2026-07-25">
+            </div>
+            <div>
+              <label class="form-label-dark">Reason (optional)</label>
+              <input class="mock-input-dark" placeholder="e.g. vacation, holiday..." value="conference">
+            </div>
+          </div>
+          <span class="mock-btn mock-btn-green mock-btn-sm" style="margin-top: 0.25rem;">Block This Date</span>
+        </div>
+        <!-- Existing blocked dates -->
+        <div style="font-size: 0.75rem; font-weight: 600; color: #ccc; margin-bottom: 0.4rem;">Blocked Dates (3)</div>
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden; margin-bottom: 0.6rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; border-bottom: 1px solid #2a2a2a;">
+            <div>
+              <div style="font-size: 0.77rem; color: #e5e5e5; font-weight: 600;">Jun 28, 2026</div>
+              <div style="font-size: 0.67rem; color: #888;">vacation</div>
+            </div>
+            <span style="color: #dc2626; font-size: 0.9rem; cursor: default;">✕</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; border-bottom: 1px solid #2a2a2a;">
+            <div>
+              <div style="font-size: 0.77rem; color: #e5e5e5; font-weight: 600;">Jul 4, 2026</div>
+              <div style="font-size: 0.67rem; color: #888;">Independence Day holiday</div>
+            </div>
+            <span style="color: #dc2626; font-size: 0.9rem; cursor: default;">✕</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem;">
+            <div>
+              <div style="font-size: 0.77rem; color: #e5e5e5; font-weight: 600;">Jul 14–18, 2026</div>
+              <div style="font-size: 0.67rem; color: #888;">conference trip</div>
+            </div>
+            <span style="color: #dc2626; font-size: 0.9rem; cursor: default;">✕</span>
+          </div>
+        </div>
+        <!-- Mini calendar preview -->
+        <div class="mini-calendar" style="background: #1e1e1e; border: 1px solid #333;">
+          <div class="cal-header" style="color: #ccc;">
+            <span>‹</span><span style="color: #f0f0f0;">July 2026</span><span>›</span>
+          </div>
+          <div class="cal-grid" style="color: #888;">
+            <div class="cal-day header">S</div><div class="cal-day header">M</div><div class="cal-day header">T</div><div class="cal-day header">W</div><div class="cal-day header">T</div><div class="cal-day header">F</div><div class="cal-day header">S</div>
+            <div class="cal-day unavailable" style="color: #555;">1</div><div class="cal-day available" style="color: #74c69d;">2</div><div class="cal-day available" style="color: #74c69d;">3</div><div class="cal-day blocked" style="color: #f87171;">4</div><div class="cal-day unavailable" style="color: #555;">5</div><div class="cal-day available" style="color: #74c69d;">6</div><div class="cal-day unavailable" style="color: #555;">7</div>
+            <div class="cal-day unavailable" style="color: #555;">8</div><div class="cal-day available" style="color: #74c69d;">9</div><div class="cal-day available" style="color: #74c69d;">10</div><div class="cal-day available" style="color: #74c69d;">11</div><div class="cal-day available" style="color: #74c69d;">12</div><div class="cal-day available" style="color: #74c69d;">13</div><div class="cal-day unavailable" style="color: #555;">14</div>
+            <div class="cal-day unavailable" style="color: #555;">15</div><div class="cal-day blocked" style="color: #f87171;">16</div><div class="cal-day blocked" style="color: #f87171;">17</div><div class="cal-day blocked" style="color: #f87171;">18</div><div class="cal-day blocked" style="color: #f87171;">19</div><div class="cal-day unavailable" style="color: #555;">20</div><div class="cal-day unavailable" style="color: #555;">21</div>
+            <div class="cal-day unavailable" style="color: #555;">22</div><div class="cal-day available" style="color: #74c69d;">23</div><div class="cal-day available" style="color: #74c69d;">24</div><div class="cal-day available" style="color: #74c69d;">25</div>
+          </div>
+          <div style="display: flex; gap: 0.75rem; margin-top: 0.4rem; font-size: 0.65rem; color: #888;">
+            <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="color: #74c69d;">●</span> Available</span>
+            <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="color: #f87171;">●</span> Blocked</span>
+            <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="color: #555;">●</span> Weekend/closed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 23: PLANT CATALOG MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-23">
+  <div class="slide-left">
+    <div class="slide-label">Slide 23 · Admin Flow 20</div>
+    <div class="slide-section">Admin Panel · Plants</div>
+    <h2 class="slide-heading">Plant Catalog Management</h2>
+    <p class="slide-desc">Full CRUD for the plant catalog at <code style="color:#74c69d;">/admin/plants</code> — inline stock editing, Wikipedia image auto-fetch, and 90+ plants seeded.</p>
+    <ul class="slide-steps">
+      <li>Click online stock number → inline edit (Enter or blur to save)</li>
+      <li>Stock color: 🔴 0 · 🟡 1–3 · 🟢 4+</li>
+      <li>Add Plant: type name → Wikipedia suggestions auto-populate image URL</li>
+      <li>Separate <code>onlinePrice</code> overrides <code>price</code> in the shop</li>
+      <li>Shipping fields: <code>weight</code>, <code>shippingClass</code> for Shippo rates</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Wikipedia images:</strong> On name input, the form calls Wikimedia API for photo suggestions. The resolved image URL is stored as <code>Plant.imageUrl</code>. Use <code>unoptimized</code> on <code>next/image</code> to avoid Wikimedia 429 rate limiting.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item">📅 Bookings</div>
+        <div class="mock-sidebar-item">📦 Orders</div>
+        <div class="mock-sidebar-item active">🌿 Plants</div>
+        <div class="mock-sidebar-item">👥 Customers</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <div>
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8;">Plant Catalog</div>
+            <div style="font-size: 0.68rem; color: #888;">90 plants in catalog</div>
+          </div>
+          <span class="mock-btn mock-btn-green mock-btn-sm">+ Add Plant</span>
+        </div>
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem;">
+          <table class="mock-table-dark" style="font-size: 0.68rem;">
+            <thead><tr><th>Photo</th><th>Plant</th><th>Category</th><th>Online Price</th><th>Online Stk</th><th>Onsite Stk</th><th>Featured</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg,#2d6a4f,#40916c); display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">🌿</div></td>
+                <td><div style="font-weight: 600; color: #e5e5e5;">Bougainvillea</div><div style="font-size: 0.62rem; color: #666; font-style: italic;">Buganvilla</div></td>
+                <td><span class="mock-badge badge-amber" style="font-size: 0.6rem;">Flowering</span></td>
+                <td>$35.00</td>
+                <td><span style="color: #4ade80; font-weight: 600; cursor: pointer; text-decoration: underline;">8</span></td>
+                <td>10</td>
+                <td style="color: #fbbf24;">★</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg,#2d6a4f,#40916c); display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">🌿</div></td>
+                <td><div style="font-weight: 600; color: #e5e5e5;">Bird of Paradise</div><div style="font-size: 0.62rem; color: #666; font-style: italic;">Ave del Paraíso</div></td>
+                <td><span class="mock-badge badge-blue" style="font-size: 0.6rem;">Tropical</span></td>
+                <td>$65.00</td>
+                <td><span style="color: #fbbf24; font-weight: 600; cursor: pointer; text-decoration: underline;">2</span></td>
+                <td>5</td>
+                <td style="color: #fbbf24;">★</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg,#6b7280,#9ca3af); display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">🌿</div></td>
+                <td><div style="font-weight: 600; color: #888;">Coconut Palm</div><div style="font-size: 0.62rem; color: #555; font-style: italic;">Palma de Coco</div></td>
+                <td><span class="mock-badge badge-green" style="font-size: 0.6rem;">Palms</span></td>
+                <td>$149.00</td>
+                <td><span style="color: #f87171; font-weight: 600; cursor: pointer; text-decoration: underline;">0</span></td>
+                <td>3</td>
+                <td style="color: #555;">☆</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+              <tr>
+                <td><div style="width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg,#2d6a4f,#40916c); display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">🌿</div></td>
+                <td><div style="font-weight: 600; color: #e5e5e5;">Ixora</div><div style="font-size: 0.62rem; color: #666; font-style: italic;">Ixora</div></td>
+                <td><span class="mock-badge badge-amber" style="font-size: 0.6rem;">Flowering</span></td>
+                <td>$22.00</td>
+                <td><span style="color: #4ade80; font-weight: 600; cursor: pointer; text-decoration: underline;">12</span></td>
+                <td>15</td>
+                <td style="color: #555;">☆</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Inline edit hint -->
+        <div style="background: #1e2a22; border: 1px solid #3a5a40; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.7rem; color: #74c69d;">
+          💡 Click any stock number to edit inline. Press Enter or click away to save. Stock turns red at 0, amber at 1–3, green at 4+.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 24: ORDER MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-24">
+  <div class="slide-left">
+    <div class="slide-label">Slide 24 · Admin Flow 21</div>
+    <div class="slide-section">Admin Panel · Orders</div>
+    <h2 class="slide-heading">Order Management</h2>
+    <p class="slide-desc">Full order fulfillment at <code style="color:#74c69d;">/admin/orders</code> — view, generate Shippo labels, mark as shipped, and issue Square refunds.</p>
+    <ul class="slide-steps">
+      <li>Filter by status: Pending / Processing / Shipped / Delivered / Cancelled</li>
+      <li>Generate Label: fetches Shippo rates → purchase → label PDF + tracking saved</li>
+      <li>Mark Shipped → <code>sendShippingConfirmation()</code> with tracking number</li>
+      <li>Cancel → Square refund API called automatically if payment exists</li>
+      <li><code>StoreOrder.trackingNumber</code> included in shipping email</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Label purchase is final</strong> — Shippo charges for the label even if unused. Always verify the shipping address before purchasing. Square refunds are issued via <code>POST /api/store/orders/[id]/refund</code>.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item">📅 Bookings</div>
+        <div class="mock-sidebar-item active">📦 Orders</div>
+        <div class="mock-sidebar-item">🌿 Plants</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8; margin-bottom: 0.5rem;">Orders</div>
+        <!-- Filter tabs -->
+        <div style="display: flex; gap: 0.3rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">All</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">Pending</span>
+          <span style="background: #2d6a4f; color: white; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; font-weight: 600;">Processing (1)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">Shipped</span>
+        </div>
+        <!-- Order row -->
+        <div style="background: #1e1e1e; border-radius: 10px; margin-bottom: 0.5rem; overflow: hidden;">
+          <div style="padding: 0.6rem 0.75rem; display: flex; gap: 0.5rem; align-items: center; border-bottom: 1px solid #2a2a2a; flex-wrap: wrap;">
+            <div style="flex: 1;">
+              <div style="font-weight: 600; font-size: 0.78rem; color: #f0f0f0;">#MG-2026-0042</div>
+              <div style="font-size: 0.67rem; color: #888;">Maikel Jordan · mjordanf@gmail.com · Jun 1</div>
+            </div>
+            <span class="mock-badge badge-green" style="font-size: 0.65rem;">processing</span>
+            <span style="font-weight: 700; font-size: 0.82rem; color: #74c69d;">$92.51</span>
+          </div>
+          <!-- Expanded detail -->
+          <div style="padding: 0.65rem 0.75rem; font-size: 0.72rem; color: #ccc;">
+            <div style="margin-bottom: 0.4rem; display: flex; gap: 1rem;">
+              <div><strong style="color: #888;">Items:</strong> Bougainvillea × 1 ($35) · Ixora × 2 ($44)</div>
+            </div>
+            <div style="margin-bottom: 0.4rem;"><strong style="color: #888;">Ship to:</strong> 100 Biscayne Blvd, Miami FL 33132</div>
+            <div style="margin-bottom: 0.5rem;"><strong style="color: #888;">Square Payment:</strong> py_XXXXXXXXXXXXXXXX</div>
+            <!-- Generate label section -->
+            <div style="background: #252525; border-radius: 8px; padding: 0.6rem; border: 1px solid #333;">
+              <div style="font-weight: 600; font-size: 0.73rem; color: #e5e5e5; margin-bottom: 0.4rem;">📦 Generate Shipping Label</div>
+              <div class="rate-card selected" style="background: #2a2a2a; border-color: #40916c; margin-bottom: 0.25rem;">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background: #40916c; flex-shrink: 0;"></div>
+                <div style="flex: 1; font-size: 0.7rem; color: #e5e5e5;">UPS Ground Saver · Est. 2 days</div>
+                <div style="font-weight: 700; color: #74c69d; font-size: 0.78rem;">$6.27</div>
+              </div>
+              <div class="rate-card" style="background: #2a2a2a; border-color: #444; margin-bottom: 0.4rem;">
+                <div style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid #555; flex-shrink: 0;"></div>
+                <div style="flex: 1; font-size: 0.7rem; color: #888;">USPS Priority · Est. 2 days</div>
+                <div style="font-weight: 700; color: #888; font-size: 0.78rem;">$12.50</div>
+              </div>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <span class="mock-btn mock-btn-green mock-btn-sm">Purchase Label from Shippo</span>
+                <span class="mock-btn mock-btn-sm" style="background: #1d4ed8; color: white; font-size: 0.68rem; padding: 0.25rem 0.6rem; border-radius: 6px;">Mark as Processing</span>
+                <span class="mock-btn mock-btn-sm" style="background: #7f1d1d; color: #fca5a5; font-size: 0.68rem; padding: 0.25rem 0.6rem; border-radius: 6px;">Cancel Order</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 25: CUSTOMER MANAGEMENT & LEADS -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-25">
+  <div class="slide-left">
+    <div class="slide-label">Slide 25 · Admin Flow 22</div>
+    <div class="slide-section">Admin Panel · Customers & Leads</div>
+    <h2 class="slide-heading">Customer Management & Leads</h2>
+    <p class="slide-desc">Two admin sections: <code style="color:#74c69d;">/admin/users</code> (read-only customer list) and <code style="color:#74c69d;">/admin/leads</code> (contact forms + newsletter management).</p>
+    <ul class="slide-steps">
+      <li>Customers table: name, email, role, newsletter status, ZIP, joined date</li>
+      <li>Export CSV button — full customer list download</li>
+      <li>Contact Forms: expand → inline reply sends Resend email</li>
+      <li>Newsletter: shows confirmed subscriber count, send broadcast</li>
+      <li>Double opt-in — only <code>confirmed: true</code> subscribers receive emails</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Role changes</strong> require the Super Admin panel (<code>/superadmin/users</code>) — the admin user list is read-only. Newsletter broadcasts fire synchronously one-by-one; large lists may need background queue in Phase 2.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item active">👥 Customers</div>
+        <div class="mock-sidebar-item">💬 Leads</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <!-- Customers section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: #f5f0e8;">Customers</div>
+          <span class="mock-btn mock-btn-sm" style="background: #333; color: #ccc;">Export CSV</span>
+        </div>
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden; margin-bottom: 0.75rem;">
+          <table class="mock-table-dark" style="font-size: 0.67rem;">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Newsletter</th><th>ZIP</th><th>Joined</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="display: flex; align-items: center; gap: 0.3rem;"><div style="width: 22px; height: 22px; border-radius: 50%; background: #40916c; display: flex; align-items: center; justify-content: center; font-size: 0.58rem; font-weight: 700; color: white; flex-shrink: 0;">MJ</div> Maikel Jordan</div></td>
+                <td style="max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">mjordanf@gmail.com</td>
+                <td><span class="mock-badge badge-gray" style="font-size: 0.6rem;">customer</span></td>
+                <td style="color: #4ade80;">✓</td>
+                <td>33132</td>
+                <td style="color: #888;">May 29</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="display: flex; align-items: center; gap: 0.3rem;"><div style="width: 22px; height: 22px; border-radius: 50%; background: #1d4ed8; display: flex; align-items: center; justify-content: center; font-size: 0.58rem; font-weight: 700; color: white; flex-shrink: 0;">MS</div> Maria Santos</div></td>
+                <td style="max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">maria@example.com</td>
+                <td><span class="mock-badge badge-gray" style="font-size: 0.6rem;">customer</span></td>
+                <td style="color: #4ade80;">✓</td>
+                <td>33155</td>
+                <td style="color: #888;">May 15</td>
+              </tr>
+              <tr>
+                <td><div style="display: flex; align-items: center; gap: 0.3rem;"><div style="width: 22px; height: 22px; border-radius: 50%; background: #bc4b35; display: flex; align-items: center; justify-content: center; font-size: 0.58rem; font-weight: 700; color: white; flex-shrink: 0;">AR</div> Alex Ramirez</div></td>
+                <td style="max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">alex@example.com</td>
+                <td><span class="mock-badge badge-gray" style="font-size: 0.6rem;">customer</span></td>
+                <td style="color: #f87171;">✗</td>
+                <td>33180</td>
+                <td style="color: #888;">Apr 22</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Leads section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: #f5f0e8;">Leads & Newsletter</div>
+        </div>
+        <div style="display: flex; gap: 0.4rem; margin-bottom: 0.4rem;">
+          <span style="background: #2d6a4f; color: white; border-radius: 6px; padding: 0.25rem 0.6rem; font-size: 0.68rem; font-weight: 600;">Contact Forms (2)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 6px; padding: 0.25rem 0.6rem; font-size: 0.68rem;">Newsletter</span>
+        </div>
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden;">
+          <div style="padding: 0.55rem 0.75rem; border-bottom: 1px solid #2a2a2a;">
+            <div style="font-weight: 600; font-size: 0.73rem; color: #f0f0f0;">Alex Ramirez — landscape installation inquiry</div>
+            <div style="font-size: 0.65rem; color: #888; margin-top: 0.1rem;">alex@example.com · May 28 · <span class="mock-badge badge-amber" style="font-size: 0.6rem;">new</span></div>
+          </div>
+          <div style="padding: 0.55rem 0.75rem; background: #252525;">
+            <div style="font-size: 0.7rem; color: #bbb; margin-bottom: 0.35rem;">"Hi, I'm interested in a full front yard installation..."</div>
+            <div class="form-group">
+              <textarea class="mock-input-dark" rows="2" style="resize: none; font-size: 0.7rem;" placeholder="Type a reply..."></textarea>
+            </div>
+            <span class="mock-btn mock-btn-blue mock-btn-sm">Send Reply</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 26: EMAIL SYSTEM OVERVIEW -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-26">
+  <div class="slide-left">
+    <div class="slide-label">Slide 26 · Admin Flow 23</div>
+    <div class="slide-section">System · Email</div>
+    <h2 class="slide-heading">Email System Overview</h2>
+    <p class="slide-desc">All transactional emails are sent via <strong style="color:#74c69d;">Resend</strong> from <code style="color:#74c69d;">noreply@mayteesgardencenter.com</code>. The domain is verified via GoDaddy DNS. 15 distinct email triggers across the system.</p>
+    <ul class="slide-steps">
+      <li>All functions live in <code style="color:#74c69d;">src/lib/email.ts</code></li>
+      <li>Safe fallback: if <code>RESEND_API_KEY</code> not set, logs to console only</li>
+      <li>24-hour reminder runs via Vercel cron at 10AM UTC daily</li>
+      <li>Newsletter: only <code>confirmed: true</code> subscribers receive broadcasts</li>
+      <li>From: "Maytee's Garden &lt;noreply@mayteesgardencenter.com&gt;"</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Free tier:</strong> Resend provides 3,000 emails/month and 100/day — sufficient for typical boutique garden center volume. Password reset tokens expire after 1 hour. Test email at <code>/admin/test-email</code>.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.25rem;">
+    <div style="font-weight: 700; font-size: 0.9rem; color: #111; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+      <span style="background: #2d6a4f; color: white; border-radius: 6px; padding: 0.2rem 0.6rem; font-size: 0.7rem;">Resend</span> Email Trigger Map
+    </div>
+    <table class="email-table">
+      <thead>
+        <tr><th>Trigger</th><th>When</th><th>To</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Booking submitted</td><td>Immediately on form submit</td><td>Customer</td></tr>
+        <tr><td>Booking alert</td><td>Immediately on form submit</td><td>Admin (inbox)</td></tr>
+        <tr><td>Booking confirmed (in-person)</td><td>Admin clicks Confirm</td><td>Customer</td></tr>
+        <tr><td>Booking confirmed (video)</td><td>Admin clicks Confirm</td><td>Customer</td></tr>
+        <tr><td>Booking updated</td><td>Admin edits confirmed booking</td><td>Customer</td></tr>
+        <tr><td>Booking cancelled</td><td>Customer or admin cancels</td><td>Admin</td></tr>
+        <tr><td>24hr reminder</td><td>Cron · daily 10AM UTC</td><td>Customer</td></tr>
+        <tr><td>Order confirmation</td><td>Payment captured</td><td>Customer</td></tr>
+        <tr><td>Order alert</td><td>Payment captured</td><td>Admin (inbox)</td></tr>
+        <tr><td>Shipping notification</td><td>Admin marks shipped</td><td>Customer</td></tr>
+        <tr><td>Welcome email</td><td>Account registration</td><td>New user</td></tr>
+        <tr><td>Newsletter confirm</td><td>Newsletter opt-in checked</td><td>Subscriber</td></tr>
+        <tr><td>Newsletter broadcast</td><td>Admin sends newsletter</td><td>All confirmed</td></tr>
+        <tr><td>Password reset</td><td>Forgot password link</td><td>User</td></tr>
+        <tr><td>Lead reply</td><td>Admin replies to contact form</td><td>Lead submitter</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 27: CALENDAR INTEGRATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-27">
+  <div class="slide-left">
+    <div class="slide-label">Slide 27 · Admin Flow 24</div>
+    <div class="slide-section">System · Calendar</div>
+    <h2 class="slide-heading">Calendar Integration</h2>
+    <p class="slide-desc">Microsoft Graph API syncs confirmed bookings to <code style="color:#74c69d;">info@mayteesgardencenter.com</code> Outlook calendar using client credentials (no user sign-in required).</p>
+    <ul class="slide-steps">
+      <li>Azure AD App: "Maytees Garden Calendar" registered at portal.azure.com</li>
+      <li>Permission: <code>Calendars.ReadWrite</code> (Application, admin-consented)</li>
+      <li>Auth: client credentials flow → access token valid ~1 hour</li>
+      <li>Create on confirm · Update on edit · Delete on cancel</li>
+      <li>Graceful no-op if env vars not set — bookings still work</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Event includes:</strong> customer name, email, phone, ZIP, service, consultation type, video call link (if video), customer notes, and a 60-minute calendar reminder. Event ID saved as <code>Booking.calendarEventId</code>.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <div style="font-weight: 700; font-size: 0.88rem; color: #111; margin-bottom: 1rem;">Calendar Sync Flow</div>
+    <div class="flow-step">
+      <div class="flow-step-num">1</div>
+      <div class="flow-step-body">🗓 Admin clicks <strong>"Confirm &amp; Sync Calendar"</strong> in <code>/admin/bookings</code></div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-step-num">2</div>
+      <div class="flow-step-body">⚡ App calls <code>getAccessToken()</code> → POST to <code>login.microsoftonline.com/{tenantId}/oauth2/v2.0/token</code> with <code>client_credentials</code></div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-step-num">3</div>
+      <div class="flow-step-body">📡 Microsoft Graph: <code>POST /users/info@mayteesgardencenter.com/events</code> → creates calendar event → returns <code>eventId</code></div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-step-num">4</div>
+      <div class="flow-step-body">💾 <code>Booking.calendarEventId</code> saved, <code>calendarSynced = true</code></div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-step-num">5</div>
+      <div class="flow-step-body">📧 Customer receives confirmation email with consultation details</div>
+    </div>
+    <!-- Side note box -->
+    <div style="background: #f0f4ff; border: 1px solid #c7d7fd; border-radius: 8px; padding: 0.75rem; margin-top: 0.75rem; font-size: 0.72rem; color: #1e3a8a; line-height: 1.5;">
+      <div style="font-weight: 700; margin-bottom: 0.3rem;">Azure App Registration</div>
+      Name: Maytees Garden Calendar<br>
+      Tenant: GoDaddy Microsoft 365<br>
+      Permission: Calendars.ReadWrite (Application)<br>
+      Calendar: info@mayteesgardencenter.com<br>
+      Event: "Garden Consultation — [Name] / [Date] [Time] / 15196 SW 184th St, Miami"
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 28: PART 3 DIVIDER — SUPER ADMIN -->
+<!-- ============================================================ -->
+<div class="slide slide-divider slide-divider-dark" id="slide-28">
+  <div class="divider-content" style="background: radial-gradient(ellipse at center, #1a1a3a 0%, #0d0d0d 70%);">
+    <div style="font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: #a78bfa; margin-bottom: 0.75rem;">Part 3 of 3</div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 700; color: #f5f0e8; margin-bottom: 1rem;">Super Admin</div>
+    <div style="width: 60px; height: 2px; background: #d97706; margin: 0 auto 1.5rem;"></div>
+    <ul class="divider-list">
+      <li><span class="num" style="color: #a78bfa;">25</span> Super Admin Area Overview</li>
+      <li><span class="num" style="color: #a78bfa;">26</span> User Management — Create, Edit, Delete</li>
+      <li><span class="num" style="color: #a78bfa;">27</span> Role Changes &amp; Password Reset</li>
+      <li><span class="num" style="color: #a78bfa;">28</span> Website Settings (read-only)</li>
+    </ul>
+    <div style="margin-top: 2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.75rem 1.25rem; font-size: 0.75rem; color: rgba(255,255,255,0.5);">
+      Login: maytee@mayteesgardencenter.com / Maytee@Admin2026<br>
+      Route: /superadmin — dark theme, separate from /admin
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 29: SUPER ADMIN AREA OVERVIEW -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-29">
+  <div class="slide-left">
+    <div class="slide-label">Slide 29 · Super Admin Flow 25</div>
+    <div class="slide-section">Super Admin</div>
+    <h2 class="slide-heading">Super Admin: Area Overview</h2>
+    <p class="slide-desc">The super admin panel at <code style="color:#74c69d;">/superadmin</code> — exclusively for the <code>superadmin</code> role. Dark gray theme clearly distinguishes it from the business admin panel.</p>
+    <ul class="slide-steps">
+      <li>Login: maytee@mayteesgardencenter.com / Maytee@Admin2026</li>
+      <li>Route protection: <code>superadmin/layout.tsx</code> checks role === "superadmin"</li>
+      <li>Separate from <code>/admin</code> — Maytee's staff don't see this</li>
+      <li>"Business Admin" link in footer navigates to <code>/admin</code></li>
+      <li>Stats: total users, admin accounts, staff accounts</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Dark theme</strong> (<code>#111</code> background, <code>#1a1a1a</code> sidebar) is intentional — visual distinction prevents confusion between the product-owner tooling and the daily-use business admin panel.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1rem; background: #111;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <!-- Super admin sidebar -->
+      <div class="mock-sidebar-dark">
+        <div style="padding-bottom: 0.6rem; margin-bottom: 0.6rem; border-bottom: 1px solid #333;">
+          <div style="width: 32px; height: 32px; border-radius: 6px; background: #d97706; display: flex; align-items: center; justify-content: center; margin-bottom: 0.35rem; font-size: 0.8rem;">⚙</div>
+          <div style="font-weight: 700; font-size: 0.78rem; color: #e5e5e5;">Super Admin</div>
+          <div style="font-size: 0.62rem; color: #555;">mayteesgardencenter.com</div>
+        </div>
+        <div class="mock-sidebar-item active-dark" style="background: rgba(217,119,6,0.2); border-radius: 6px; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.6rem;">🏠 <span style="color: #f0f0f0;">Dashboard</span></div>
+        <div class="mock-sidebar-item" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.6rem; color: #999;">👥 User Management</div>
+        <div class="mock-sidebar-item" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.6rem; color: #999;">⚙️ Website Settings</div>
+        <div style="margin-top: auto; padding-top: 0.75rem; border-top: 1px solid #333; font-size: 0.67rem; color: #555;">
+          <div style="cursor: default; padding: 0.3rem 0;">← Business Admin</div>
+          <div style="cursor: default; padding: 0.3rem 0;">← Back to Website</div>
+        </div>
+      </div>
+      <!-- Main area -->
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.3rem;">Super Admin Dashboard</div>
+        <div style="font-size: 0.73rem; color: #666; margin-bottom: 0.75rem;">Website product administration — manage accounts and configuration.</div>
+        <!-- Stat cards -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.75rem;">
+          <div class="stat-card-dark"><div class="stat-number-dark">12</div><div class="stat-label-dark">Total Users</div></div>
+          <div class="stat-card-dark"><div class="stat-number-dark">2</div><div class="stat-label-dark">Admin Accounts</div></div>
+          <div class="stat-card-dark"><div class="stat-number-dark">1</div><div class="stat-label-dark">Staff Accounts</div></div>
+        </div>
+        <!-- Feature tiles -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+          <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 0.75rem;">
+            <div style="font-size: 1.2rem; margin-bottom: 0.3rem;">👥</div>
+            <div style="font-weight: 600; font-size: 0.78rem; color: #e5e5e5; margin-bottom: 0.2rem;">User Management</div>
+            <div style="font-size: 0.68rem; color: #666; line-height: 1.4;">Create, edit, role-change, and delete any user account. Full access to all system users.</div>
+          </div>
+          <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 0.75rem;">
+            <div style="font-size: 1.2rem; margin-bottom: 0.3rem;">⚙️</div>
+            <div style="font-weight: 600; font-size: 0.78rem; color: #e5e5e5; margin-bottom: 0.2rem;">Website Settings</div>
+            <div style="font-size: 0.68rem; color: #666; line-height: 1.4;">View site configuration. Editable settings coming in Phase 2 — currently driven by env vars.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 30: SUPER ADMIN USER MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-30">
+  <div class="slide-left">
+    <div class="slide-label">Slide 30 · Super Admin Flow 26</div>
+    <div class="slide-section">Super Admin · Users</div>
+    <h2 class="slide-heading">Super Admin: User Management</h2>
+    <p class="slide-desc">Full user CRUD at <code style="color:#74c69d;">/superadmin/users</code> — create accounts, edit roles, reset passwords, and delete users. Role badges are color-coded by level.</p>
+    <ul class="slide-steps">
+      <li>Amber = Superadmin · Green = Admin · Blue = Staff · Gray = Customer</li>
+      <li>New User: create with name, email, temp password, role, phone</li>
+      <li>Edit: update name, role, phone — role change takes effect next login</li>
+      <li>Delete: user deleted; associated bookings/orders set <code>userId = null</code></li>
+      <li>All actions call <code>/api/admin/users</code> and <code>/api/admin/users/[id]</code></li>
+    </ul>
+    <div class="tip-box">
+      <strong>JWT sessions are not invalidated immediately</strong> on role change — the updated role takes effect when the user's current JWT expires or they log out and back in. Inform users to re-login after a role change.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1rem; background: #111;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar-dark" style="min-width: 150px;">
+        <div style="font-weight: 700; font-size: 0.72rem; color: #888; margin-bottom: 0.5rem; padding-bottom: 0.4rem; border-bottom: 1px solid #333;">⚙ Super Admin</div>
+        <div class="mock-sidebar-item" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.5rem; color: #888;">🏠 Dashboard</div>
+        <div class="mock-sidebar-item active-dark" style="background: rgba(217,119,6,0.15); border-radius: 6px; display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.5rem;">👥 <span style="color: #f0f0f0;">User Management</span></div>
+        <div class="mock-sidebar-item" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.5rem; color: #888;">⚙️ Settings</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <div>
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f0f0f0;">User Management</div>
+            <div style="font-size: 0.67rem; color: #666;">12 accounts</div>
+          </div>
+          <span class="mock-btn mock-btn-amber mock-btn-sm">+ New Account</span>
+        </div>
+        <div style="background: #1a1a1a; border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem;">
+          <table class="mock-table-dark" style="font-size: 0.67rem;">
+            <thead><tr><th>Name / Email</th><th>Role</th><th>Phone</th><th>Created</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="font-weight: 600; color: #e5e5e5;">Maytee</div><div style="font-size: 0.6rem; color: #666;">maytee@mayteesgardencenter.com</div></td>
+                <td><span style="background: #92400e; color: #fde68a; padding: 0.15rem 0.5rem; border-radius: 99px; font-size: 0.6rem; font-weight: 600;">Superadmin</span></td>
+                <td style="color: #888;">—</td>
+                <td style="color: #888;">May 29</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🔑</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="font-weight: 600; color: #e5e5e5;">Maytee</div><div style="font-size: 0.6rem; color: #666;">maytee@mayteesgarden.com</div></td>
+                <td><span class="mock-badge badge-green" style="font-size: 0.6rem;">Admin</span></td>
+                <td style="color: #888;">(305) 555-0100</td>
+                <td style="color: #888;">May 25</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🔑</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="font-weight: 600; color: #e5e5e5;">Maikel Jordan</div><div style="font-size: 0.6rem; color: #666;">mjordanf@gmail.com</div></td>
+                <td><span class="mock-badge badge-gray" style="font-size: 0.6rem;">Customer</span></td>
+                <td style="color: #888;">—</td>
+                <td style="color: #888;">May 29</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🔑</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+              <tr>
+                <td><div style="font-weight: 600; color: #e5e5e5;">Carlos Rivera</div><div style="font-size: 0.6rem; color: #666;">staff@mayteesgarden.com</div></td>
+                <td><span class="mock-badge badge-blue" style="font-size: 0.6rem;">Staff</span></td>
+                <td style="color: #888;">—</td>
+                <td style="color: #888;">May 20</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🔑</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Edit modal -->
+        <div style="background: #1a1a1a; border: 1px solid #444; border-radius: 10px; padding: 0.65rem; font-size: 0.72rem;">
+          <div style="font-weight: 600; color: #e5e5e5; margin-bottom: 0.4rem;">✏ Edit User — Maikel Jordan</div>
+          <div class="form-row">
+            <div><label class="form-label-dark">Name</label><input class="mock-input-dark" value="Maikel Jordan" readonly></div>
+            <div>
+              <label class="form-label-dark">Role</label>
+              <select class="mock-input-dark"><option>customer</option><option>staff</option><option>admin</option><option>superadmin</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Phone (optional)</label>
+            <input class="mock-input-dark" value="(786) 555-0100" readonly>
+          </div>
+          <div style="display: flex; gap: 0.4rem; margin-top: 0.25rem;">
+            <span class="mock-btn mock-btn-amber mock-btn-sm">Save Changes</span>
+            <span class="mock-btn mock-btn-sm" style="background: #333; color: #888;">Cancel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 31: SUPER ADMIN: PASSWORD RESET & SETTINGS -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-31">
+  <div class="slide-left">
+    <div class="slide-label">Slide 31 · Super Admin Flow 27–28</div>
+    <div class="slide-section">Super Admin · Password Reset &amp; Settings</div>
+    <h2 class="slide-heading">Password Reset & Website Settings</h2>
+    <p class="slide-desc">Two critical super admin operations: resetting user passwords out-of-band, and viewing (currently read-only) website configuration.</p>
+    <ul class="slide-steps">
+      <li>Reset Password: enter new temp password → <code>bcrypt.hash</code> stored in DB</li>
+      <li>Communicate temp password to user out-of-band (secure channel)</li>
+      <li>User should change via Forgot Password flow after first login</li>
+      <li>Settings page: read-only business name, address, phone, email, hours</li>
+      <li>Phase 2: settings editable via UI without code changes</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Password reset via super admin</strong> bypasses email — directly overwrites the user's <code>passwordHash</code>. Use for forgotten admin passwords when the email reset flow isn't accessible. Settings currently hardcoded in components and email templates.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1rem; background: #111;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; height: 100%; min-height: 0; align-content: start;">
+      <!-- Password reset panel -->
+      <div>
+        <div style="font-weight: 700; font-size: 0.82rem; color: #ccc; margin-bottom: 0.5rem;">🔑 Reset Password</div>
+        <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: #888; margin-bottom: 0.5rem;">Resetting for: <strong style="color: #ccc;">Maikel Jordan</strong></div>
+          <div class="form-group">
+            <label class="form-label-dark">New Password</label>
+            <input class="mock-input-dark" value="TempPass2026!" type="password" readonly>
+            <div style="font-size: 0.63rem; color: #666; margin-top: 0.2rem;">Minimum 8 characters</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Confirm Password</label>
+            <input class="mock-input-dark" value="TempPass2026!" type="password" readonly>
+          </div>
+          <span class="mock-btn mock-btn-amber mock-btn-sm">Reset Password</span>
+        </div>
+        <!-- Success state -->
+        <div style="background: #1a2e1a; border: 1px solid #3a5a3a; border-radius: 10px; padding: 0.6rem; margin-top: 0.5rem; font-size: 0.72rem; color: #4ade80; display: flex; align-items: center; gap: 0.4rem;">
+          ✓ Password updated successfully. Share the temp password securely with the user.
+        </div>
+      </div>
+      <!-- Website settings -->
+      <div>
+        <div style="font-weight: 700; font-size: 0.82rem; color: #ccc; margin-bottom: 0.5rem;">⚙️ Website Settings</div>
+        <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label-dark">Business Name</label>
+            <input class="mock-input-dark" value="Maytee's Garden Center" readonly style="opacity: 0.7; cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Address</label>
+            <input class="mock-input-dark" value="15196 SW 184th St, Miami FL 33187" readonly style="opacity: 0.7; cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Phone</label>
+            <input class="mock-input-dark" value="(786) 227-6616" readonly style="opacity: 0.7; cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Contact Email</label>
+            <input class="mock-input-dark" value="info@mayteesgardencenter.com" readonly style="opacity: 0.7; cursor: not-allowed;">
+          </div>
+          <div style="background: #252525; border: 1px solid #444; border-radius: 6px; padding: 0.5rem; font-size: 0.68rem; color: #888; margin-top: 0.3rem; line-height: 1.4;">
+            ℹ️ Editable settings coming in Phase 2. Fields are currently driven by environment variables and component constants.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 32: END SLIDE -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-32">
+  <div class="slide-left" style="justify-content: center;">
+    <div class="slide-label" style="color: #bc4b35;">End of Feature Tour</div>
+    <h1 class="slide-heading" style="font-size: 2.2rem; line-height: 1.1; margin-bottom: 1.25rem;">Maytee's Garden Center</h1>
+    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: rgba(245,240,232,0.8);">
+        <span style="color: #74c69d; font-size: 1rem;">✓</span> 32 slides · 30 complete user flows
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: rgba(245,240,232,0.8);">
+        <span style="color: #74c69d; font-size: 1rem;">✓</span> 3 portals: Customer · Admin · Super Admin
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: rgba(245,240,232,0.8);">
+        <span style="color: #74c69d; font-size: 1rem;">✓</span> Square · Shippo · Resend · Anthropic · Microsoft Graph · Neon
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: rgba(245,240,232,0.8);">
+        <span style="color: #74c69d; font-size: 1rem;">✓</span> Next.js 14 · PostgreSQL · NextAuth · Prisma · Tailwind
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.5rem;">
+      <a href="https://maytees-garden.vercel.app" style="color: #74c69d; font-size: 0.82rem; text-decoration: none;">🔗 maytees-garden.vercel.app</a>
+      <a href="https://mayteesgardencenter.com" style="color: rgba(213,201,176,0.5); font-size: 0.82rem; text-decoration: none;">🔗 mayteesgardencenter.com (coming soon)</a>
+    </div>
+    <div class="tip-box">
+      <strong>© 2026 Maytee's Garden Center</strong><br>15196 SW 184th St · Miami, FL 33187<br>(786) 227-6616 · info@mayteesgardencenter.com
+    </div>
+  </div>
+  <div class="slide-right cover-brand" style="background: linear-gradient(160deg, #0d1f18 0%, #1a3a28 50%, #0d1f18 100%);">
+    <div style="margin-bottom: 1.5rem;">
+      <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="49" fill="#2d6a4f" stroke="#40916c" stroke-width="1.5"/>
+        <path class="botanical-leaf" d="M50 78 C50 78 28 65 28 44 C28 30 38 22 50 22 C62 22 72 30 72 44 C72 65 50 78 50 78Z" fill="#74c69d" opacity="0.9"/>
+        <path d="M50 78 L50 32" stroke="#1a3a28" stroke-width="2" stroke-linecap="round"/>
+        <path d="M50 60 C41 54 31 50 28 42" stroke="#1a3a28" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+        <path d="M50 48 C59 42 69 38 72 30" stroke="#1a3a28" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+    </div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 700; color: #f5f0e8; line-height: 1.1; margin-bottom: 0.4rem;">Maytee's</div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: #d5c9b0; letter-spacing: 0.15em; margin-bottom: 2rem; text-transform: uppercase;">Garden Center</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; width: 100%; max-width: 340px; margin-bottom: 1.5rem;">
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Next.js 14<br><span style="color:#74c69d; font-size: 0.6rem;">App Router</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">PostgreSQL<br><span style="color:#74c69d; font-size: 0.6rem;">Neon Serverless</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Square<br><span style="color:#74c69d; font-size: 0.6rem;">Payments</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Shippo<br><span style="color:#74c69d; font-size: 0.6rem;">Shipping</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Resend<br><span style="color:#74c69d; font-size: 0.6rem;">Email</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">MS Graph<br><span style="color:#74c69d; font-size: 0.6rem;">Calendar</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Anthropic<br><span style="color:#74c69d; font-size: 0.6rem;">Claude AI</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Prisma<br><span style="color:#74c69d; font-size: 0.6rem;">ORM</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Vercel<br><span style="color:#74c69d; font-size: 0.6rem;">Hosting + Cron</span></div>
+    </div>
+    <div style="font-size: 0.72rem; color: rgba(213,201,176,0.4); text-align: center;">Miami, FL · 2026 · mayteesgardencenter.com</div>
+  </div>
+</div>
+
+</div><!-- end #presentation -->
+
+<div id="controls">
+  <button id="prev">← Prev</button>
+  <span id="counter">1 / 32</span>
+  <button id="next">Next →</button>
+  <button id="autoplay">▶ Auto</button>
+</div>
+<div id="progress-bar" style="width: 3.125%;"></div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+let autoplayInterval = null;
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  document.getElementById('counter').textContent = (current + 1) + ' / ' + slides.length;
+  document.getElementById('progress-bar').style.width = (((current + 1) / slides.length) * 100) + '%';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') goTo(current - 1);
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'a' || e.key === 'A') toggleAutoplay();
+});
+
+document.getElementById('prev').addEventListener('click', function() { goTo(current - 1); });
+document.getElementById('next').addEventListener('click', function() { goTo(current + 1); });
+document.getElementById('autoplay').addEventListener('click', toggleAutoplay);
+
+function toggleAutoplay() {
+  if (autoplayInterval) {
+    clearInterval(autoplayInterval);
+    autoplayInterval = null;
+    document.getElementById('autoplay').textContent = '▶ Auto';
+  } else {
+    autoplayInterval = setInterval(function() {
+      if (current < slides.length - 1) goTo(current + 1);
+      else { clearInterval(autoplayInterval); autoplayInterval = null; document.getElementById('autoplay').textContent = '▶ Auto'; }
+    }, 7000);
+    document.getElementById('autoplay').textContent = '⏸ Pause';
+  }
+}
+
+goTo(0);
+</script>
+</body>
+</html>
