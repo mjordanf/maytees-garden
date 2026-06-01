@@ -30,7 +30,7 @@ function layout(title: string, body: string): string {
         <tr><td style="background:#f0fdf4;padding:20px 36px;border-top:1px solid #d1fae5">
           <p style="margin:0;color:#6b7280;font-size:12px">
             Questions? Reply to this email or call <strong>(786) 227-6616</strong><br>
-            Mon–Sun 9 AM–5:30 PM · <a href="https://mayteesgardencenter.com" style="color:#2d6a4f">mayteesgardencenter.com</a>
+            Mon–Sun 9 AM–5:30 PM · <a href="${process.env.NEXTAUTH_URL ?? 'https://maytees-garden.vercel.app'}" style="color:#2d6a4f">mayteesgardencenter.com</a>
           </p>
         </td></tr>
       </table>
@@ -141,7 +141,7 @@ export async function sendBookingAlert(opts: {
           <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb">${v}</td>
         </tr>`).join('')}
     </table>
-    <p><a href="https://mayteesgardencenter.com/admin/bookings" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Panel</a></p>
+    <p><a href="${process.env.NEXTAUTH_URL ?? 'https://maytees-garden.vercel.app'}/admin/bookings" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Panel</a></p>
   `
 
   await sendEmail(SUPPORT, `New Booking — ${opts.clientName} · ${opts.serviceName}`, layout('New Booking Request', body))
@@ -174,7 +174,7 @@ export async function sendContactAlert(opts: {
       <p style="margin:0 0 8px;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Message</p>
       <p style="margin:0;font-size:14px;line-height:1.6">${opts.message}</p>
     </div>
-    <p><a href="https://mayteesgardencenter.com/admin/leads" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Panel</a></p>
+    <p><a href="${process.env.NEXTAUTH_URL ?? 'https://maytees-garden.vercel.app'}/admin/leads" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Panel</a></p>
   `
 
   await sendEmail(SUPPORT, `New Message from ${opts.name}`, layout('New Contact Form Submission', body))
@@ -348,7 +348,7 @@ export async function sendBookingCancelledNotice(opts: {
           <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb">${v}</td>
         </tr>`).join('')}
     </table>
-    <p><a href="https://mayteesgardencenter.com/admin/bookings" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Panel</a></p>
+    <p><a href="${process.env.NEXTAUTH_URL ?? 'https://maytees-garden.vercel.app'}/admin/bookings" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Panel</a></p>
   `
 
   await sendEmail(SUPPORT, `Appointment Cancelled — ${opts.clientName} · ${opts.serviceName}`, layout('Appointment Cancelled by Customer', body))
@@ -379,7 +379,7 @@ export async function sendCustomerMessageAlert(opts: {
       <p style="margin:0 0 8px;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Message</p>
       <p style="margin:0;font-size:14px;line-height:1.6">${opts.message}</p>
     </div>
-    <p><a href="https://mayteesgardencenter.com/admin/inbox" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Inbox</a></p>
+    <p><a href="${process.env.NEXTAUTH_URL ?? 'https://maytees-garden.vercel.app'}/admin/inbox" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Inbox</a></p>
   `
 
   await sendEmail(
@@ -463,7 +463,7 @@ export async function sendWelcomeEmail(opts: { name: string; email: string }) {
       <li>📦 View your order history</li>
     </ul>
     <p style="margin:24px 0">
-      <a href="https://mayteesgardencenter.com/portal" style="display:inline-block;background:#2d6a4f;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">Go to My Account</a>
+      <a href="${process.env.NEXTAUTH_URL ?? 'https://maytees-garden.vercel.app'}/portal" style="display:inline-block;background:#2d6a4f;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold">Go to My Account</a>
     </p>
     <p>Ready to transform your garden? 🌺</p>
     <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
@@ -540,7 +540,7 @@ export async function sendOrderAlert(opts: {
           <td style="padding:8px 12px;background:${i % 2 === 0 ? '#f9fafb' : '#fff'};border:1px solid #e5e7eb">${v}</td>
         </tr>`).join('')}
     </table>
-    <p><a href="https://mayteesgardencenter.com/admin/orders" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Panel</a></p>
+    <p><a href="${process.env.NEXTAUTH_URL ?? 'https://maytees-garden.vercel.app'}/admin/orders" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">View in Admin Panel</a></p>
   `
   await sendEmail(SUPPORT, `New Order — ${opts.orderNumber} — ${opts.customerName}`, layout('New Store Order', body))
 }
@@ -567,6 +567,57 @@ export async function sendShippingConfirmation(opts: {
     <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
   `
   await sendEmail(opts.customerEmail, `Your order ${opts.orderNumber} has shipped!`, layout('Your Order Has Shipped!', body))
+}
+
+// ── Appointment reminder → client ─────────────────────────────────────────
+
+export async function sendReminderEmail(opts: {
+  clientName: string
+  clientEmail: string
+  serviceName: string
+  appointmentDate: Date
+  consultationType?: string | null
+  videoCallLink?: string | null
+}) {
+  const date = opts.appointmentDate.toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+  })
+  const time = opts.appointmentDate.toLocaleTimeString('en-US', {
+    hour: '2-digit', minute: '2-digit',
+  })
+  const isVideo = opts.consultationType && opts.consultationType !== 'in-person'
+  const typeLabel = opts.consultationType ? (PREF_LABELS[opts.consultationType] ?? opts.consultationType) : 'In-Person Visit'
+  const location = isVideo
+    ? (opts.videoCallLink ?? typeLabel)
+    : '15196 SW 184th St, Miami, FL 33187'
+
+  const body = `
+    <p>Hi <strong>${opts.clientName}</strong>,</p>
+    <p>This is a friendly reminder that your garden consultation is <strong>tomorrow</strong>!</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0">
+      <tr><td style="padding:8px 12px;background:#f0fdf4;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px;width:30%">Service</td>
+          <td style="padding:8px 12px;background:#f0fdf4">${opts.serviceName}</td></tr>
+      <tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Date</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none">${date}</td></tr>
+      <tr><td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">Time</td>
+          <td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;border-top:none">${time}</td></tr>
+      <tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none;color:#2d6a4f;font-weight:bold;font-size:13px;text-transform:uppercase;letter-spacing:.5px">${isVideo ? 'Meeting Link' : 'Location'}</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;border-top:none">${isVideo && opts.videoCallLink ? `<a href="${opts.videoCallLink}" style="color:#2d6a4f">${opts.videoCallLink}</a>` : location}</td></tr>
+    </table>
+    ${isVideo && opts.videoCallLink ? `
+    <p style="text-align:center;margin:24px 0">
+      <a href="${opts.videoCallLink}" style="display:inline-block;background:#2d6a4f;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px">Join Meeting</a>
+    </p>` : ''}
+    <p>If you need to reschedule or have questions, reply to this email or call <strong>(786) 227-6616</strong>.</p>
+    <p>See you tomorrow! 🌺</p>
+    <p style="margin-top:24px">Warmly,<br><strong>Maytee</strong><br><em>Maytee's Garden Center</em></p>
+  `
+
+  await sendEmail(
+    opts.clientEmail,
+    `Reminder: Your consultation tomorrow — Maytee's Garden Center`,
+    layout("Reminder: Your Consultation is Tomorrow!", body),
+  )
 }
 
 // ── Password reset ─────────────────────────────────────────────────────────
