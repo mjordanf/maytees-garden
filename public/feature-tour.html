@@ -717,6 +717,108 @@ body {
   font-size: 1rem;
   margin: -0.3rem 0 -0.3rem 0.9rem;
 }
+
+/* ── MOBILE RESPONSIVE ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  body { overflow: auto; height: auto; min-height: 100vh; }
+
+  #presentation {
+    height: auto;
+    overflow: visible;
+    position: relative;
+  }
+
+  /* Stack slide panels vertically on mobile */
+  .slide {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: all !important;
+    min-height: 100vh;
+    /* hide all slides, show only active */
+    display: none !important;
+  }
+  .slide.active {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .slide-left {
+    padding: 1.5rem 1.25rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    overflow-y: visible;
+    min-height: auto;
+  }
+
+  .slide-right {
+    padding: 1.25rem;
+    overflow-y: visible;
+    min-height: 60vh;
+  }
+
+  /* Divider slides */
+  .slide-divider { flex-direction: column !important; }
+  .slide-divider .divider-content { padding: 2rem 1.25rem; min-height: 60vh; }
+
+  /* Headings scale down */
+  .slide-heading { font-size: 1.2rem !important; }
+  .slide-desc { font-size: 0.82rem; }
+  .slide-steps li { font-size: 0.78rem; }
+  .tip-box { font-size: 0.76rem; }
+
+  /* Section divider big text */
+  .slide-divider h2, .slide-divider h1 { font-size: 2rem !important; }
+  .slide-divider h3 { font-size: 1.1rem !important; }
+
+  /* Controls bar — tighter on mobile */
+  #controls {
+    gap: 0.6rem;
+    padding: 0 0.5rem;
+    height: 48px;
+    position: fixed;
+    bottom: 0;
+  }
+  #controls button {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+  }
+  #counter { font-size: 0.75rem; min-width: 60px; }
+
+  /* Progress bar stays at bottom of viewport */
+  #progress-bar { bottom: 48px; }
+
+  /* Mockup elements scale down */
+  .mock-navbar { font-size: 0.65rem; padding: 0.5rem 0.75rem; gap: 0.5rem; }
+  .mock-card { padding: 0.75rem; margin-bottom: 0.5rem; }
+  .mock-sidebar { width: 140px; min-height: 300px; font-size: 0.68rem; padding: 0.75rem; }
+  .plant-card-img { height: 60px; }
+  .plant-card-body { font-size: 0.65rem; }
+  .mock-badge, .badge-green, .badge-red, .badge-amber, .badge-blue, .badge-gray {
+    font-size: 0.62rem;
+    padding: 0.15rem 0.4rem;
+  }
+  .mock-btn { font-size: 0.68rem; padding: 0.3rem 0.6rem; }
+  .mock-input { font-size: 0.72rem; padding: 0.3rem 0.5rem; }
+
+  /* Flex rows that might overflow */
+  .mock-navbar { flex-wrap: wrap; }
+
+  /* Auto-play button hidden on mobile to save space */
+  #autoplay { display: none; }
+
+  /* Add padding at bottom for fixed controls bar */
+  #presentation { padding-bottom: 48px; }
+}
+
+@media (max-width: 480px) {
+  .slide-heading { font-size: 1.05rem !important; }
+  .slide-left { padding: 1.25rem 1rem; }
+  .slide-right { padding: 1rem; }
+}
 </style>
 </head>
 <body>
