@@ -1,0 +1,3114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tour de Funciones — Maytee's Garden Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1f18;
+  --green: #2d6a4f;
+  --green-mid: #40916c;
+  --terra: #bc4b35;
+  --cream: #f5f0e8;
+  --sand: #d5c9b0;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  margin: 0;
+  background: #0d1f18;
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+#presentation {
+  width: 100vw;
+  height: calc(100vh - 52px);
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 38% 62%;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+.slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.slide-left {
+  background: #0d1f18;
+  color: var(--cream);
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  overflow-y: auto;
+}
+
+.slide-right {
+  background: #f5f0e8;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.slide-right.dark-bg {
+  background: #1a1a1a;
+}
+
+/* DIVIDER SLIDES */
+.slide-divider {
+  grid-template-columns: 1fr;
+}
+.slide-divider .divider-content {
+  background: radial-gradient(ellipse at center, #1a3a28 0%, #0d1f18 70%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: white;
+  padding: 3rem;
+}
+
+.slide-divider-dark .divider-content {
+  background: radial-gradient(ellipse at center, #1a1a3e 0%, #0d0d0d 70%);
+}
+
+/* Controls */
+#controls {
+  height: 52px;
+  background: #061410;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  color: #d5c9b0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+}
+#controls button {
+  background: #2d6a4f;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+}
+#controls button:hover { background: #40916c; }
+#counter { min-width: 80px; text-align: center; font-size: 0.85rem; font-family: 'DM Sans', sans-serif; }
+
+/* Progress bar */
+#progress-bar {
+  position: fixed;
+  bottom: 52px;
+  left: 0;
+  height: 3px;
+  background: #bc4b35;
+  transition: width 0.35s ease;
+  z-index: 100;
+}
+
+/* LEFT PANEL TEXT COMPONENTS */
+.slide-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(213,201,176,0.5);
+  margin-bottom: 0.5rem;
+}
+.slide-section {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #bc4b35;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.slide-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #f5f0e8;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+.slide-desc {
+  font-size: 0.85rem;
+  color: rgba(245,240,232,0.8);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.slide-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  counter-reset: step;
+}
+.slide-steps li {
+  padding: 0.3rem 0;
+  font-size: 0.8rem;
+  color: rgba(245,240,232,0.75);
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.5;
+}
+.slide-steps li::before {
+  content: counter(step);
+  counter-increment: step;
+  position: absolute;
+  left: 0;
+  color: #40916c;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.tip-box {
+  background: rgba(45,106,79,0.3);
+  border: 1px solid rgba(45,106,79,0.5);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-top: auto;
+  font-size: 0.78rem;
+  color: rgba(245,240,232,0.9);
+  line-height: 1.5;
+}
+.tip-box strong { color: #74c69d; }
+
+/* MOCKUP COMPONENTS */
+.mock-navbar {
+  background: white;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin-bottom: 0.75rem;
+  font-size: 0.73rem;
+}
+.mock-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  margin-bottom: 0.75rem;
+}
+.mock-card-dark {
+  background: #252525;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+  margin-bottom: 0.75rem;
+  color: #e5e5e5;
+}
+.mock-btn {
+  display: inline-block;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: default;
+  font-family: 'DM Sans', sans-serif;
+}
+.mock-btn-green { background: #2d6a4f; color: white; }
+.mock-btn-terra { background: #bc4b35; color: white; }
+.mock-btn-outline { border: 2px solid #2d6a4f; color: #2d6a4f; background: transparent; }
+.mock-btn-amber { background: #d97706; color: white; }
+.mock-btn-blue { background: #1d4ed8; color: white; }
+.mock-btn-sm { padding: 0.25rem 0.6rem; font-size: 0.68rem; }
+.mock-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+.badge-green { background: #d8f3dc; color: #2d6a4f; }
+.badge-red { background: #fee2e2; color: #dc2626; }
+.badge-amber { background: #fef3c7; color: #92400e; }
+.badge-blue { background: #dbeafe; color: #1d4ed8; }
+.badge-gray { background: #f3f4f6; color: #6b7280; }
+.badge-purple { background: #ede9fe; color: #7c3aed; }
+.badge-amber-dark { background: #92400e; color: #fef3c7; }
+.mock-input {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+  width: 100%;
+  color: #374151;
+  font-family: 'DM Sans', sans-serif;
+  background: white;
+}
+.mock-input-dark {
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+  width: 100%;
+  color: #e5e5e5;
+  font-family: 'DM Sans', sans-serif;
+  background: #333;
+}
+.mock-sidebar {
+  background: #1a3a28;
+  width: 180px;
+  min-height: 400px;
+  border-radius: 12px;
+  padding: 1rem;
+  color: white;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+.mock-sidebar-dark {
+  background: #1a1a1a;
+  width: 190px;
+  min-height: 400px;
+  border-radius: 12px;
+  padding: 1rem;
+  color: #e5e5e5;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  border: 1px solid #333;
+}
+.mock-sidebar-item {
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.25rem;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.mock-sidebar-item.active {
+  background: rgba(255,255,255,0.15);
+}
+.mock-sidebar-item.active-dark {
+  background: rgba(255,255,255,0.1);
+}
+.plant-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.plant-card-img {
+  height: 80px;
+  background: linear-gradient(135deg, #2d6a4f, #40916c);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.plant-card-body {
+  padding: 0.5rem;
+  font-size: 0.72rem;
+}
+
+/* Leaf SVG icon utility */
+.leaf-icon {
+  opacity: 0.5;
+}
+
+/* COVER SLIDE ANIMATION */
+@keyframes sway {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+.botanical-leaf {
+  animation: sway 4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* Table styles for mockups */
+.mock-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.73rem;
+}
+.mock-table th {
+  background: #f9fafb;
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+.mock-table td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+  vertical-align: middle;
+}
+.mock-table tr:hover td { background: #fafafa; }
+.mock-table-dark {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.73rem;
+}
+.mock-table-dark th {
+  background: #2a2a2a;
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  font-weight: 600;
+  color: #aaa;
+  border-bottom: 1px solid #333;
+}
+.mock-table-dark td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid #2a2a2a;
+  color: #ddd;
+  vertical-align: middle;
+}
+
+/* Divider list style */
+.divider-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0 0;
+  text-align: left;
+  display: inline-block;
+}
+.divider-list li {
+  padding: 0.3rem 0;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.75);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.divider-list li span.num {
+  color: #40916c;
+  font-weight: 600;
+  font-size: 0.8rem;
+  min-width: 1.5rem;
+}
+
+/* Progress steps */
+.progress-steps {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1rem;
+  font-size: 0.72rem;
+}
+.progress-step {
+  flex: 1;
+  text-align: center;
+  padding: 0.4rem 0.3rem;
+  background: #e5e7eb;
+  color: #6b7280;
+  font-weight: 500;
+  position: relative;
+}
+.progress-step:first-child { border-radius: 6px 0 0 6px; }
+.progress-step:last-child { border-radius: 0 6px 6px 0; }
+.progress-step.active {
+  background: #2d6a4f;
+  color: white;
+}
+.progress-step.done {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* Chat bubble */
+.chat-bubble-float {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #2d6a4f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  cursor: default;
+}
+
+/* Calendar */
+.mini-calendar {
+  background: white;
+  border-radius: 10px;
+  padding: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #111;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  font-size: 0.68rem;
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: default;
+}
+.cal-day.header { color: #6b7280; font-weight: 600; }
+.cal-day.available { color: #2d6a4f; font-weight: 600; cursor: pointer; }
+.cal-day.available:hover { background: #d8f3dc; }
+.cal-day.selected { background: #2d6a4f; color: white; border-radius: 50%; }
+.cal-day.unavailable { color: #d1d5db; }
+.cal-day.today { border: 1px solid #2d6a4f; color: #2d6a4f; }
+.cal-day.blocked { color: #fca5a5; text-decoration: line-through; }
+
+/* Step indicator dots */
+.step-dots {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #e5e7eb;
+  color: #9ca3af;
+}
+.step-dot.active { background: #2d6a4f; color: white; }
+.step-dot.done { background: #d1fae5; color: #065f46; }
+.step-dot-label {
+  font-size: 0.65rem;
+  color: #6b7280;
+  margin-top: 0.15rem;
+  text-align: center;
+}
+
+/* Info tile */
+.info-tile {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.72rem;
+  color: #374151;
+  flex: 1;
+  text-align: center;
+}
+.info-tile strong { display: block; font-size: 0.65rem; color: #6b7280; margin-bottom: 0.2rem; font-weight: 500; }
+
+/* Stat card */
+.stat-card {
+  background: white;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  flex: 1;
+}
+.stat-card-dark {
+  background: #252525;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  flex: 1;
+}
+.stat-number { font-size: 1.4rem; font-weight: 700; color: #111; }
+.stat-number-dark { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; }
+.stat-label { font-size: 0.7rem; color: #6b7280; margin-top: 0.1rem; }
+.stat-label-dark { font-size: 0.7rem; color: #888; margin-top: 0.1rem; }
+
+/* Email table */
+.email-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72rem;
+}
+.email-table th {
+  background: #2d6a4f;
+  color: white;
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  font-weight: 600;
+}
+.email-table td {
+  padding: 0.4rem 0.7rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+}
+.email-table tr:nth-child(even) td { background: #f9fafb; }
+
+/* Form row utility */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.form-group {
+  margin-bottom: 0.5rem;
+}
+.form-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.2rem;
+  display: block;
+}
+.form-label-dark {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #aaa;
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+/* Cover slide */
+.cover-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: linear-gradient(160deg, #0d1f18 0%, #1a3a28 50%, #0d1f18 100%);
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Bandeja de Entrada message card */
+.inbox-card {
+  background: white;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.4rem;
+  border-left: 3px solid transparent;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+  font-size: 0.73rem;
+}
+.inbox-card.unread { border-left-color: #2d6a4f; }
+.inbox-card .inbox-subject { font-weight: 600; color: #111; }
+.inbox-card .inbox-meta { color: #6b7280; margin-top: 0.15rem; font-size: 0.68rem; }
+
+/* Rate card */
+.rate-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  cursor: default;
+  background: white;
+}
+.rate-card.selected { border-color: #2d6a4f; background: #f0fdf4; }
+
+/* Slot time buttons */
+.slot-btn {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.73rem;
+  cursor: default;
+  background: white;
+  color: #374151;
+  display: inline-block;
+  margin: 0.15rem;
+}
+.slot-btn.selected { border-color: #2d6a4f; background: #2d6a4f; color: white; }
+.slot-btn.unavailable { background: #f9fafb; color: #d1d5db; text-decoration: line-through; }
+
+/* Disponibilidad grid */
+.avail-row {
+  display: grid;
+  grid-template-columns: 70px 40px 80px 80px 70px 90px;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.72rem;
+}
+.avail-toggle {
+  width: 32px;
+  height: 18px;
+  border-radius: 9px;
+  background: #2d6a4f;
+  position: relative;
+  cursor: default;
+}
+.avail-toggle::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+}
+.avail-toggle.off {
+  background: #d1d5db;
+}
+.avail-toggle.off::after {
+  right: auto;
+  left: 2px;
+}
+
+/* Flow diagram */
+.flow-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.flow-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2d6a4f;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.flow-step-body {
+  background: white;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.73rem;
+  color: #374151;
+  flex: 1;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+}
+.flow-arrow {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 1rem;
+  margin: -0.3rem 0 -0.3rem 0.9rem;
+}
+</style>
+</head>
+<body>
+
+<div id="presentation">
+
+<!-- ============================================================ -->
+<!-- SLIDE 1: COVER -->
+<!-- ============================================================ -->
+<div class="slide active" id="slide-1">
+  <div class="slide-left" style="justify-content: center; gap: 1rem;">
+    <div class="slide-label">Tour Completo de Funciones · 2026</div>
+    <h1 class="slide-heading" style="font-size: 2rem; line-height: 1.15;">Maytee's Garden Center</h1>
+    <p class="slide-desc" style="font-size: 0.95rem;">Un recorrido completo por las 32 pantallas, 3 portales y 6 servicios integrados del centro de jardinería boutique de Miami.</p>
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+      <span class="mock-badge badge-green">✓ 30 Flujos de Usuario</span>
+      <span class="mock-badge badge-blue">3 Portales</span>
+      <span class="mock-badge badge-amber">6 Servicios</span>
+    </div>
+    <a style="font-size: 0.78rem; color: #74c69d; text-decoration: none;">🔗 maytees-garden.vercel.app</a>
+    <div class="tip-box" style="margin-top: 1.5rem;">
+      <strong>Navegación:</strong> Usa las teclas ← → o Espacio para avanzar. Presiona <strong>A</strong> para activar la reproducción automática de 7 segundos. Haz clic en ▶ Auto en la barra de controles inferior.
+    </div>
+  </div>
+  <div class="slide-right cover-brand" style="background: linear-gradient(160deg, #0d1f18 0%, #1a3a28 50%, #0d1f18 100%);">
+    <!-- Leaf logo -->
+    <div style="margin-bottom: 1.5rem;">
+      <svg width="90" height="90" viewBox="0 0 90 90" fill="none">
+        <circle cx="45" cy="45" r="44" fill="#2d6a4f" stroke="#40916c" stroke-width="1.5"/>
+        <path class="botanical-leaf" d="M45 68 C45 68 25 55 25 38 C25 25 35 18 45 18 C55 18 65 25 65 38 C65 55 45 68 45 68Z" fill="#74c69d" opacity="0.9"/>
+        <path d="M45 68 L45 30" stroke="#1a3a28" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M45 50 C38 45 30 42 28 36" stroke="#1a3a28" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+        <path d="M45 42 C52 37 60 34 62 28" stroke="#1a3a28" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+    </div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700; color: #f5f0e8; line-height: 1.1; margin-bottom: 0.4rem;">Maytee's</div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; color: #d5c9b0; letter-spacing: 0.15em; margin-bottom: 2rem; text-transform: uppercase;">Garden Center</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; width: 100%; max-width: 320px; margin-bottom: 1rem;">
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">Next.js 14</div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">PostgreSQL</div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">Square Pay</div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">Shippo</div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">Resend</div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.7rem; color: #d5c9b0;">MS Graph</div>
+    </div>
+    <div style="font-size: 0.75rem; color: rgba(213,201,176,0.5);">Miami, FL · 2026 · mayteesgardencenter.com</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 2: PART 1 DIVIDER -->
+<!-- ============================================================ -->
+<div class="slide slide-divider" id="slide-2">
+  <div class="divider-content">
+    <div style="font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: #74c69d; margin-bottom: 0.75rem;">Parte 1 de 3</div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 700; color: #f5f0e8; margin-bottom: 1rem;">Flujos del Cliente</div>
+    <div style="width: 60px; height: 2px; background: #bc4b35; margin: 0 auto 1.5rem;"></div>
+    <ul class="divider-list" style="columns: 2; gap: 2rem;">
+      <li><span class="num">01</span> Navegación del Sitio Público</li>
+      <li><span class="num">02</span> Widget de Chat con IA</li>
+      <li><span class="num">03</span> Creación de Cuenta</li>
+      <li><span class="num">04</span> Inicio de Sesión</li>
+      <li><span class="num">05</span> Catálogo de Plantas</li>
+      <li><span class="num">06</span> Modal de Detalle de Planta</li>
+      <li><span class="num">07</span> Carrito de Compras</li>
+      <li><span class="num">08</span> Pago: Información de Envío</li>
+      <li><span class="num">09</span> Pago: Método de Envío</li>
+      <li><span class="num">10</span> Pago: Pago</li>
+      <li><span class="num">11</span> Confirmación del Pedido</li>
+      <li><span class="num">12</span> Reservar una Consulta</li>
+      <li><span class="num">13</span> Portal del Cliente</li>
+      <li><span class="num">14</span> Citas y Mensajes</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 3: PUBLIC WEBSITE NAVIGATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-3">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 3 · Flujo de Cliente 01</div>
+    <div class="slide-section">Sitio Web Público</div>
+    <h2 class="slide-heading">Navegación del Sitio Web Público</h2>
+    <p class="slide-desc">El sitio público en <strong style="color:#74c69d;">maytees-garden.vercel.app</strong> — no requiere inicio de sesión. Cinco secciones principales de navegación, más un héroe, tarjetas de plantas destacadas y resumen de servicios.</p>
+    <ul class="slide-steps">
+      <li>Barra de navegación: logo, enlaces a Plantas · Servicios · Galería · Nosotros · Contacto</li>
+      <li>Ícono del carrito con contador en tiempo real e botón Iniciar Sesión</li>
+      <li>Héroe: sección verde oscuro con titular y dos botones de llamada a la acción</li>
+      <li>Cuadrícula de plantas destacadas — 3 columnas en escritorio</li>
+      <li>Pie de página: dirección 15196 SW 184th St, Miami FL 33187, teléfono y horario</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Bilingüe:</strong> El selector de idioma (EN/ES) está en la configuración del portal del cliente — no en la barra de navegación pública. Los nombres y descripciones de las plantas cambian según <code style="color:#74c69d;">User.languagePreference</code>.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <!-- Navbar -->
+    <div class="mock-navbar" style="justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="13" fill="#2d6a4f"/>
+          <path d="M14 21 C14 21 7 17 7 11 C7 7 10 5 14 5 C18 5 21 7 21 11 C21 17 14 21 14 21Z" fill="#74c69d"/>
+          <path d="M14 21 L14 9" stroke="#1a3a28" stroke-width="1" stroke-linecap="round"/>
+        </svg>
+        <span style="font-weight: 700; color: #111; font-size: 0.8rem;">Maytee's <span style="font-weight: 400; color: #6b7280;">Garden Center</span></span>
+      </div>
+      <div style="display: flex; gap: 0.9rem; color: #374151; font-size: 0.72rem;">
+        <span>Plantas</span><span>Servicios</span><span>Galería</span><span>Nosotros</span><span>Contacto</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="background: #e5e7eb; border-radius: 99px; padding: 0.1rem 0.5rem; font-size: 0.65rem; font-weight: 600;">ES</span>
+        <span class="mock-btn mock-btn-green" style="font-size: 0.65rem; padding: 0.3rem 0.7rem;">Book Consultation</span>
+        <div style="position: relative; display: inline-block;">
+          <span style="font-size: 1rem;">🛒</span>
+          <span style="position: absolute; top: -4px; right: -6px; background: #bc4b35; color: white; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 700;">2</span>
+        </div>
+        <span style="font-size: 0.9rem;">👤</span>
+      </div>
+    </div>
+    <!-- Hero -->
+    <div style="background: linear-gradient(135deg, #0d1f18, #1a3a28); border-radius: 10px; padding: 2rem 1.5rem; margin-bottom: 0.75rem; text-align: center;">
+      <div style="font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: #74c69d; margin-bottom: 0.4rem;">Miami's Premier Garden Center</div>
+      <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: #f5f0e8; line-height: 1.2; margin-bottom: 0.75rem;">Transform Your Garden Into<br>a Tropical Paradise</div>
+      <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+        <span class="mock-btn mock-btn-terra">Reservar una Consulta Gratis</span>
+        <span class="mock-btn mock-btn-outline" style="color: #f5f0e8; border-color: rgba(255,255,255,0.4);">Explorar Plantas</span>
+      </div>
+    </div>
+    <!-- Destacado plants -->
+    <div style="font-size: 0.75rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Plantas Destacadas</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" class="leaf-icon"><path d="M15 26 C15 26 4 19 4 10 C4 4 9 1 15 1 C21 1 26 4 26 10 C26 19 15 26 15 26Z" fill="white" opacity="0.3"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px;" class="mock-badge badge-amber" style="font-size: 0.6rem;">Tropical</span>
+          <span style="position: absolute; top: 4px; right: 4px; font-size: 0.8rem; color: #bc4b35;">♥</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Bougainvillea</div>
+          <div style="color: #6b7280; font-size: 0.65rem; font-style: italic;">Buganvilla</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.3rem;">
+            <span style="font-weight: 700; color: #2d6a4f;">$35.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Agregar al Carrito</span>
+          </div>
+        </div>
+      </div>
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" class="leaf-icon"><path d="M15 26 C15 26 4 19 4 10 C4 4 9 1 15 1 C21 1 26 4 26 10 C26 19 15 26 15 26Z" fill="white" opacity="0.3"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px;" class="mock-badge" style="background: #dbeafe; color: #1d4ed8; font-size: 0.6rem;">Palm</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111;">Bird of Paradise</div>
+          <div style="color: #6b7280; font-size: 0.65rem; font-style: italic;">Ave del Paraíso</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.3rem;">
+            <span style="font-weight: 700; color: #2d6a4f;">$65.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Agregar al Carrito</span>
+          </div>
+        </div>
+      </div>
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" class="leaf-icon"><path d="M15 26 C15 26 4 19 4 10 C4 4 9 1 15 1 C21 1 26 4 26 10 C26 19 15 26 15 26Z" fill="white" opacity="0.3"/></svg>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111;">Monstera Deliciosa</div>
+          <div style="color: #6b7280; font-size: 0.65rem; font-style: italic;">Costilla de Adán</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.3rem;">
+            <span style="font-weight: 700; color: #2d6a4f;">$65.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Agregar al Carrito</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Footer strip -->
+    <div style="background: #0d1f18; border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; color: rgba(245,240,232,0.6);">
+      <span>📍 15196 SW 184th St, Miami FL 33187</span>
+      <span>📞 (786) 227-6616</span>
+      <span>Mon–Sat 9AM–5PM</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 4: AI CHAT WIDGET -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-4">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 4 · Flujo de Cliente 02</div>
+    <div class="slide-section">Chat con IA</div>
+    <h2 class="slide-heading">Widget de Chat con IA</h2>
+    <p class="slide-desc">Un botón flotante de chat verde en la esquina inferior derecha de cada página. Al hacer clic, se abre una conversación con el asistente de jardinería con IA desarrollado por Anthropic Claude.</p>
+    <ul class="slide-steps">
+      <li>Botón circular verde siempre visible en la esquina inferior derecha</li>
+      <li>Al hacer clic, se abre un panel de 300×420 px con un saludo</li>
+      <li>Claude (claude-3-haiku) con contexto de jardinería del sur de Florida</li>
+      <li>Conversación de múltiples turnos dentro de la sesión</li>
+      <li>Envía solicitudes a <code style="color:#74c69d;">/api/chat</code> — manejo elegante de errores si falta la clave</li>
+    </ul>
+    <div class="tip-box">
+      <strong>El prompt del sistema</strong> incluye contexto del negocio: servicios, dirección, clima de Miami y especialidades en plantas. Cada carga de página comienza desde cero — sin memoria entre sesiones.
+    </div>
+  </div>
+  <div class="slide-right" style="position: relative; padding: 1.5rem;">
+    <!-- Blurred page bg -->
+    <div style="filter: blur(2px); opacity: 0.4; margin-bottom: 0.5rem;">
+      <div class="mock-navbar" style="justify-content: space-between;">
+        <span style="font-weight: 700; font-size: 0.8rem;">Maytee's Garden Center</span>
+        <div style="display: flex; gap: 0.9rem; color: #374151; font-size: 0.72rem;"><span>Plantas</span><span>Servicios</span><span>Contacto</span></div>
+      </div>
+      <div style="background: linear-gradient(135deg, #0d1f18, #1a3a28); border-radius: 10px; padding: 1.5rem; height: 80px;"></div>
+    </div>
+    <!-- Chat panel -->
+    <div style="position: absolute; bottom: 1.5rem; right: 1.5rem; width: 300px;">
+      <!-- Floating button -->
+      <div style="position: absolute; bottom: -10px; right: 0; z-index: 10;">
+        <div class="chat-bubble-float">💬</div>
+      </div>
+      <!-- Chat panel -->
+      <div style="background: white; border-radius: 14px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); overflow: hidden; margin-bottom: 0.5rem;">
+        <!-- Header -->
+        <div style="background: #2d6a4f; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; color: white; font-size: 0.8rem; font-weight: 600;">
+            <span>🌿</span> Garden Assistant
+          </div>
+          <span style="color: rgba(255,255,255,0.7); font-size: 1rem; cursor: default;">×</span>
+        </div>
+        <!-- Mensajes -->
+        <div style="padding: 0.75rem; height: 230px; overflow-y: auto; background: #f9fafb;">
+          <!-- AI message -->
+          <div style="display: flex; gap: 0.4rem; margin-bottom: 0.6rem;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: #2d6a4f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0;">🌿</div>
+            <div style="background: white; border-radius: 8px; padding: 0.5rem 0.65rem; font-size: 0.72rem; color: #374151; box-shadow: 0 1px 3px rgba(0,0,0,0.07); max-width: 210px; line-height: 1.4;">
+              ¡Hola! Soy el asistente de jardinería de Maytee's. ¡Pregúntame lo que quieras sobre plantas, servicios o jardinería en Miami!
+            </div>
+          </div>
+          <!-- User message -->
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 0.6rem;">
+            <div style="background: #2d6a4f; border-radius: 8px; padding: 0.5rem 0.65rem; font-size: 0.72rem; color: white; max-width: 200px; line-height: 1.4;">
+              ¿Qué plantas funcionan bien con sol pleno en Miami?
+            </div>
+          </div>
+          <!-- AI response -->
+          <div style="display: flex; gap: 0.4rem; margin-bottom: 0.6rem;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: #2d6a4f; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0;">🌿</div>
+            <div style="background: white; border-radius: 8px; padding: 0.5rem 0.65rem; font-size: 0.72rem; color: #374151; box-shadow: 0 1px 3px rgba(0,0,0,0.07); max-width: 210px; line-height: 1.4;">
+              ¡Buena pregunta! Para sol pleno en Miami, te recomiendo <strong>Buganvilla</strong>, <strong>Ave del Paraíso</strong> o <strong>Croton</strong>. ¡Todas disponibles en Maytee's! ¿Te gustaría consejos de cuidado?
+            </div>
+          </div>
+        </div>
+        <!-- Input -->
+        <div style="padding: 0.5rem; background: white; border-top: 1px solid #e5e7eb; display: flex; gap: 0.4rem;">
+          <input class="mock-input" placeholder="Ask about plants or services..." style="flex: 1; font-size: 0.72rem; padding: 0.35rem 0.6rem;">
+          <button style="background: #2d6a4f; color: white; border: none; border-radius: 6px; padding: 0.35rem 0.6rem; cursor: default; font-size: 0.75rem;">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 5: ACCOUNT CREATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-5">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 5 · Flujo de Cliente 03</div>
+    <div class="slide-section">Autenticación</div>
+    <h2 class="slide-heading">Creación de Cuenta</h2>
+    <p class="slide-desc">Los nuevos clientes se registran en <code style="color:#74c69d;">/auth/register</code>. Las contraseñas se cifran con bcrypt en el servidor. Se envía un correo de bienvenida de inmediato al completarse el registro.</p>
+    <ul class="slide-steps">
+      <li>Nombre Completo, Correo, Contraseña (8+ caracteres), Teléfono (opcional)</li>
+      <li>La casilla del boletín activa el flujo de doble confirmación</li>
+      <li>Al enviar: <code style="color:#74c69d;">POST /api/auth/register</code></li>
+      <li>Se almacena el hash bcrypt (rondas: 10) — nunca se guarda texto plano</li>
+      <li>Redirige a <code style="color:#74c69d;">/portal</code> al completarse correctamente</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Correo de bienvenida</strong> enviado vía Resend al nuevo usuario. Si se marca <code style="color:#74c69d;">newsletterOptIn</code>, se crea un registro <code>BoletínSubscriber</code> con <code>confirmed: false</code> pendiente de confirmación por correo.
+    </div>
+  </div>
+  <div class="slide-right" style="display: flex; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 2rem; width: 340px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+      <!-- Logo -->
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" style="margin-bottom: 0.4rem;">
+          <circle cx="22" cy="22" r="21" fill="#2d6a4f"/>
+          <path d="M22 33 C22 33 11 27 11 18 C11 12 16 9 22 9 C28 9 33 12 33 18 C33 27 22 33 22 33Z" fill="#74c69d"/>
+        </svg>
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: #111;">Maytee's Garden Center</div>
+      </div>
+      <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: #111; text-align: center; margin-bottom: 1.25rem;">Crea Tu Cuenta</h3>
+      <div class="form-group">
+        <label class="form-label">Nombre Completo *</label>
+        <input class="mock-input" value="Maikel Jordan" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dirección de Correo *</label>
+        <input class="mock-input" value="mjordanf@gmail.com" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display: flex; justify-content: space-between;">Contraseña * <span style="font-weight: 400; color: #6b7280; font-size: 0.65rem;">8+ characters</span></label>
+        <div style="position: relative;">
+          <input class="mock-input" value="••••••••••" type="password" readonly style="padding-right: 2rem;">
+          <span style="position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #9ca3af; cursor: default;">👁</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="form-label">Teléfono <span style="color: #9ca3af; font-weight: 400;">(optional)</span></label>
+          <input class="mock-input" value="(786) 555-0100" readonly>
+        </div>
+        <div>
+          <label class="form-label">Código Postal <span style="color: #9ca3af; font-weight: 400;">(optional)</span></label>
+          <input class="mock-input" value="33187" readonly>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin: 0.75rem 0; font-size: 0.75rem; color: #374151;">
+        <div style="width: 16px; height: 16px; border-radius: 3px; background: #2d6a4f; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.6rem; flex-shrink: 0;">✓</div>
+        Suscríbeme al boletín de Maytee's
+      </div>
+      <button class="mock-btn mock-btn-green" style="width: 100%; text-align: center; padding: 0.6rem; font-size: 0.85rem;">Crear Cuenta</button>
+      <p style="text-align: center; font-size: 0.72rem; color: #6b7280; margin-top: 0.75rem;">¿Ya tienes una cuenta? <span style="color: #2d6a4f; cursor: pointer;">Iniciar Sesión</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 6: LOGIN -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-6">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 6 · Flujo de Cliente 04</div>
+    <div class="slide-section">Autenticación</div>
+    <h2 class="slide-heading">Inicio de Sesión</h2>
+    <p class="slide-desc">Proveedor de credenciales de NextAuth.js con estrategia de sesión JWT. Las sesiones duran 30 días. El rol se incluye en el JWT al iniciar sesión.</p>
+    <ul class="slide-steps">
+      <li>Correo + contraseña → <code style="color:#74c69d;">POST /api/auth/callback/credentials</code></li>
+      <li>bcrypt.compare valida el hash de la contraseña</li>
+      <li>El callback JWT inyecta <code style="color:#74c69d;">token.id</code> y <code style="color:#74c69d;">token.role</code></li>
+      <li>Olvidé mi contraseña → token de restablecimiento de 1 hora enviado por correo</li>
+      <li>Redirección: cliente→/portal, admin→/portal (enlace al Panel Admin en la barra lateral)</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Redirección por rol:</strong> Todos los roles aterrizan en <code>/portal</code>. El superadmin puede navegar a <code>/superadmin</code>. Admin/staff ven un enlace "Panel Admin" en la barra lateral del portal. Los cambios de rol toman efecto en el próximo inicio de sesión (renovación del JWT).
+    </div>
+  </div>
+  <div class="slide-right" style="display: flex; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 2rem; width: 320px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" style="margin-bottom: 0.4rem;">
+          <circle cx="22" cy="22" r="21" fill="#2d6a4f"/>
+          <path d="M22 33 C22 33 11 27 11 18 C11 12 16 9 22 9 C28 9 33 12 33 18 C33 27 22 33 22 33Z" fill="#74c69d"/>
+        </svg>
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: #111;">Maytee's Garden Center</div>
+      </div>
+      <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: #111; text-align: center; margin-bottom: 1.25rem;">Bienvenido/a de Nuevo</h3>
+      <div class="form-group">
+        <label class="form-label">Dirección de Correo</label>
+        <input class="mock-input" value="mjordanf@gmail.com" readonly>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+          Contraseña
+          <span style="font-weight: 400; color: #2d6a4f; font-size: 0.7rem; cursor: pointer;">¿Olvidaste tu contraseña?</span>
+        </label>
+        <div style="position: relative;">
+          <input class="mock-input" value="••••••••••" type="password" readonly style="padding-right: 2rem;">
+          <span style="position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #9ca3af; cursor: default;">👁</span>
+        </div>
+      </div>
+      <button class="mock-btn mock-btn-green" style="width: 100%; text-align: center; padding: 0.6rem; font-size: 0.85rem; margin-top: 0.5rem;">Iniciar Sesión</button>
+      <div style="background: #f0fdf4; border: 1px solid #d1fae5; border-radius: 8px; padding: 0.65rem 0.8rem; margin-top: 1rem; font-size: 0.7rem; color: #065f46; line-height: 1.5;">
+        <strong style="display: block; margin-bottom: 0.2rem;">Rol-based redirect after login:</strong>
+        customer → /portal &nbsp;·&nbsp; admin → /portal (Admin Panel link) &nbsp;·&nbsp; superadmin → /superadmin
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 7: PLANT CATALOG -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-7">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 7 · Flujo de Cliente 05</div>
+    <div class="slide-section">Catálogo de Plantas</div>
+    <h2 class="slide-heading">Catálogo de Plantas — Navegar y Filtrar</h2>
+    <p class="slide-desc">El catálogo completo de plantas en <code style="color:#74c69d;">/plants</code> — búsqueda por nombre en inglés o español, filtrado por categoría, guardar favoritos y agregar al carrito.</p>
+    <ul class="slide-steps">
+      <li>Barra de búsqueda: filtra por nombre EN/ES o etiquetas en tiempo real</li>
+      <li>Pastillas de categoría: Todas, Tropical, Florales, Palmas, Nativas FL, Comestibles, Suculentas</li>
+      <li>Ícono de corazón: guarda en la base de datos si está conectado; solicita inicio de sesión si no lo está</li>
+      <li>Insignias de stock: 🟢 en stock · 🟡 poco (1–3) · 🔴 sin stock</li>
+      <li>Las tarjetas sin stock muestran el botón desactivado o sin botón</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Más de 90 plantas cargadas.</strong> La tienda lee <code style="color:#74c69d;">onlineStock</code> (no <code>stockQty</code>). <code>onlinePrice</code> reemplaza a <code>price</code> si está definido. Los corazones se sincronizan al modelo <code>Favorite</code> al iniciar sesión.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.25rem;">
+    <!-- Buscar -->
+    <div style="position: relative; margin-bottom: 0.75rem;">
+      <span style="position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.8rem;">🔍</span>
+      <input class="mock-input" placeholder="Buscar plants..." style="padding-left: 2rem;">
+    </div>
+    <!-- Filtrar pills -->
+    <div style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.75rem;">
+      <span style="background: #2d6a4f; color: white; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem; font-weight: 600;">Todas las Plantas</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Tropical</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Florales</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Palmas</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Nativas FL</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Comestibles</span>
+      <span style="background: white; color: #374151; border: 1px solid #e5e7eb; border-radius: 99px; padding: 0.25rem 0.7rem; font-size: 0.7rem;">Suculentas</span>
+    </div>
+    <!-- Plant grid -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+      <!-- Card 1 -->
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.25"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px; background: #fef3c7; color: #92400e; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 600;">Tropical</span>
+          <span style="position: absolute; top: 4px; right: 4px; color: #bc4b35; font-size: 0.9rem;">♥</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Bougainvillea</div>
+          <div style="color: #6b7280; font-size: 0.62rem; font-style: italic;">Buganvilla</div>
+          <div style="color: #d97706; font-size: 0.65rem; font-weight: 600; margin: 0.15rem 0;">¡Solo quedan 3!</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #2d6a4f; font-size: 0.72rem;">$35.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Agregar al Carrito</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.25"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px; background: #dbeafe; color: #1d4ed8; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 600;">Tropical</span>
+          <span style="position: absolute; top: 4px; right: 4px; color: #d1d5db; font-size: 0.9rem;">♡</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Bird of Paradise</div>
+          <div style="color: #6b7280; font-size: 0.62rem; font-style: italic;">Ave del Paraíso</div>
+          <div style="color: #16a34a; font-size: 0.65rem; font-weight: 600; margin: 0.15rem 0;">En Stock</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #2d6a4f; font-size: 0.72rem;">$65.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Agregar al Carrito</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.25"/></svg>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Monstera Deliciosa</div>
+          <div style="color: #6b7280; font-size: 0.62rem; font-style: italic;">Costilla de Adán</div>
+          <div style="color: #16a34a; font-size: 0.65rem; font-weight: 600; margin: 0.15rem 0;">En Stock</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #2d6a4f; font-size: 0.72rem;">$65.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Agregar al Carrito</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 4: Out of stock -->
+      <div class="plant-card">
+        <div class="plant-card-img" style="background: linear-gradient(135deg, #6b7280, #9ca3af);">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.15"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px; background: #fee2e2; color: #dc2626; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 600;">Sin Stock</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #6b7280; font-size: 0.72rem;">Coconut Palm</div>
+          <div style="color: #9ca3af; font-size: 0.62rem; font-style: italic;">Palma de Coco</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.3rem;">
+            <span style="font-weight: 700; color: #9ca3af; font-size: 0.72rem;">$149.00</span>
+            <span style="font-size: 0.65rem; color: #dc2626; font-weight: 600;">No disponible</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 5 -->
+      <div class="plant-card">
+        <div class="plant-card-img">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.25"/></svg>
+          <span style="position: absolute; top: 4px; left: 4px; background: #fef3c7; color: #92400e; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 600;">Florales</span>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Ixora</div>
+          <div style="color: #6b7280; font-size: 0.62rem; font-style: italic;">Ixora</div>
+          <div style="color: #d97706; font-size: 0.65rem; font-weight: 600; margin: 0.15rem 0;">¡Solo queda 1!</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #2d6a4f; font-size: 0.72rem;">$22.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Agregar al Carrito</span>
+          </div>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="plant-card">
+        <div class="plant-card-img" style="background: linear-gradient(135deg, #4a7c59, #6aab7a);">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 24 C14 24 4 18 4 10 C4 5 9 2 14 2 C19 2 24 5 24 10 C24 18 14 24 14 24Z" fill="white" opacity="0.25"/></svg>
+        </div>
+        <div class="plant-card-body">
+          <div style="font-weight: 600; color: #111; font-size: 0.72rem;">Aloe Vera</div>
+          <div style="color: #6b7280; font-size: 0.62rem; font-style: italic;">Sábila</div>
+          <div style="color: #16a34a; font-size: 0.65rem; font-weight: 600; margin: 0.15rem 0;">En Stock</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #2d6a4f; font-size: 0.72rem;">$25.00</span>
+            <span class="mock-btn mock-btn-green mock-btn-sm">Agregar al Carrito</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 8: PLANT DETAIL MODAL -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-8">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 8 · Flujo de Cliente 06</div>
+    <div class="slide-section">Catálogo de Plantas</div>
+    <h2 class="slide-heading">Modal de Detalle de Planta</h2>
+    <p class="slide-desc">Al hacer clic en cualquier tarjeta de planta, se abre un modal de detalle con la descripción bilingüe completa, metadatos de cuidado, etiquetas y acciones rápidas — sin salir de la página del catálogo.</p>
+    <ul class="slide-steps">
+      <li>Se abre al hacer clic en la tarjeta — se superpone sobre el catálogo</li>
+      <li>Bilingüe: nombre en inglés + nombre en español en cursiva</li>
+      <li>Insignia de categoría + etiquetas libres (separadas por coma en la base de datos)</li>
+      <li>Fichas de cuidado: Nivel de Cuidado, Luz Solar, Riego</li>
+      <li>"Reservar Consulta →" enlaza a /booking</li>
+    </ul>
+    <div class="tip-box">
+      <strong>El corazón</strong> en el modal llama a <code style="color:#74c69d;">POST /api/favorites</code> cuando el usuario está conectado. El corazón se llena o vacía y se sincroniza con la cuadrícula del catálogo en tiempo real.
+    </div>
+  </div>
+  <div class="slide-right" style="position: relative; padding: 1.25rem;">
+    <!-- Modal overlay -->
+    <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); border-radius: 0; display: flex; align-items: center; justify-content: center; padding: 1rem;">
+      <div style="background: white; border-radius: 14px; width: 100%; max-width: 580px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+        <div style="display: grid; grid-template-columns: 200px 1fr;">
+          <!-- Left: image -->
+          <div style="background: linear-gradient(135deg, #2d6a4f, #40916c); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; min-height: 260px;">
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+              <path d="M30 54 C30 54 8 42 8 22 C8 10 18 4 30 4 C42 4 52 10 52 22 C52 42 30 54 30 54Z" fill="white" opacity="0.3"/>
+              <path d="M30 54 L30 14" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M30 38 C22 33 12 30 10 22" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M30 28 C38 23 48 20 50 12" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div style="background: rgba(255,255,255,0.2); border-radius: 6px; padding: 0.3rem 0.7rem; margin-top: 1rem; font-size: 0.7rem; color: white; font-weight: 600;">★ Destacado</div>
+          </div>
+          <!-- Right: info -->
+          <div style="padding: 1.25rem; position: relative;">
+            <button style="position: absolute; top: 0.75rem; right: 0.75rem; background: none; border: none; font-size: 1.2rem; color: #9ca3af; cursor: default;">×</button>
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: #111; line-height: 1.1; margin-bottom: 0.2rem;">Bird of Paradise</div>
+            <div style="font-size: 1.3rem; font-weight: 700; color: #bc4b35; margin-bottom: 0.3rem;">$65.00</div>
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-style: italic; color: #6b7280; margin-bottom: 0.6rem;">Ave del Paraíso</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.75rem;">
+              <span class="mock-badge badge-green">Tropical</span>
+              <span class="mock-badge badge-gray">architectural</span>
+              <span class="mock-badge badge-gray">focal-point</span>
+              <span class="mock-badge badge-gray">full-sun</span>
+            </div>
+            <p style="font-size: 0.75rem; color: #374151; line-height: 1.5; margin-bottom: 0.75rem;">Una planta de declaración arquitectónica con hojas en forma de paleta. Prospera bajo el pleno sol y el calor del sur de Florida. Perfecta como punto focal en el paisajismo tropical.</p>
+            <div style="display: flex; gap: 0.4rem; margin-bottom: 0.75rem;">
+              <div class="info-tile"><strong>Nivel de Cuidado</strong>🟢 Fácil</div>
+              <div class="info-tile"><strong>Luz Solar</strong>☀️ Sol Pleno</div>
+              <div class="info-tile"><strong>Riego</strong>💧💧 Moderado</div>
+            </div>
+            <div style="display: flex; gap: 0.4rem;">
+              <span class="mock-btn mock-btn-outline mock-btn-sm">🤍 Guardar Planta</span>
+              <span class="mock-btn mock-btn-green mock-btn-sm">Reservar Consulta →</span>
+              <span class="mock-btn mock-btn-terra mock-btn-sm">Agregar al Carrito</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 9: CART PAGE -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-9">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 9 · Flujo de Cliente 07</div>
+    <div class="slide-section">Comercio Electrónico</div>
+    <h2 class="slide-heading">Página del Carrito</h2>
+    <p class="slide-desc">El carrito en <code style="color:#74c69d;">/shop/cart</code> — revisa artículos, ajusta cantidades y procede al pago. Los datos se guardan en <code>localStorage</code>.</p>
+    <ul class="slide-steps">
+      <li>Persistencia en localStorage — no se requiere cuenta</li>
+      <li>El selector de cantidad está limitado a <code style="color:#74c69d;">onlineStock</code></li>
+      <li>El ícono de papelera elimina el artículo; el selector de cantidad actualiza el subtotal en tiempo real</li>
+      <li>La insignia del carrito en la barra de navegación se actualiza en tiempo real a través de CartContext</li>
+      <li>El carrito se vacía al cerrar sesión</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Límite de stock:</strong> Si un usuario tiene cantidad=5 y el admin baja el stock a 3, la próxima carga del carrito limita la cantidad a 3 y muestra una advertencia. Al continuar se inicia el Paso 1 del proceso de pago.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <div style="display: grid; grid-template-columns: 1fr 260px; gap: 1rem;">
+      <!-- Cart items -->
+      <div>
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: #111; margin-bottom: 1rem;">Tu Carrito <span style="color: #6b7280; font-weight: 400; font-size: 1rem;">(2 artículos)</span></h3>
+        <!-- Item 1 -->
+        <div style="background: white; border-radius: 10px; padding: 0.75rem; margin-bottom: 0.5rem; display: flex; gap: 0.75rem; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.07);">
+          <div style="width: 54px; height: 54px; border-radius: 8px; background: linear-gradient(135deg, #2d6a4f, #40916c); flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 18 C10 18 2 13 2 7 C2 3 6 1 10 1 C14 1 18 3 18 7 C18 13 10 18 10 18Z" fill="white" opacity="0.4"/></svg>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.82rem; color: #111;">Bougainvillea</div>
+            <div style="font-size: 0.7rem; color: #6b7280;">Precio unitario: $35.00</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem;">
+            <button style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid #e5e7eb; background: white; display: flex; align-items: center; justify-content: center; cursor: default; font-size: 0.75rem; color: #374151;">−</button>
+            <span style="min-width: 20px; text-align: center; font-weight: 600; font-size: 0.82rem;">1</span>
+            <button style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid #e5e7eb; background: white; display: flex; align-items: center; justify-content: center; cursor: default; font-size: 0.75rem; color: #374151;">+</button>
+          </div>
+          <div style="font-weight: 700; color: #111; font-size: 0.85rem; min-width: 50px; text-align: right;">$35.00</div>
+          <span style="color: #dc2626; cursor: default; font-size: 0.9rem; margin-left: 0.3rem;">🗑</span>
+        </div>
+        <!-- Item 2 -->
+        <div style="background: white; border-radius: 10px; padding: 0.75rem; margin-bottom: 0.5rem; display: flex; gap: 0.75rem; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.07);">
+          <div style="width: 54px; height: 54px; border-radius: 8px; background: linear-gradient(135deg, #4a7c59, #6aab7a); flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 18 C10 18 2 13 2 7 C2 3 6 1 10 1 C14 1 18 3 18 7 C18 13 10 18 10 18Z" fill="white" opacity="0.4"/></svg>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.82rem; color: #111;">Ixora</div>
+            <div style="font-size: 0.7rem; color: #6b7280;">Precio unitario: $22.00</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem;">
+            <button style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid #e5e7eb; background: white; cursor: default; font-size: 0.75rem; color: #374151; display: flex; align-items: center; justify-content: center;">−</button>
+            <span style="min-width: 20px; text-align: center; font-weight: 600; font-size: 0.82rem;">2</span>
+            <button style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid #e5e7eb; background: white; cursor: default; font-size: 0.75rem; color: #374151; display: flex; align-items: center; justify-content: center;">+</button>
+          </div>
+          <div style="font-weight: 700; color: #111; font-size: 0.85rem; min-width: 50px; text-align: right;">$44.00</div>
+          <span style="color: #dc2626; cursor: default; font-size: 0.9rem; margin-left: 0.3rem;">🗑</span>
+        </div>
+        <div style="margin-top: 0.75rem;">
+          <span style="font-size: 0.75rem; color: #2d6a4f; cursor: default;">← Seguir Comprando</span>
+        </div>
+      </div>
+      <!-- Order summary -->
+      <div>
+        <div class="mock-card">
+          <div style="font-weight: 700; font-size: 0.85rem; color: #111; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e5e7eb;">Resumen del Pedido</div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.35rem;"><span style="color: #374151;">Subtotal</span><span style="font-weight: 600;">$79.00</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.35rem;"><span style="color: #374151;">Envío</span><span style="color: #6b7280;">Calculated at checkout</span></div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.75rem;"><span style="color: #374151;">Impuesto (8.5%)</span><span style="color: #6b7280;">—</span></div>
+          <div style="border-top: 1px solid #e5e7eb; padding-top: 0.5rem; display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.75rem;"><span>Total</span><span>$79.00</span></div>
+          <span class="mock-btn mock-btn-green" style="width: 100%; text-align: center; display: block; padding: 0.6rem;">Proceder al Pago →</span>
+        </div>
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.7rem; color: #065f46;">
+          🔒 Secured checkout via Square
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 10: CHECKOUT STEP 1 -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-10">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 10 · Flujo de Cliente 08</div>
+    <div class="slide-section">Comercio Electrónico · Pago Paso 1</div>
+    <h2 class="slide-heading">Proceso de Pago — Paso 1: Contacto y Envío</h2>
+    <p class="slide-desc">Paso 1 de 3 en <code style="color:#74c69d;">/shop/checkout</code> — información de contacto y dirección de envío. Pre-rellenado desde la sesión si el usuario está conectado.</p>
+    <ul class="slide-steps">
+      <li>Nombre y correo pre-rellenados desde la sesión NextAuth</li>
+      <li>Obligatorios: Nombre, Correo, Dirección, Ciudad, Estado, ZIP</li>
+      <li>La dirección se envía a Shippo <code style="color:#74c69d;">getRates()</code> en el Paso 2</li>
+      <li>El botón Continuar está desactivado hasta que los campos obligatorios sean válidos</li>
+      <li>Verificación atómica de disponibilidad de horario al enviar el formulario final</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Pago como invitado</strong> está completamente soportado — no se requiere cuenta. El carrito usa localStorage; se pueden hacer pedidos sin iniciar sesión. Los pedidos de invitados no aparecerán en el historial de pedidos del portal del cliente.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <!-- Progress bar -->
+    <div class="progress-steps" style="margin-bottom: 1.25rem;">
+      <div class="progress-step active" style="font-size: 0.68rem;">1 · Contacto y Envío</div>
+      <div class="progress-step" style="font-size: 0.68rem;">2 · Envío Method</div>
+      <div class="progress-step" style="font-size: 0.68rem;">3 · Payment</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 230px; gap: 1rem;">
+      <!-- Form -->
+      <div>
+        <div style="font-weight: 700; font-size: 0.88rem; color: #111; margin-bottom: 0.75rem;">Información de Contacto</div>
+        <div class="form-row">
+          <div>
+            <label class="form-label">Nombre Completo *</label>
+            <input class="mock-input" value="Maikel Jordan" readonly>
+          </div>
+          <div>
+            <label class="form-label">Dirección de Correo *</label>
+            <input class="mock-input" value="mjordanf@gmail.com" readonly>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono (optional)</label>
+          <input class="mock-input" value="(786) 555-0100" readonly>
+        </div>
+        <div style="font-weight: 700; font-size: 0.88rem; color: #111; margin: 0.75rem 0;">Dirección de Envío</div>
+        <div class="form-group">
+          <label class="form-label">Dirección Línea 1 *</label>
+          <input class="mock-input" value="100 Biscayne Blvd" readonly>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Línea 2 (opcional)</label>
+          <input class="mock-input" placeholder="Apt, Suite, Unit..." style="color: #9ca3af;">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 80px 90px; gap: 0.4rem;">
+          <div>
+            <label class="form-label">Ciudad *</label>
+            <input class="mock-input" value="Miami" readonly>
+          </div>
+          <div>
+            <label class="form-label">State *</label>
+            <select class="mock-input" style="appearance: none;"><option>FL</option></select>
+          </div>
+          <div>
+            <label class="form-label">ZIP *</label>
+            <input class="mock-input" value="33132" readonly>
+          </div>
+        </div>
+        <button class="mock-btn mock-btn-green" style="margin-top: 0.75rem; padding: 0.6rem 1.5rem; font-size: 0.85rem;">Continuar al Envío →</button>
+      </div>
+      <!-- Summary -->
+      <div>
+        <div class="mock-card" style="font-size: 0.75rem;">
+          <div style="font-weight: 700; margin-bottom: 0.5rem; color: #111;">Resumen del Pedido</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;"><span style="color: #374151;">Bougainvillea × 1</span><span style="font-weight: 600;">$35.00</span></div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;"><span style="color: #374151;">Ixora × 2</span><span style="font-weight: 600;">$44.00</span></div>
+          <div style="border-top: 1px solid #e5e7eb; margin: 0.5rem 0; padding-top: 0.5rem; display: flex; justify-content: space-between; font-weight: 700;"><span>Subtotal</span><span>$79.00</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 11: CHECKOUT STEP 2: SHIPPING METHOD -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-11">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 11 · Flujo de Cliente 09</div>
+    <div class="slide-section">Comercio Electrónico · Pago Paso 2</div>
+    <h2 class="slide-heading">Proceso de Pago — Paso 2: Método de Envío</h2>
+    <p class="slide-desc">El Paso 2 llama a Shippo en tiempo real para obtener tarifas del transportista según la dirección de envío ingresada y las dimensiones del paquete.</p>
+    <ul class="slide-steps">
+      <li><code style="color:#74c69d;">POST /api/store/shipping-rates</code> → API de Shippo</li>
+      <li>Devuelve nombre del transportista, nivel de servicio, precio y días estimados</li>
+      <li>Tarifas ordenadas de menor a mayor precio</li>
+      <li>Tarifa plana de $12.99 como alternativa si Shippo no está configurado</li>
+      <li>El resumen del pedido se actualiza con el costo de envío seleccionado y el impuesto</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Punto de fallo frecuente:</strong> Si Shippo no devuelve tarifas (clave API ausente o problema con la dirección), no aparecen opciones y el usuario no puede continuar. Asegúrate de que <code style="color:#74c69d;">SHIPPO_API_KEY</code> esté configurado y los campos de dirección estén completos.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <div class="progress-steps" style="margin-bottom: 1.25rem;">
+      <div class="progress-step done" style="font-size: 0.68rem;">1 · Contacto y Envío ✓</div>
+      <div class="progress-step active" style="font-size: 0.68rem;">2 · Envío Method</div>
+      <div class="progress-step" style="font-size: 0.68rem;">3 · Payment</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 230px; gap: 1rem;">
+      <div>
+        <div style="font-weight: 700; font-size: 0.88rem; color: #111; margin-bottom: 0.75rem;">Seleccionar Método de Envío</div>
+        <div class="rate-card selected">
+          <div style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid #2d6a4f; background: #2d6a4f; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <div style="width: 6px; height: 6px; border-radius: 50%; background: white;"></div>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.8rem; color: #111;">UPS Ground Saver</div>
+            <div style="font-size: 0.7rem; color: #6b7280;">Est. 2 días hábiles</div>
+          </div>
+          <div style="font-weight: 700; color: #2d6a4f; font-size: 0.88rem;">$6.27</div>
+        </div>
+        <div class="rate-card">
+          <div style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid #d1d5db; flex-shrink: 0;"></div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.8rem; color: #111;">UPS Ground</div>
+            <div style="font-size: 0.7rem; color: #6b7280;">Est. 3 días hábiles</div>
+          </div>
+          <div style="font-weight: 700; color: #374151; font-size: 0.88rem;">$8.99</div>
+        </div>
+        <div class="rate-card">
+          <div style="width: 16px; height: 16px; border-radius: 50%; border: 2px solid #d1d5db; flex-shrink: 0;"></div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.8rem; color: #111;">USPS Priority Mail</div>
+            <div style="font-size: 0.7rem; color: #6b7280;">Est. 2 días hábiles</div>
+          </div>
+          <div style="font-weight: 700; color: #374151; font-size: 0.88rem;">$12.50</div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+          <span class="mock-btn mock-btn-outline mock-btn-sm">← Volver</span>
+          <span class="mock-btn mock-btn-green" style="padding: 0.45rem 1.2rem; font-size: 0.82rem;">Continuar al Pago →</span>
+        </div>
+      </div>
+      <div>
+        <div class="mock-card" style="font-size: 0.75rem;">
+          <div style="font-weight: 700; margin-bottom: 0.5rem; color: #111;">Resumen del Pedido</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;"><span style="color:#374151;">Bougainvillea × 1</span><span style="font-weight:600;">$35.00</span></div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;"><span style="color:#374151;">Ixora × 2</span><span style="font-weight:600;">$44.00</span></div>
+          <div style="border-top: 1px solid #e5e7eb; margin: 0.4rem 0; padding-top: 0.4rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span style="color:#374151;">Subtotal</span><span>$79.00</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span style="color:#374151;">Envío (UPS Gnd Saver)</span><span style="color:#2d6a4f; font-weight:600;">$6.27</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span style="color:#374151;">Impuesto (8.5%)</span><span>$7.24</span></div>
+            <div style="border-top: 1px solid #e5e7eb; margin-top: 0.4rem; padding-top: 0.4rem; display: flex; justify-content: space-between; font-weight: 700; font-size: 0.85rem;"><span>Total</span><span>$92.51</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 12: CHECKOUT STEP 3: PAYMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-12">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 12 · Flujo de Cliente 10</div>
+    <div class="slide-section">Comercio Electrónico · Pago Paso 3</div>
+    <h2 class="slide-heading">Proceso de Pago — Paso 3: Pago</h2>
+    <p class="slide-desc">El SDK de Pagos Web de Square renderiza un formulario de tarjeta en iframe. La tarjeta se tokeniza en el cliente; solo el token se envía al servidor — cumple con PCI.</p>
+    <ul class="slide-steps">
+      <li>El SDK de Square se carga desde <code style="color:#74c69d;">web.squarecdn.com</code></li>
+      <li>El cliente tokeniza la tarjeta → <code style="color:#74c69d;">sourceId</code></li>
+      <li><code style="color:#74c69d;">POST /api/store/checkout</code> con sourceId + carrito</li>
+      <li>El servidor valida el stock, cobra a Square y decrementa <code>onlineStock</code></li>
+      <li>La transacción atómica de Prisma previene la sobreventa</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Tarjeta de prueba (sandbox):</strong> <code style="color:#74c69d;">4111 1111 1111 1111</code>, cualquier fecha futura (p.ej. 01/29), cualquier CVV (123), cualquier ZIP. Asegúrate de que <code>SQUARE_ENVIRONMENT=sandbox</code> esté en desarrollo.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <div class="progress-steps" style="margin-bottom: 1.25rem;">
+      <div class="progress-step done" style="font-size: 0.68rem;">1 · Contact ✓</div>
+      <div class="progress-step done" style="font-size: 0.68rem;">2 · Envío ✓</div>
+      <div class="progress-step active" style="font-size: 0.68rem;">3 · Payment</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 230px; gap: 1rem;">
+      <div>
+        <div style="font-weight: 700; font-size: 0.88rem; color: #111; margin-bottom: 0.75rem;">Datos de Pago</div>
+        <!-- Square card form mockup -->
+        <div style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 1rem; background: white;">
+          <div style="font-size: 0.7rem; color: #6b7280; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+            <span style="background: #1a56db; color: white; padding: 0.1rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 700;">VISA</span>
+            <span style="background: #f59e0b; width: 16px; height: 16px; border-radius: 50%; display: inline-block;"></span>
+            <span style="background: #dc2626; width: 16px; height: 16px; border-radius: 50%; display: inline-block; margin-left: -8px;"></span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Número de Tarjeta</label>
+            <div style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #374151; background: #f9fafb; letter-spacing: 0.1em; display: flex; justify-content: space-between; align-items: center;">
+              <span>4111 1111 1111 1111</span>
+              <span style="font-size: 0.7rem; color: #6b7280;">VISA</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label class="form-label">Vencimiento</label>
+              <div style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #374151; background: #f9fafb;">01/29</div>
+            </div>
+            <div>
+              <label class="form-label">CVV</label>
+              <div style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #374151; background: #f9fafb;">•••</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ZIP de Facturación</label>
+            <div style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #374151; background: #f9fafb;">33187</div>
+          </div>
+          <div style="text-align: center; font-size: 0.7rem; color: #6b7280; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.3rem;">🔒 Protegido por Square</div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; align-items: center;">
+          <span class="mock-btn mock-btn-outline mock-btn-sm">← Volver</span>
+          <button class="mock-btn mock-btn-green" style="padding: 0.55rem 1.5rem; font-size: 0.88rem; font-weight: 700;">Realizar Pedido — $92.51</button>
+        </div>
+      </div>
+      <div>
+        <div class="mock-card" style="font-size: 0.75rem;">
+          <div style="font-weight: 700; margin-bottom: 0.5rem; color: #111;">Total del Pedido</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span style="color:#374151;">Subtotal</span><span>$79.00</span></div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;"><span style="color:#374151;">Envío</span><span>$6.27</span></div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;"><span style="color:#374151;">Impuesto</span><span>$7.24</span></div>
+          <div style="border-top: 2px solid #2d6a4f; padding-top: 0.5rem; display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; color: #2d6a4f;"><span>Total</span><span>$92.51</span></div>
+        </div>
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.68rem; color: #92400e; line-height: 1.5;">
+          ⚠️ Al realizar el pedido aceptas nuestra política de devoluciones. Las ventas de plantas son definitivas.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 13: ORDER CONFIRMATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-13">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 13 · Flujo de Cliente 11</div>
+    <div class="slide-section">Comercio Electrónico · Post-Compra</div>
+    <h2 class="slide-heading">Página de Confirmación del Pedido</h2>
+    <p class="slide-desc">Tras el pago exitoso, el cliente llega a <code style="color:#74c69d;">/shop/order/[id]</code> — el resumen completo del pedido con descarga de archivo ICS y confirmación por correo enviada automáticamente.</p>
+    <ul class="slide-steps">
+      <li>Formato del número de pedido: <code style="color:#74c69d;">MG-XXXXXX</code> (único, basado en CUID)</li>
+      <li>Correos de confirmación: cliente (resumen del pedido) + admin (alerta de nuevo pedido)</li>
+      <li><strong>Agregar al Calendario</strong> — descarga el archivo <code>.ics</code></li>
+      <li>La página es accesible por el ID del pedido en la URL (no requiere inicio de sesión)</li>
+      <li><code>StoreOrder.status</code> → <code>processing</code> después del pago</li>
+    </ul>
+    <div class="tip-box">
+      <strong>El stock se decrementa atómicamente</strong> en una transacción Prisma — si el pago es exitoso pero la actualización del stock falla, la transacción se revierte y el error se muestra. El admin también recibe un mensaje de tipo <code>order-alert</code> en la Bandeja de Entrada.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem; display: flex; align-items: flex-start; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 2rem; width: 100%; max-width: 480px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+      <!-- Success check -->
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; font-size: 1.5rem;">✅</div>
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: #111;">¡Pedido Confirmado!</div>
+        <div style="font-size: 0.78rem; color: #6b7280; margin-top: 0.3rem;">Pedido <strong style="color: #2d6a4f;">#MG-2026-0042</strong></div>
+      </div>
+      <!-- Items table -->
+      <table class="mock-table" style="margin-bottom: 0.75rem;">
+        <thead><tr><th>Artículo</th><th>Cant.</th><th style="text-align:right;">Precio</th></tr></thead>
+        <tbody>
+          <tr><td>Bougainvillea</td><td>× 1</td><td style="text-align:right;">$35.00</td></tr>
+          <tr><td>Ixora</td><td>× 2</td><td style="text-align:right;">$44.00</td></tr>
+          <tr style="background: #f9fafb;"><td colspan="2" style="text-align:right; color: #6b7280;">Subtotal</td><td style="text-align:right; font-weight:600;">$79.00</td></tr>
+          <tr><td colspan="2" style="text-align:right; color: #6b7280;">Envío (UPS)</td><td style="text-align:right;">$6.27</td></tr>
+          <tr><td colspan="2" style="text-align:right; color: #6b7280;">Impuesto (8.5%)</td><td style="text-align:right;">$7.24</td></tr>
+          <tr style="background: #f0fdf4;"><td colspan="2" style="text-align:right; font-weight: 700; font-size: 0.85rem;">Total</td><td style="text-align:right; font-weight: 700; color: #2d6a4f; font-size: 0.88rem;">$92.51</td></tr>
+        </tbody>
+      </table>
+      <!-- Envío address -->
+      <div style="background: #f9fafb; border-radius: 8px; padding: 0.65rem 0.85rem; font-size: 0.73rem; color: #374151; margin-bottom: 0.75rem;">
+        <div style="font-weight: 600; margin-bottom: 0.2rem; color: #111;">📦 Envío To</div>
+        Maikel Jordan<br>100 Biscayne Blvd<br>Miami, FL 33132
+      </div>
+      <!-- Buttons -->
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <span class="mock-btn mock-btn-outline mock-btn-sm">📅 Agregar al Calendario</span>
+        <span class="mock-btn mock-btn-green mock-btn-sm">Ver Mis Pedidos →</span>
+        <span class="mock-btn" style="background: #f3f4f6; color: #374151; font-size: 0.68rem; padding: 0.25rem 0.6rem;">← Seguir Comprando</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 14: BOOKING A CONSULTATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-14">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 14 · Flujo de Cliente 12</div>
+    <div class="slide-section">Asistente de Reservas</div>
+    <h2 class="slide-heading">Reservar una Consulta — Flujo Completo</h2>
+    <p class="slide-desc">Asistente de 4 pasos en <code style="color:#74c69d;">/booking</code> — seleccionar servicio, elegir fecha/hora, preferencia de reunión e ingresar datos de contacto. No se requiere cuenta.</p>
+    <ul class="slide-steps">
+      <li>Paso 1: Elegir servicio (de los registros <code>Service</code> activos)</li>
+      <li>Paso 2: Calendario — solo se muestran fechas realmente disponibles (plantillas + excepciones)</li>
+      <li>Paso 3: Preferencia de reunión (presencial / FaceTime / WhatsApp / Google Meet)</li>
+      <li>Paso 4: Datos de contacto — pre-rellenado desde la sesión si el usuario está conectado</li>
+      <li>Crea <code>Booking { status: "pending" }</code> y dispara 2 correos</li>
+    </ul>
+    <div class="tip-box">
+      <strong>El tipo de horario</strong> de <code>DisponibilidadTemplate.type</code> controla qué opciones de preferencia aparecen: "in-person" → solo presencial, "video" → solo opciones de video, "both" → se muestran las cuatro opciones.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.25rem;">
+    <!-- 4-step progress -->
+    <div class="progress-steps" style="margin-bottom: 1rem;">
+      <div class="progress-step done" style="font-size: 0.65rem;">1 · Servicio ✓</div>
+      <div class="progress-step active" style="font-size: 0.65rem;">2 · Fecha y Hora</div>
+      <div class="progress-step" style="font-size: 0.65rem;">3 · Preferencia</div>
+      <div class="progress-step" style="font-size: 0.65rem;">4 · Contacto</div>
+    </div>
+    <!-- Service selected summary -->
+    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.5rem 0.85rem; margin-bottom: 0.75rem; font-size: 0.75rem; color: #065f46; display: flex; align-items: center; justify-content: space-between;">
+      <span>✓ <strong>Consulta de Diseño Paisajístico</strong> — $150/hr · 60 min</span>
+      <span style="color: #9ca3af; font-size: 0.68rem; cursor: pointer;">Cambiar</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <!-- Calendar -->
+      <div class="mini-calendar">
+        <div class="cal-header">
+          <span style="cursor:default;">‹</span>
+          <span>June 2026</span>
+          <span style="cursor:default;">›</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-day header">S</div><div class="cal-day header">M</div><div class="cal-day header">T</div><div class="cal-day header">W</div><div class="cal-day header">T</div><div class="cal-day header">F</div><div class="cal-day header">S</div>
+          <!-- Week 1 -->
+          <div class="cal-day unavailable">1</div><div class="cal-day available">2</div><div class="cal-day available">3</div><div class="cal-day available">4</div><div class="cal-day available">5</div><div class="cal-day available">6</div><div class="cal-day unavailable">7</div>
+          <!-- Week 2 -->
+          <div class="cal-day unavailable">8</div><div class="cal-day available">9</div><div class="cal-day available">10</div><div class="cal-day available">11</div><div class="cal-day available">12</div><div class="cal-day available">13</div><div class="cal-day unavailable">14</div>
+          <!-- Week 3 -->
+          <div class="cal-day unavailable">15</div><div class="cal-day selected">16</div><div class="cal-day available">17</div><div class="cal-day available">18</div><div class="cal-day available">19</div><div class="cal-day available">20</div><div class="cal-day unavailable">21</div>
+          <!-- Week 4 -->
+          <div class="cal-day unavailable">22</div><div class="cal-day available">23</div><div class="cal-day available">24</div><div class="cal-day available">25</div><div class="cal-day available">26</div><div class="cal-day available">27</div><div class="cal-day blocked">28</div>
+          <!-- Week 5 -->
+          <div class="cal-day unavailable">29</div><div class="cal-day available">30</div>
+        </div>
+      </div>
+      <!-- Time slots + preference -->
+      <div>
+        <div style="font-size: 0.75rem; font-weight: 600; color: #374151; margin-bottom: 0.4rem;">Horarios disponibles — Jun 16</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.75rem;">
+          <span class="slot-btn unavailable">9:00 AM</span>
+          <span class="slot-btn">10:00 AM</span>
+          <span class="slot-btn selected">11:00 AM</span>
+          <span class="slot-btn">1:00 PM</span>
+          <span class="slot-btn">2:00 PM</span>
+          <span class="slot-btn">3:00 PM</span>
+        </div>
+        <div style="font-size: 0.75rem; font-weight: 600; color: #374151; margin-bottom: 0.4rem;">Preferencia de Reunión</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+          <div style="border: 2px solid #2d6a4f; border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.72rem; background: #f0fdf4;">🏡<br><strong style="font-size: 0.7rem;">Presencial</strong></div>
+          <div style="border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.72rem; background: white;">📱<br><span style="font-size: 0.7rem; color: #374151;">FaceTime</span></div>
+          <div style="border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.72rem; background: white;">💬<br><span style="font-size: 0.7rem; color: #374151;">WhatsApp</span></div>
+          <div style="border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 0.5rem; text-align: center; font-size: 0.72rem; background: white;">🎥<br><span style="font-size: 0.7rem; color: #374151;">Google Meet</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 0.75rem;">
+      <span class="mock-btn mock-btn-green" style="padding: 0.5rem 1.5rem; font-size: 0.85rem;">Continuar →</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 15: CUSTOMER PORTAL DASHBOARD -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-15">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 15 · Flujo de Cliente 13</div>
+    <div class="slide-section">Portal del Cliente</div>
+    <h2 class="slide-heading">Portal del Cliente — Panel Principal</h2>
+    <p class="slide-desc">El centro autenticado del cliente en <code style="color:#74c69d;">/portal</code> — muestra próximas citas, estadísticas de pedidos, plantas guardadas y recomendaciones personalizadas.</p>
+    <ul class="slide-steps">
+      <li>Protegido por <code>portal/layout.tsx</code> — redirige al inicio de sesión si no hay sesión</li>
+      <li>La barra lateral persiste en todas las subpáginas de <code>/portal/*</code></li>
+      <li>Tarjetas de estadísticas: próximas citas, plantas guardadas, pedidos</li>
+      <li>"Maytee Recomienda" — sugerencias de plantas de temporada</li>
+      <li>Admin/staff ven el enlace "Panel Admin" en la parte superior de la barra lateral</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Las reservas de invitados</strong> (sin inicio de sesión al momento de la reserva) no aparecen en el portal — están vinculadas solo por correo, sin userId en el registro Booking. Anima a los clientes a iniciar sesión antes de reservar.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1rem; background: #f5f0e8;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <!-- Sidebar -->
+      <div class="mock-sidebar" style="min-height: 0;">
+        <!-- User info -->
+        <div style="text-align: center; padding-bottom: 0.75rem; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.15);">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: #40916c; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.4rem; font-weight: 700; font-size: 0.9rem;">MJ</div>
+          <div style="font-weight: 600; font-size: 0.78rem; color: white;">Maikel Jordan</div>
+          <div style="font-size: 0.65rem; color: rgba(255,255,255,0.5); word-break: break-all;">mjordanf@gmail.com</div>
+        </div>
+        <div class="mock-sidebar-item active">🏠 <span>Panel de Control</span></div>
+        <div class="mock-sidebar-item">❤️ <span>Plantas Guardadas</span></div>
+        <div class="mock-sidebar-item">📅 <span>Mis Citas</span></div>
+        <div class="mock-sidebar-item">📦 <span>Historial de Pedidos</span></div>
+        <div class="mock-sidebar-item">💬 <span>Enviar Mensaje a Maytee</span></div>
+        <div class="mock-sidebar-item">⚙️ <span>Configuración</span></div>
+      </div>
+      <!-- Main content -->
+      <div style="flex: 1; overflow-y: auto;">
+        <!-- Welcome banner -->
+        <div style="background: linear-gradient(135deg, #0d1f18, #1a3a28); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; color: white;">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700;">Bienvenido/a de vuelta, Maikel! 🌿</div>
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.65); margin-top: 0.2rem;">Tu aventura en el jardín continúa aquí.</div>
+        </div>
+        <!-- Stat cards -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.75rem;">
+          <div class="stat-card"><div class="stat-number">1</div><div class="stat-label">Próximas Citas</div></div>
+          <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Plantas Guardadas</div></div>
+          <div class="stat-card"><div class="stat-number">1</div><div class="stat-label">Pedidos</div></div>
+        </div>
+        <!-- Próximas appointment card -->
+        <div style="font-weight: 600; font-size: 0.78rem; color: #374151; margin-bottom: 0.4rem;">Próximas Citas</div>
+        <div style="background: white; border-radius: 10px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 0.75rem; display: flex; gap: 0.75rem; align-items: center;">
+          <div style="background: #2d6a4f; border-radius: 8px; padding: 0.5rem; text-align: center; min-width: 44px; flex-shrink: 0;">
+            <div style="font-size: 0.65rem; color: rgba(255,255,255,0.7); text-transform: uppercase;">Jun</div>
+            <div style="font-size: 1.1rem; font-weight: 700; color: white; line-height: 1;">16</div>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 0.8rem; color: #111;">Landscape Design Consultation</div>
+            <div style="font-size: 0.7rem; color: #6b7280; margin-top: 0.15rem;">11:00 AM · 60 min · 📍 Presencial</div>
+          </div>
+          <span class="mock-badge badge-green">confirmed</span>
+        </div>
+        <!-- Recommendations -->
+        <div style="background: #d8f3dc; border: 1px solid #b7e4c7; border-radius: 10px; padding: 0.75rem; font-size: 0.73rem; color: #1b4332; line-height: 1.5;">
+          <div style="font-weight: 700; margin-bottom: 0.2rem;">🌿 Maytee Recomienda</div>
+          ¡Ahora es el momento ideal para plantar Buganvilla e Ixora — temporada alta de crecimiento en Miami. ¡Disponibles en nuestro catálogo!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 16: APPOINTMENTS & MESSAGING -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-16">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 16 · Flujo de Cliente 14</div>
+    <div class="slide-section">Portal del Cliente</div>
+    <h2 class="slide-heading">Portal del Cliente — Citas y Mensajes</h2>
+    <p class="slide-desc">Los clientes gestionan sus reservas en <code style="color:#74c69d;">/portal/appointments</code> y envían mensajes a Maytee en <code style="color:#74c69d;">/portal/messages</code>.</p>
+    <ul class="slide-steps">
+      <li>Agregar al Calendario → descarga el archivo ICS vía <code>/api/appointments/[id]/ics</code></li>
+      <li>Cancelar → estado a cancelado + correo al admin + evento de Outlook eliminado</li>
+      <li>Los mensajes crean <code>Bandeja de EntradaMessage { type: "customer-message" }</code></li>
+      <li>Las respuestas del admin se envían por correo (no hay hilo en la app visible para el cliente)</li>
+      <li>El botón Cancelar solo aparece para reservas futuras en estado pendiente/confirmado</li>
+    </ul>
+    <div class="tip-box">
+      <strong>La cancelación</strong> es inmediata — no hay opción de deshacer en la interfaz. El admin puede cambiar el estado manualmente desde el panel de reservas si es necesario. El evento del calendario se elimina vía Microsoft Graph al cancelar.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1rem; background: #f5f0e8;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <!-- Sidebar (abbreviated) -->
+      <div class="mock-sidebar" style="min-height: 0; min-width: 150px;">
+        <div style="text-align: center; padding-bottom: 0.6rem; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.15);">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: #40916c; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.3rem; font-weight: 700; font-size: 0.8rem;">MJ</div>
+          <div style="font-size: 0.72rem; color: white; font-weight: 600;">Maikel Jordan</div>
+        </div>
+        <div class="mock-sidebar-item">🏠 Panel de Control</div>
+        <div class="mock-sidebar-item">❤️ Plantas Guardadas</div>
+        <div class="mock-sidebar-item active">📅 Mis Citas</div>
+        <div class="mock-sidebar-item">📦 Pedidos</div>
+        <div class="mock-sidebar-item">💬 Mensajes</div>
+        <div class="mock-sidebar-item">⚙️ Configuración</div>
+      </div>
+      <!-- Main -->
+      <div style="flex: 1; overflow-y: auto;">
+        <!-- Appointment card -->
+        <div style="font-weight: 700; font-size: 0.82rem; color: #111; margin-bottom: 0.4rem;">Mis Citas</div>
+        <div style="background: white; border-radius: 10px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 0.75rem;">
+          <div style="display: flex; gap: 0.6rem; align-items: center; margin-bottom: 0.5rem;">
+            <div style="background: #2d6a4f; border-radius: 8px; padding: 0.45rem; text-align: center; min-width: 40px; flex-shrink: 0;">
+              <div style="font-size: 0.6rem; color: rgba(255,255,255,0.7);">Jun</div>
+              <div style="font-size: 1rem; font-weight: 700; color: white; line-height: 1;">16</div>
+            </div>
+            <div style="flex: 1;">
+              <div style="font-weight: 600; font-size: 0.78rem; color: #111;">Landscape Design Consultation</div>
+              <div style="font-size: 0.68rem; color: #6b7280;">11:00 AM · ⏱ 60 min · 📍 Visita en Persona</div>
+            </div>
+            <span class="mock-badge badge-green">confirmed</span>
+          </div>
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+            <span class="mock-btn mock-btn-outline mock-btn-sm">📅 Agregar al Calendario</span>
+            <span class="mock-btn" style="background: #eff6ff; color: #1d4ed8; font-size: 0.68rem; padding: 0.25rem 0.6rem; border-radius: 6px; font-weight: 600;">💬 Enviar Mensaje a Maytee</span>
+            <span class="mock-btn" style="background: #fff1f2; color: #dc2626; font-size: 0.68rem; padding: 0.25rem 0.6rem; border-radius: 6px; font-weight: 600;">✕ Cancelar</span>
+          </div>
+        </div>
+        <!-- Message form -->
+        <div style="font-weight: 700; font-size: 0.82rem; color: #111; margin-bottom: 0.4rem;">Enviar Mensaje a Maytee</div>
+        <div style="background: white; border-radius: 10px; padding: 0.75rem; box-shadow: 0 1px 4px rgba(0,0,0,0.07);">
+          <div class="form-group">
+            <label class="form-label">Tu Mensaje</label>
+            <textarea class="mock-input" rows="3" style="resize: none; line-height: 1.5;">¿Cómo debo preparar mi jardín antes de la visita?</textarea>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="mock-btn mock-btn-green mock-btn-sm">Enviar Mensaje</span>
+            <span style="font-size: 0.68rem; color: #6b7280;">Enviado May 29 · 10:30 AM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 17: PART 2 DIVIDER — ADMIN FLOWS -->
+<!-- ============================================================ -->
+<div class="slide slide-divider" id="slide-17">
+  <div class="divider-content">
+    <div style="font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: #74c69d; margin-bottom: 0.75rem;">Parte 2 de 3</div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 700; color: #f5f0e8; margin-bottom: 1rem;">Flujos del Administrador</div>
+    <div style="width: 60px; height: 2px; background: #bc4b35; margin: 0 auto 1.5rem;"></div>
+    <ul class="divider-list" style="columns: 2; gap: 2rem;">
+      <li><span class="num">15</span> Panel del Administrador</li>
+      <li><span class="num">16</span> Bandeja de Entrada del Admin</li>
+      <li><span class="num">17</span> Gestión de Reservas</li>
+      <li><span class="num">18</span> Disponibilidad: Semanal</li>
+      <li><span class="num">19</span> Disponibilidad: Fechas Bloqueadas</li>
+      <li><span class="num">20</span> Gestión del Catálogo de Plantas</li>
+      <li><span class="num">21</span> Gestión de Pedidos</li>
+      <li><span class="num">22</span> Clientes y Leads</li>
+      <li><span class="num">23</span> Sistema de Correo</li>
+      <li><span class="num">24</span> Integración de Calendario</li>
+      <li><span class="num">25</span> Registros de Auditoría</li>
+      <li><span class="num">26</span> Probar Correo</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 18: ADMIN DASHBOARD -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-18">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 18 · Flujo Admin 15</div>
+    <div class="slide-section">Panel de Administración</div>
+    <h2 class="slide-heading">Resumen del Panel de Administración</h2>
+    <p class="slide-desc">El centro admin en <code style="color:#74c69d;">/admin</code> — accesible por los roles admin, staff y superadmin. Estadísticas en tiempo real, navegación rápida e insignia de bandeja de entrada no leída.</p>
+    <ul class="slide-steps">
+      <li>Inicio de sesión: maytee@mayteesgarden.com / Admin2024!</li>
+      <li>Estadísticas: total de clientes, reservas, pendientes y leads</li>
+      <li>La insignia de la Bandeja de Entrada en la barra lateral muestra el recuento de no leídos desde la base de datos en cada carga</li>
+      <li>El rol de staff tiene el mismo acceso que admin (sin páginas de superadmin)</li>
+      <li>Independiente de <code>/superadmin</code> — tema visual diferente</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Consejo:</strong> Tras confirmar una reserva, la insignia de la Bandeja de Entrada se decrementa automáticamente en la próxima carga de página. El recuento de no leídos es una consulta a la base de datos del lado del servidor — no se necesita WebSocket.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <!-- Admin sidebar -->
+      <div class="mock-sidebar" style="min-height: 0;">
+        <div style="padding-bottom: 0.6rem; margin-bottom: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.15);">
+          <div style="font-weight: 700; font-size: 0.78rem; color: white; display: flex; align-items: center; gap: 0.3rem;">🛡 Admin Panel</div>
+          <div style="font-size: 0.62rem; color: rgba(255,255,255,0.45);">mayteesgarden.com</div>
+        </div>
+        <div class="mock-sidebar-item active">🏠 Panel de Control</div>
+        <div class="mock-sidebar-item" style="justify-content: space-between;">
+          <span>📥 Bandeja de Entrada</span>
+          <span style="background: #d97706; color: white; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.6rem; font-weight: 700;">3</span>
+        </div>
+        <div class="mock-sidebar-item">📅 Reservas</div>
+        <div class="mock-sidebar-item">🗓 Disponibilidad</div>
+        <div class="mock-sidebar-item">📦 Pedidos</div>
+        <div class="mock-sidebar-item">🌿 Plantas</div>
+        <div class="mock-sidebar-item">👥 Clientes</div>
+        <div class="mock-sidebar-item">💬 Leads</div>
+        <div class="mock-sidebar-item">📋 Registros de Auditoría</div>
+        <div style="margin-top: auto; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.68rem; color: rgba(255,255,255,0.4); cursor: default;">← Volver al Sitio</div>
+      </div>
+      <!-- Main area -->
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: #f5f0e8; margin-bottom: 0.75rem;">Admin Panel de Control</div>
+        <!-- Stat cards -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 0.75rem;">
+          <div class="stat-card"><div class="stat-number">247</div><div class="stat-label">Total Clientes</div></div>
+          <div class="stat-card"><div class="stat-number">12</div><div class="stat-label">Reservas Este Mes</div></div>
+          <div class="stat-card" style="border-left: 3px solid #d97706;"><div class="stat-number" style="color: #d97706;">3</div><div class="stat-label">Reservas Pendientes</div></div>
+          <div class="stat-card" style="border-left: 3px solid #2d6a4f;"><div class="stat-number" style="color: #2d6a4f;">5</div><div class="stat-label">Nuevos Leads</div></div>
+        </div>
+        <!-- Recent bookings -->
+        <div style="font-weight: 600; font-size: 0.78rem; color: #f5f0e8; margin-bottom: 0.4rem;">Reservas Recientes</div>
+        <div style="background: #1a2e22; border-radius: 10px; overflow: hidden;">
+          <table class="mock-table" style="color: #d5c9b0;">
+            <thead><tr style="background: rgba(255,255,255,0.05);"><th style="background: transparent; color: #888; border-bottom: 1px solid rgba(255,255,255,0.1);">Nombre</th><th style="background: transparent; color: #888; border-bottom: 1px solid rgba(255,255,255,0.1);">Servicio</th><th style="background: transparent; color: #888; border-bottom: 1px solid rgba(255,255,255,0.1);">Fecha</th><th style="background: transparent; color: #888; border-bottom: 1px solid rgba(255,255,255,0.1);">Estado</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.07);"><td style="color: #d5c9b0; border-bottom: none;">Maikel Jordan</td><td style="color: #d5c9b0; border-bottom: none;">Landscape Design</td><td style="color: #d5c9b0; border-bottom: none;">Jun 16</td><td style="border-bottom: none;"><span class="mock-badge badge-amber">pending</span></td></tr>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.07);"><td style="color: #d5c9b0; border-bottom: none;">Maria Santos</td><td style="color: #d5c9b0; border-bottom: none;">Plant Rescue</td><td style="color: #d5c9b0; border-bottom: none;">Jun 20</td><td style="border-bottom: none;"><span class="mock-badge badge-green">confirmed</span></td></tr>
+              <tr><td style="color: #d5c9b0; border-bottom: none;">Alex Ramirez</td><td style="color: #d5c9b0; border-bottom: none;">Installation</td><td style="color: #d5c9b0; border-bottom: none;">Jun 25</td><td style="border-bottom: none;"><span class="mock-badge badge-amber">pending</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 19: ADMIN INBOX -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-19">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 19 · Flujo Admin 16</div>
+    <div class="slide-section">Panel Admin · Bandeja de Entrada</div>
+    <h2 class="slide-heading">Bandeja de Entrada del Administrador — Detalle Completo</h2>
+    <p class="slide-desc">La bandeja de entrada unificada en <code style="color:#74c69d;">/admin/inbox</code> agrega 4 tipos de mensajes: mensajes del portal del cliente, alertas de reservas, formularios de contacto y alertas de pedidos.</p>
+    <ul class="slide-steps">
+      <li>Pestañas: Todos / No Leído / Mensajes / Alertas de Reservas / Formularios de Contacto / Pedidos</li>
+      <li>Al hacer clic en una tarjeta, se marca como leída y decrementa la insignia de la barra lateral</li>
+      <li>Responder en línea envía un correo con marca de Resend al remitente</li>
+      <li>La alerta de reserva enlaza a <code>/admin/bookings</code></li>
+      <li>La alerta de pedido enlaza a <code>/admin/orders</code></li>
+    </ul>
+    <div class="tip-box">
+      <strong>Responder envía correo</strong> vía <code>sendLeadResponder()</code> o <code>sendCustomerMessageAlert()</code> según el tipo de mensaje. El asunto y el cuerpo los redacta el admin. La respuesta se envía al correo del remitente original.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <!-- Abbreviated admin sidebar -->
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item">🏠 Panel de Control</div>
+        <div class="mock-sidebar-item active" style="justify-content: space-between;">
+          <span>📥 Bandeja de Entrada</span>
+          <span style="background: #d97706; color: white; border-radius: 99px; padding: 0.1rem 0.4rem; font-size: 0.58rem; font-weight: 700;">3</span>
+        </div>
+        <div class="mock-sidebar-item">📅 Reservas</div>
+        <div class="mock-sidebar-item">📦 Pedidos</div>
+        <div class="mock-sidebar-item">🌿 Plantas</div>
+      </div>
+      <!-- Bandeja de Entrada content -->
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.6rem;">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8;">Bandeja de Entrada</div>
+          <div style="font-size: 0.7rem; color: #888;">8 mensajes · 3 sin leer</div>
+        </div>
+        <!-- Filtrar tabs -->
+        <div style="display: flex; gap: 0.3rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+          <span style="background: #2d6a4f; color: white; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; font-weight: 600;">Todo (8)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; cursor: default;">No Leído (3)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; cursor: default;">Mensajes (2)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; cursor: default;">Alerts (3)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; cursor: default;">Forms (2)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; cursor: default;">Pedidos (1)</span>
+        </div>
+        <!-- Message list -->
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem;">
+          <div style="border-left: 3px solid #2d6a4f; padding: 0.6rem 0.75rem; border-bottom: 1px solid #2a2a2a; background: #222;">
+            <div style="font-weight: 700; font-size: 0.77rem; color: #f0f0f0;">Nueva reserva: Consulta de Diseño — Maikel Jordan</div>
+            <div style="font-size: 0.67rem; color: #888; margin-top: 0.15rem;">Alerta de Reserva · Hoy 2:15 PM</div>
+          </div>
+          <div style="padding: 0.6rem 0.75rem; border-bottom: 1px solid #2a2a2a;">
+            <div style="font-size: 0.77rem; color: #bbb;">Mensaje sobre cita próxima</div>
+            <div style="font-size: 0.67rem; color: #555; margin-top: 0.15rem;">Mensaje del Cliente · Hoy 9:39 AM</div>
+          </div>
+          <div style="padding: 0.6rem 0.75rem; border-bottom: 1px solid #2a2a2a;">
+            <div style="font-size: 0.77rem; color: #bbb;">Nueva consulta: instalación de jardín — Alex R.</div>
+            <div style="font-size: 0.67rem; color: #555; margin-top: 0.15rem;">Formulario de Contacto · Ayer 3:22 PM</div>
+          </div>
+          <div style="padding: 0.6rem 0.75rem;">
+            <div style="font-size: 0.77rem; color: #bbb;">Nuevo pedido #MG-2026-0042 — $92.51</div>
+            <div style="font-size: 0.67rem; color: #555; margin-top: 0.15rem;">Alerta de Pedido · Jun 1, 11:47 AM</div>
+          </div>
+        </div>
+        <!-- Expandired message -->
+        <div style="background: #1e1e1e; border-radius: 10px; padding: 0.75rem; border: 1px solid #333;">
+          <div style="font-weight: 700; font-size: 0.77rem; color: #f0f0f0; margin-bottom: 0.4rem;">Nueva reserva: Consulta de Diseño — Maikel Jordan</div>
+          <div style="font-size: 0.72rem; color: #aaa; line-height: 1.5; margin-bottom: 0.5rem;">Se acaba de enviar una nueva reserva. Detalles a continuación.</div>
+          <div style="background: #252525; border-radius: 6px; padding: 0.5rem; font-size: 0.7rem; color: #ccc; margin-bottom: 0.5rem; line-height: 1.6;">
+            <strong style="color: #888;">Cliente:</strong> Maikel Jordan &nbsp;·&nbsp; <strong style="color: #888;">Correo:</strong> mjordanf@gmail.com<br>
+            <strong style="color: #888;">Servicio:</strong> Consulta de Diseño Paisajístico &nbsp;·&nbsp; <strong style="color: #888;">Fecha:</strong> Jun 16, 11:00 AM
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Responder</label>
+            <textarea class="mock-input-dark" rows="2" style="resize: none;">¡Gracias por reservar! Confirmaremos en breve.</textarea>
+          </div>
+          <span class="mock-btn mock-btn-blue mock-btn-sm" style="margin-top: 0.3rem;">Enviar Respuesta</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 20: BOOKING MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-20">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 20 · Flujo Admin 17</div>
+    <div class="slide-section">Panel Admin · Reservas</div>
+    <h2 class="slide-heading">Gestión de Reservas — Flujo de Confirmación</h2>
+    <p class="slide-desc">Ciclo de vida completo en <code style="color:#74c69d;">/admin/bookings</code> — confirmar reservas pendientes, seleccionar tipo de consulta, sincronizar el calendario de Outlook y cancelar si es necesario.</p>
+    <ul class="slide-steps">
+      <li>Filtrar por: Todos / Pendiente / Confirmado / Completado / Cancelado</li>
+      <li>Confirmar → modal: seleccionar tipo de consulta, pegar enlace de video si es videoconferencia</li>
+      <li>Al confirmar: se crea un evento de calendario en Outlook vía Microsoft Graph</li>
+      <li>El cliente recibe un correo de confirmación con marca (formato presencial o video)</li>
+      <li>Cancelar: estado → cancelado, evento del calendario eliminado, bandeja de entrada del admin notificada</li>
+    </ul>
+    <div class="tip-box">
+      <strong>La sincronización del calendario</strong> es flexible — si faltan las credenciales de Azure (<code>MICROSOFT_TENANT_ID</code> etc. no configurados), <code>isConfigured()</code> devuelve false y las reservas aún se confirman correctamente sin crear eventos de calendario.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item">🏠 Panel de Control</div>
+        <div class="mock-sidebar-item">📥 Bandeja de Entrada</div>
+        <div class="mock-sidebar-item active">📅 Reservas</div>
+        <div class="mock-sidebar-item">🗓 Disponibilidad</div>
+        <div class="mock-sidebar-item">📦 Pedidos</div>
+        <div class="mock-sidebar-item">🌿 Plantas</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8; margin-bottom: 0.6rem;">Reservas</div>
+        <!-- Filtrar tabs -->
+        <div style="display: flex; gap: 0.3rem; margin-bottom: 0.6rem;">
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">Todo</span>
+          <span style="background: #d97706; color: white; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; font-weight: 600;">Pendiente (3)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">Confirmado (5)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">Completado</span>
+        </div>
+        <!-- Table -->
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden; margin-bottom: 0.6rem;">
+          <table class="mock-table-dark">
+            <thead><tr><th>Cliente</th><th>Servicio</th><th>Fecha y Hora</th><th>Preferencia</th><th>Estado</th><th>Acción</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #2a2a2a; background: rgba(217,119,6,0.08);">
+                <td>Maikel Jordan</td>
+                <td style="max-width: 100px;">Landscape Design</td>
+                <td>Jun 16, 11:00 AM</td>
+                <td>🏡 Presencial</td>
+                <td><span class="mock-badge badge-amber">pending</span></td>
+                <td><span class="mock-btn mock-btn-green mock-btn-sm">Confirmar</span></td>
+              </tr>
+              <tr>
+                <td>Maria Santos</td>
+                <td>Plant Rescue</td>
+                <td>Jun 20, 2:00 PM</td>
+                <td>📱 FaceTime</td>
+                <td><span class="mock-badge badge-green">confirmed</span></td>
+                <td><span class="mock-btn mock-btn-sm" style="background: #333; color: #ccc;">Editar</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Confirm modal expanded -->
+        <div style="background: #1e1e1e; border: 1px solid #3a5a40; border-radius: 10px; padding: 0.75rem;">
+          <div style="font-weight: 700; font-size: 0.8rem; color: #f0f0f0; margin-bottom: 0.6rem;">✓ Confirmar Consulta — Maikel Jordan</div>
+          <div class="form-group">
+            <label class="form-label-dark">Tipo de Consulta</label>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; color: #ccc; cursor: default;">
+                <div style="width: 14px; height: 14px; border-radius: 50%; background: #2d6a4f; border: 2px solid #2d6a4f; display: flex; align-items: center; justify-content: center;"><div style="width: 5px; height: 5px; border-radius: 50%; background: white;"></div></div> Presencial
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; color: #888; cursor: default;"><div style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #555;"></div> FaceTime</label>
+              <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; color: #888; cursor: default;"><div style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #555;"></div> WhatsApp</label>
+              <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; color: #888; cursor: default;"><div style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #555;"></div> Google Meet</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Notas del Admin (solo interno)</label>
+            <textarea class="mock-input-dark" rows="2" style="resize: none;">El cliente quiere enfocarse en el diseño tropical del jardín delantero.</textarea>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span class="mock-btn mock-btn-green mock-btn-sm">✓ Confirmar y Sincronizar Calendario 🗓</span>
+            <span style="font-size: 0.67rem; color: #888;">Se enviará correo de confirmación al cliente</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 21: AVAILABILITY MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-21">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 21 · Flujo Admin 18</div>
+    <div class="slide-section">Panel Admin · Disponibilidad</div>
+    <h2 class="slide-heading">Gestión de Disponibilidad</h2>
+    <p class="slide-desc">Configura el horario semanal de reservas en <code style="color:#74c69d;">/admin/availability</code> — qué días están abiertos, horarios de inicio/fin, duración del turno y tipo de reunión por día.</p>
+    <ul class="slide-steps">
+      <li>Cuadrícula de 7 días: activar/desactivar cada día</li>
+      <li>Por día: Hora de Inicio, Hora de Fin, Duración del Turno (minutos) y Tipo</li>
+      <li>El Tipo controla las opciones de preferencia del cliente (presencial / video / ambos)</li>
+      <li>Botón de acceso rápido "Aplicar Lun–Vie" para configuración rápida</li>
+      <li>Los cambios son inmediatos — afectan el calendario de reservas en vivo</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Sin plantilla = cerrado.</strong> Si el domingo no tiene DisponibilidadTemplate (o el interruptor está apagado), ese día aparece completamente en gris en el calendario de reservas. Una duración de turno de 60 minutos genera turnos por hora desde el inicio hasta el fin.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item">📅 Reservas</div>
+        <div class="mock-sidebar-item active">🗓 Disponibilidad</div>
+        <div class="mock-sidebar-item">📦 Pedidos</div>
+        <div class="mock-sidebar-item">🌿 Plantas</div>
+        <div class="mock-sidebar-item">👥 Clientes</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8; margin-bottom: 0.5rem;">Disponibilidad</div>
+        <!-- Tabs -->
+        <div style="display: flex; gap: 0.4rem; margin-bottom: 0.75rem;">
+          <span style="background: #2d6a4f; color: white; border-radius: 6px; padding: 0.3rem 0.8rem; font-size: 0.72rem; font-weight: 600;">Horario Semanal</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 6px; padding: 0.3rem 0.8rem; font-size: 0.72rem; cursor: default;">Fechas Bloqueadas</span>
+        </div>
+        <!-- Schedule grid header -->
+        <div style="display: grid; grid-template-columns: 70px 36px 75px 75px 65px 90px; gap: 0.3rem; padding: 0 0 0.3rem 0; border-bottom: 1px solid #333; margin-bottom: 0.3rem; font-size: 0.63rem; color: #666; text-transform: uppercase; font-weight: 600;">
+          <span>Día</span><span>Activo</span><span>Inicio</span><span>Fin</span><span>Turno</span><span>Tipo</span>
+        </div>
+        <!-- Days -->
+        <div class="avail-row" style="opacity: 0.4;">
+          <span style="color: #888; font-size: 0.72rem;">Sunday</span>
+          <div class="avail-toggle off"></div>
+          <span style="font-size: 0.7rem; color: #555;">—</span>
+          <span style="font-size: 0.7rem; color: #555;">—</span>
+          <span style="font-size: 0.7rem; color: #555;">—</span>
+          <span style="font-size: 0.7rem; color: #555;">Cerrard</span>
+        </div>
+        <div class="avail-row">
+          <span style="color: #ccc; font-size: 0.72rem;">Monday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">17:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #74c69d; background: #2a2a2a;">Both ▾</div>
+        </div>
+        <div class="avail-row">
+          <span style="color: #ccc; font-size: 0.72rem;">Tuesday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">17:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #74c69d; background: #2a2a2a;">Both ▾</div>
+        </div>
+        <div class="avail-row">
+          <span style="color: #ccc; font-size: 0.72rem;">Wednesday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">17:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #74c69d; background: #2a2a2a;">Both ▾</div>
+        </div>
+        <div class="avail-row">
+          <span style="color: #ccc; font-size: 0.72rem;">Thursday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">17:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #74c69d; background: #2a2a2a;">Both ▾</div>
+        </div>
+        <div class="avail-row">
+          <span style="color: #ccc; font-size: 0.72rem;">Friday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">17:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #aaa; background: #2a2a2a;">Presencial ▾</div>
+        </div>
+        <div class="avail-row" style="border-bottom: none;">
+          <span style="color: #ccc; font-size: 0.72rem;">Saturday</span>
+          <div class="avail-toggle"></div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">09:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">14:00</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #ccc; background: #2a2a2a;">60 min</div>
+          <div style="border: 1px solid #444; border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.68rem; color: #74c69d; background: #2a2a2a;">Both ▾</div>
+        </div>
+        <div style="display: flex; gap: 0.4rem; margin-top: 0.75rem;">
+          <span class="mock-btn mock-btn-sm" style="background: #333; color: #ccc;">Aplicar Lun–Vie</span>
+          <span class="mock-btn mock-btn-green mock-btn-sm">Guardar Horario</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 22: BLOCKED DATES -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-22">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 22 · Flujo Admin 19</div>
+    <div class="slide-section">Panel Admin · Disponibilidad</div>
+    <h2 class="slide-heading">Fechas Bloqueadas</h2>
+    <p class="slide-desc">La pestaña Fechas Bloqueadas crea registros <code>DisponibilidadOverride</code> que ponen en gris fechas específicas en el calendario de reservas, independientemente de la plantilla semanal.</p>
+    <ul class="slide-steps">
+      <li>Selector de fecha + motivo opcional (solo visible para el admin)</li>
+      <li>Las fechas bloqueadas aparecen como no disponibles en el calendario <code>/booking</code></li>
+      <li>Las reservas existentes en fechas bloqueadas NO se cancelan</li>
+      <li>Eliminar con el botón × → <code>DELETE /api/availability/overrides/[id]</code></li>
+      <li>El campo de motivo es para referencia interna — no se muestra a los clientes</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Caso de uso:</strong> Bloquear semanas de vacaciones, días festivos o días en que Maytee tiene otros compromisos. El registro de excepción tiene <code>isBlocked: true</code>, que el endpoint de turnos verifica antes de devolver los horarios disponibles.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item active">🗓 Disponibilidad</div>
+        <div class="mock-sidebar-item">📅 Reservas</div>
+        <div class="mock-sidebar-item">📦 Pedidos</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8; margin-bottom: 0.5rem;">Disponibilidad</div>
+        <!-- Tabs -->
+        <div style="display: flex; gap: 0.4rem; margin-bottom: 0.75rem;">
+          <span style="background: #2a2a2a; color: #888; border-radius: 6px; padding: 0.3rem 0.8rem; font-size: 0.72rem; cursor: default;">Horario Semanal</span>
+          <span style="background: #2d6a4f; color: white; border-radius: 6px; padding: 0.3rem 0.8rem; font-size: 0.72rem; font-weight: 600;">Fechas Bloqueadas</span>
+        </div>
+        <!-- Add blocked date form -->
+        <div style="background: #1e1e1e; border-radius: 10px; padding: 0.75rem; margin-bottom: 0.6rem; border: 1px solid #333;">
+          <div style="font-size: 0.75rem; font-weight: 600; color: #ccc; margin-bottom: 0.5rem;">Bloquear una Fecha</div>
+          <div class="form-row">
+            <div>
+              <label class="form-label-dark">Fecha *</label>
+              <input class="mock-input-dark" type="date" value="2026-07-25">
+            </div>
+            <div>
+              <label class="form-label-dark">Motivo (opcional)</label>
+              <input class="mock-input-dark" placeholder="p.ej. vacaciones, festivo..." value="conferencia">
+            </div>
+          </div>
+          <span class="mock-btn mock-btn-green mock-btn-sm" style="margin-top: 0.25rem;">Bloquear Esta Fecha</span>
+        </div>
+        <!-- Existing blocked dates -->
+        <div style="font-size: 0.75rem; font-weight: 600; color: #ccc; margin-bottom: 0.4rem;">Fechas Bloqueadas (3)</div>
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden; margin-bottom: 0.6rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; border-bottom: 1px solid #2a2a2a;">
+            <div>
+              <div style="font-size: 0.77rem; color: #e5e5e5; font-weight: 600;">Jun 28, 2026</div>
+              <div style="font-size: 0.67rem; color: #888;">vacation</div>
+            </div>
+            <span style="color: #dc2626; font-size: 0.9rem; cursor: default;">✕</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; border-bottom: 1px solid #2a2a2a;">
+            <div>
+              <div style="font-size: 0.77rem; color: #e5e5e5; font-weight: 600;">Jul 4, 2026</div>
+              <div style="font-size: 0.67rem; color: #888;">Independence Day holiday</div>
+            </div>
+            <span style="color: #dc2626; font-size: 0.9rem; cursor: default;">✕</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem;">
+            <div>
+              <div style="font-size: 0.77rem; color: #e5e5e5; font-weight: 600;">Jul 14–18, 2026</div>
+              <div style="font-size: 0.67rem; color: #888;">conference trip</div>
+            </div>
+            <span style="color: #dc2626; font-size: 0.9rem; cursor: default;">✕</span>
+          </div>
+        </div>
+        <!-- Mini calendar preview -->
+        <div class="mini-calendar" style="background: #1e1e1e; border: 1px solid #333;">
+          <div class="cal-header" style="color: #ccc;">
+            <span>‹</span><span style="color: #f0f0f0;">July 2026</span><span>›</span>
+          </div>
+          <div class="cal-grid" style="color: #888;">
+            <div class="cal-day header">S</div><div class="cal-day header">M</div><div class="cal-day header">T</div><div class="cal-day header">W</div><div class="cal-day header">T</div><div class="cal-day header">F</div><div class="cal-day header">S</div>
+            <div class="cal-day unavailable" style="color: #555;">1</div><div class="cal-day available" style="color: #74c69d;">2</div><div class="cal-day available" style="color: #74c69d;">3</div><div class="cal-day blocked" style="color: #f87171;">4</div><div class="cal-day unavailable" style="color: #555;">5</div><div class="cal-day available" style="color: #74c69d;">6</div><div class="cal-day unavailable" style="color: #555;">7</div>
+            <div class="cal-day unavailable" style="color: #555;">8</div><div class="cal-day available" style="color: #74c69d;">9</div><div class="cal-day available" style="color: #74c69d;">10</div><div class="cal-day available" style="color: #74c69d;">11</div><div class="cal-day available" style="color: #74c69d;">12</div><div class="cal-day available" style="color: #74c69d;">13</div><div class="cal-day unavailable" style="color: #555;">14</div>
+            <div class="cal-day unavailable" style="color: #555;">15</div><div class="cal-day blocked" style="color: #f87171;">16</div><div class="cal-day blocked" style="color: #f87171;">17</div><div class="cal-day blocked" style="color: #f87171;">18</div><div class="cal-day blocked" style="color: #f87171;">19</div><div class="cal-day unavailable" style="color: #555;">20</div><div class="cal-day unavailable" style="color: #555;">21</div>
+            <div class="cal-day unavailable" style="color: #555;">22</div><div class="cal-day available" style="color: #74c69d;">23</div><div class="cal-day available" style="color: #74c69d;">24</div><div class="cal-day available" style="color: #74c69d;">25</div>
+          </div>
+          <div style="display: flex; gap: 0.75rem; margin-top: 0.4rem; font-size: 0.65rem; color: #888;">
+            <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="color: #74c69d;">●</span> Disponible</span>
+            <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="color: #f87171;">●</span> Bloqueado</span>
+            <span style="display: flex; align-items: center; gap: 0.25rem;"><span style="color: #555;">●</span> Fin de semana/cerrado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 23: PLANT CATALOG MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-23">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 23 · Flujo Admin 20</div>
+    <div class="slide-section">Panel Admin · Plantas</div>
+    <h2 class="slide-heading">Gestión del Catálogo de Plantas</h2>
+    <p class="slide-desc">CRUD completo para el catálogo de plantas en <code style="color:#74c69d;">/admin/plants</code> — edición de stock en línea, carga automática de imágenes de Wikipedia y más de 90 plantas precargadas.</p>
+    <ul class="slide-steps">
+      <li>Clic en el número de stock en línea → edición inline (Enter o clic fuera para guardar)</li>
+      <li>Color del stock: 🔴 0 · 🟡 1–3 · 🟢 4+</li>
+      <li>Agregar Planta: escribe el nombre → las sugerencias de Wikipedia auto-completan la URL de la imagen</li>
+      <li>El <code>onlinePrice</code> independiente reemplaza a <code>price</code> en la tienda</li>
+      <li>Campos de envío: <code>weight</code>, <code>shippingClass</code> para las tarifas de Shippo</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Imágenes de Wikipedia:</strong> Al ingresar el nombre, el formulario consulta la API de Wikimedia para sugerencias de fotos. La URL de imagen resuelta se almacena como <code>Plant.imageUrl</code>. Usa <code>unoptimized</code> en <code>next/image</code> para evitar el límite de tasa 429 de Wikimedia.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item">📅 Reservas</div>
+        <div class="mock-sidebar-item">📦 Pedidos</div>
+        <div class="mock-sidebar-item active">🌿 Plantas</div>
+        <div class="mock-sidebar-item">👥 Clientes</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <div>
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8;">Catálogo de Plantas</div>
+            <div style="font-size: 0.68rem; color: #888;">90 plantas en el catálogo</div>
+          </div>
+          <span class="mock-btn mock-btn-green mock-btn-sm">+ Agregar Planta</span>
+        </div>
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem;">
+          <table class="mock-table-dark" style="font-size: 0.68rem;">
+            <thead><tr><th>Foto</th><th>Planta</th><th>Categoría</th><th>Precio Online</th><th>Stock Online</th><th>Stock Local</th><th>Destacado</th><th>Acciones</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg,#2d6a4f,#40916c); display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">🌿</div></td>
+                <td><div style="font-weight: 600; color: #e5e5e5;">Bougainvillea</div><div style="font-size: 0.62rem; color: #666; font-style: italic;">Buganvilla</div></td>
+                <td><span class="mock-badge badge-amber" style="font-size: 0.6rem;">Florales</span></td>
+                <td>$35.00</td>
+                <td><span style="color: #4ade80; font-weight: 600; cursor: pointer; text-decoration: underline;">8</span></td>
+                <td>10</td>
+                <td style="color: #fbbf24;">★</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg,#2d6a4f,#40916c); display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">🌿</div></td>
+                <td><div style="font-weight: 600; color: #e5e5e5;">Bird of Paradise</div><div style="font-size: 0.62rem; color: #666; font-style: italic;">Ave del Paraíso</div></td>
+                <td><span class="mock-badge badge-blue" style="font-size: 0.6rem;">Tropical</span></td>
+                <td>$65.00</td>
+                <td><span style="color: #fbbf24; font-weight: 600; cursor: pointer; text-decoration: underline;">2</span></td>
+                <td>5</td>
+                <td style="color: #fbbf24;">★</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg,#6b7280,#9ca3af); display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">🌿</div></td>
+                <td><div style="font-weight: 600; color: #888;">Coconut Palm</div><div style="font-size: 0.62rem; color: #555; font-style: italic;">Palma de Coco</div></td>
+                <td><span class="mock-badge badge-green" style="font-size: 0.6rem;">Palmas</span></td>
+                <td>$149.00</td>
+                <td><span style="color: #f87171; font-weight: 600; cursor: pointer; text-decoration: underline;">0</span></td>
+                <td>3</td>
+                <td style="color: #555;">☆</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+              <tr>
+                <td><div style="width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg,#2d6a4f,#40916c); display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">🌿</div></td>
+                <td><div style="font-weight: 600; color: #e5e5e5;">Ixora</div><div style="font-size: 0.62rem; color: #666; font-style: italic;">Ixora</div></td>
+                <td><span class="mock-badge badge-amber" style="font-size: 0.6rem;">Florales</span></td>
+                <td>$22.00</td>
+                <td><span style="color: #4ade80; font-weight: 600; cursor: pointer; text-decoration: underline;">12</span></td>
+                <td>15</td>
+                <td style="color: #555;">☆</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Inline edit hint -->
+        <div style="background: #1e2a22; border: 1px solid #3a5a40; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.7rem; color: #74c69d;">
+          💡 Haz clic en cualquier número de stock para editar en línea. Presiona Enter o haz clic fuera para guardar. El stock se muestra en rojo en 0, ámbar en 1–3 y verde en 4+.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 24: ORDER MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-24">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 24 · Flujo Admin 21</div>
+    <div class="slide-section">Panel Admin · Pedidos</div>
+    <h2 class="slide-heading">Gestión y Cumplimiento de Pedidos</h2>
+    <p class="slide-desc">Cumplimiento completo de pedidos en <code style="color:#74c69d;">/admin/orders</code> — ver pedidos, generar etiquetas de Shippo, marcar como enviado y emitir reembolsos de Square.</p>
+    <ul class="slide-steps">
+      <li>Filtrar por estado: Pendiente / En Proceso / Enviado / Entregado / Cancelado</li>
+      <li>Generar Etiqueta: obtiene tarifas de Shippo → compra → PDF de etiqueta + número de seguimiento guardados</li>
+      <li>Marcar como Enviado → <code>sendEnvíoConfirmation()</code> con número de seguimiento</li>
+      <li>Cancelar → la API de reembolso de Square se llama automáticamente si existe el pago</li>
+      <li><code>StoreOrder.trackingNumber</code> incluido en el correo de envío</li>
+    </ul>
+    <div class="tip-box">
+      <strong>La compra de la etiqueta es definitiva</strong> — Shippo cobra por la etiqueta incluso si no se usa. Siempre verifica la dirección de envío antes de comprar. Los reembolsos de Square se emiten vía <code>POST /api/store/orders/[id]/refund</code>.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item">📅 Reservas</div>
+        <div class="mock-sidebar-item active">📦 Pedidos</div>
+        <div class="mock-sidebar-item">🌿 Plantas</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f5f0e8; margin-bottom: 0.5rem;">Pedidos</div>
+        <!-- Filtrar tabs -->
+        <div style="display: flex; gap: 0.3rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">Todo</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">Pendiente</span>
+          <span style="background: #2d6a4f; color: white; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem; font-weight: 600;">En Proceso (1)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 99px; padding: 0.2rem 0.6rem; font-size: 0.65rem;">Enviado</span>
+        </div>
+        <!-- Order row -->
+        <div style="background: #1e1e1e; border-radius: 10px; margin-bottom: 0.5rem; overflow: hidden;">
+          <div style="padding: 0.6rem 0.75rem; display: flex; gap: 0.5rem; align-items: center; border-bottom: 1px solid #2a2a2a; flex-wrap: wrap;">
+            <div style="flex: 1;">
+              <div style="font-weight: 600; font-size: 0.78rem; color: #f0f0f0;">#MG-2026-0042</div>
+              <div style="font-size: 0.67rem; color: #888;">Maikel Jordan · mjordanf@gmail.com · Jun 1</div>
+            </div>
+            <span class="mock-badge badge-green" style="font-size: 0.65rem;">processing</span>
+            <span style="font-weight: 700; font-size: 0.82rem; color: #74c69d;">$92.51</span>
+          </div>
+          <!-- Expandired detail -->
+          <div style="padding: 0.65rem 0.75rem; font-size: 0.72rem; color: #ccc;">
+            <div style="margin-bottom: 0.4rem; display: flex; gap: 1rem;">
+              <div><strong style="color: #888;">Artículos:</strong> Bougainvillea × 1 ($35) · Ixora × 2 ($44)</div>
+            </div>
+            <div style="margin-bottom: 0.4rem;"><strong style="color: #888;">Enviar a:</strong> 100 Biscayne Blvd, Miami FL 33132</div>
+            <div style="margin-bottom: 0.5rem;"><strong style="color: #888;">Pago Square:</strong> py_XXXXXXXXXXXXXXXX</div>
+            <!-- Generate label section -->
+            <div style="background: #252525; border-radius: 8px; padding: 0.6rem; border: 1px solid #333;">
+              <div style="font-weight: 600; font-size: 0.73rem; color: #e5e5e5; margin-bottom: 0.4rem;">📦 Generar Etiqueta de Envío</div>
+              <div class="rate-card selected" style="background: #2a2a2a; border-color: #40916c; margin-bottom: 0.25rem;">
+                <div style="width: 12px; height: 12px; border-radius: 50%; background: #40916c; flex-shrink: 0;"></div>
+                <div style="flex: 1; font-size: 0.7rem; color: #e5e5e5;">UPS Ground Saver · Est. 2 días</div>
+                <div style="font-weight: 700; color: #74c69d; font-size: 0.78rem;">$6.27</div>
+              </div>
+              <div class="rate-card" style="background: #2a2a2a; border-color: #444; margin-bottom: 0.4rem;">
+                <div style="width: 12px; height: 12px; border-radius: 50%; border: 2px solid #555; flex-shrink: 0;"></div>
+                <div style="flex: 1; font-size: 0.7rem; color: #888;">USPS Priority · Est. 2 días</div>
+                <div style="font-weight: 700; color: #888; font-size: 0.78rem;">$12.50</div>
+              </div>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <span class="mock-btn mock-btn-green mock-btn-sm">Comprar Etiqueta en Shippo</span>
+                <span class="mock-btn mock-btn-sm" style="background: #1d4ed8; color: white; font-size: 0.68rem; padding: 0.25rem 0.6rem; border-radius: 6px;">Marcar como En Proceso</span>
+                <span class="mock-btn mock-btn-sm" style="background: #7f1d1d; color: #fca5a5; font-size: 0.68rem; padding: 0.25rem 0.6rem; border-radius: 6px;">Cancelar Pedido</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 25: CUSTOMER MANAGEMENT & LEADS -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-25">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 25 · Flujo Admin 22</div>
+    <div class="slide-section">Panel Admin · Clientes y Leads</div>
+    <h2 class="slide-heading">Gestión de Clientes y Clientes Potenciales</h2>
+    <p class="slide-desc">Dos secciones del admin: <code style="color:#74c69d;">/admin/users</code> (lista de clientes de solo lectura) y <code style="color:#74c69d;">/admin/leads</code> (formularios de contacto + gestión del boletín).</p>
+    <ul class="slide-steps">
+      <li>Tabla de clientes: nombre, correo, rol, estado del boletín, ZIP y fecha de registro</li>
+      <li>Botón Exportar CSV — descarga la lista completa de clientes</li>
+      <li>Formularios de Contacto: expandir → respuesta en línea envía correo vía Resend</li>
+      <li>Boletín: muestra el recuento de suscriptores confirmados y permite enviar difusiones</li>
+      <li>Doble confirmación — solo los suscriptores con <code>confirmed: true</code> reciben correos</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Los cambios de rol</strong> requieren el panel de Super Admin (<code>/superadmin/users</code>) — la lista de usuarios del admin es de solo lectura. Las difusiones del boletín se ejecutan sincrónicamente una por una; las listas grandes pueden necesitar una cola en segundo plano en la Fase 2.
+    </div>
+  </div>
+  <div class="slide-right dark-bg" style="padding: 1rem;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar" style="min-height: 0; min-width: 140px;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">🛡 Admin Panel</div>
+        <div class="mock-sidebar-item active">👥 Clientes</div>
+        <div class="mock-sidebar-item">💬 Leads</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <!-- Clientes section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: #f5f0e8;">Clientes</div>
+          <span class="mock-btn mock-btn-sm" style="background: #333; color: #ccc;">Exportar CSV</span>
+        </div>
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden; margin-bottom: 0.75rem;">
+          <table class="mock-table-dark" style="font-size: 0.67rem;">
+            <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Boletín</th><th>ZIP</th><th>Registrado</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="display: flex; align-items: center; gap: 0.3rem;"><div style="width: 22px; height: 22px; border-radius: 50%; background: #40916c; display: flex; align-items: center; justify-content: center; font-size: 0.58rem; font-weight: 700; color: white; flex-shrink: 0;">MJ</div> Maikel Jordan</div></td>
+                <td style="max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">mjordanf@gmail.com</td>
+                <td><span class="mock-badge badge-gray" style="font-size: 0.6rem;">customer</span></td>
+                <td style="color: #4ade80;">✓</td>
+                <td>33132</td>
+                <td style="color: #888;">May 29</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="display: flex; align-items: center; gap: 0.3rem;"><div style="width: 22px; height: 22px; border-radius: 50%; background: #1d4ed8; display: flex; align-items: center; justify-content: center; font-size: 0.58rem; font-weight: 700; color: white; flex-shrink: 0;">MS</div> Maria Santos</div></td>
+                <td style="max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">maria@example.com</td>
+                <td><span class="mock-badge badge-gray" style="font-size: 0.6rem;">customer</span></td>
+                <td style="color: #4ade80;">✓</td>
+                <td>33155</td>
+                <td style="color: #888;">May 15</td>
+              </tr>
+              <tr>
+                <td><div style="display: flex; align-items: center; gap: 0.3rem;"><div style="width: 22px; height: 22px; border-radius: 50%; background: #bc4b35; display: flex; align-items: center; justify-content: center; font-size: 0.58rem; font-weight: 700; color: white; flex-shrink: 0;">AR</div> Alex Ramirez</div></td>
+                <td style="max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">alex@example.com</td>
+                <td><span class="mock-badge badge-gray" style="font-size: 0.6rem;">customer</span></td>
+                <td style="color: #f87171;">✗</td>
+                <td>33180</td>
+                <td style="color: #888;">Apr 22</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Leads section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: #f5f0e8;">Leads & Boletín</div>
+        </div>
+        <div style="display: flex; gap: 0.4rem; margin-bottom: 0.4rem;">
+          <span style="background: #2d6a4f; color: white; border-radius: 6px; padding: 0.25rem 0.6rem; font-size: 0.68rem; font-weight: 600;">Formularios de Contacto (2)</span>
+          <span style="background: #2a2a2a; color: #888; border-radius: 6px; padding: 0.25rem 0.6rem; font-size: 0.68rem;">Boletín</span>
+        </div>
+        <div style="background: #1e1e1e; border-radius: 10px; overflow: hidden;">
+          <div style="padding: 0.55rem 0.75rem; border-bottom: 1px solid #2a2a2a;">
+            <div style="font-weight: 600; font-size: 0.73rem; color: #f0f0f0;">Alex Ramirez — consulta instalación de jardín</div>
+            <div style="font-size: 0.65rem; color: #888; margin-top: 0.1rem;">alex@example.com · May 28 · <span class="mock-badge badge-amber" style="font-size: 0.6rem;">new</span></div>
+          </div>
+          <div style="padding: 0.55rem 0.75rem; background: #252525;">
+            <div style="font-size: 0.7rem; color: #bbb; margin-bottom: 0.35rem;">"Hola, me interesa una instalación completa de jardín delantero..."</div>
+            <div class="form-group">
+              <textarea class="mock-input-dark" rows="2" style="resize: none; font-size: 0.7rem;" placeholder="Escribe una respuesta..."></textarea>
+            </div>
+            <span class="mock-btn mock-btn-blue mock-btn-sm">Enviar Respuesta</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 26: EMAIL SYSTEM OVERVIEW -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-26">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 26 · Flujo Admin 23</div>
+    <div class="slide-section">Sistema · Correo</div>
+    <h2 class="slide-heading">Resumen del Sistema de Notificaciones por Correo</h2>
+    <p class="slide-desc">Todos los correos transaccionales se envían vía <strong style="color:#74c69d;">Resend</strong> desde <code style="color:#74c69d;">noreply@mayteesgardencenter.com</code>. El dominio está verificado vía DNS de GoDaddy. 15 disparadores de correo distintos en todo el sistema.</p>
+    <ul class="slide-steps">
+      <li>Todas las funciones están en <code style="color:#74c69d;">src/lib/email.ts</code></li>
+      <li>Respaldo seguro: si <code>RESEND_API_KEY</code> no está configurado, solo registra en la consola</li>
+      <li>El recordatorio de 24 horas se ejecuta vía cron de Vercel a las 10 AM UTC diariamente</li>
+      <li>Boletín: solo los suscriptores con <code>confirmed: true</code> reciben difusiones</li>
+      <li>Remitente: "Maytee's Garden &lt;noreply@mayteesgardencenter.com&gt;"</li>
+    </ul>
+    <div class="tip-box">
+      <strong>Nivel gratuito:</strong> Resend ofrece 3,000 correos/mes y 100/día — suficiente para el volumen típico de un centro de jardinería boutique. Los tokens de restablecimiento de contraseña expiran después de 1 hora. Prueba de correo en <code>/admin/test-email</code>.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.25rem;">
+    <div style="font-weight: 700; font-size: 0.9rem; color: #111; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+      <span style="background: #2d6a4f; color: white; border-radius: 6px; padding: 0.2rem 0.6rem; font-size: 0.7rem;">Resend</span> Email Trigger Map
+    </div>
+    <table class="email-table">
+      <thead>
+        <tr><th>Disparador</th><th>Cuándo</th><th>Para</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Reserva enviada</td><td>Inmediatamente al enviar el formulario</td><td>Cliente</td></tr>
+        <tr><td>Alerta de reserva</td><td>Inmediatamente al enviar el formulario</td><td>Admin (bandeja)</td></tr>
+        <tr><td>Reserva confirmada (presencial)</td><td>Admin hace clic en Confirmar</td><td>Cliente</td></tr>
+        <tr><td>Reserva confirmada (video)</td><td>Admin hace clic en Confirmar</td><td>Cliente</td></tr>
+        <tr><td>Reserva actualizada</td><td>Admin edita reserva confirmada</td><td>Cliente</td></tr>
+        <tr><td>Reserva cancelada</td><td>Cliente o admin cancela</td><td>Admin</td></tr>
+        <tr><td>Recordatorio 24h</td><td>Cron · diario 10AM UTC</td><td>Cliente</td></tr>
+        <tr><td>Confirmación de pedido</td><td>Pago capturado</td><td>Cliente</td></tr>
+        <tr><td>Alerta de pedido</td><td>Pago capturado</td><td>Admin (bandeja)</td></tr>
+        <tr><td>Notificación de envío</td><td>Admin marca como enviado</td><td>Cliente</td></tr>
+        <tr><td>Correo de bienvenida</td><td>Registro de cuenta</td><td>Nuevo usuario</td></tr>
+        <tr><td>Confirmación de boletín</td><td>Casilla de boletín marcada</td><td>Suscriptor</td></tr>
+        <tr><td>Difusión del boletín</td><td>Admin envía boletín</td><td>Todos confirmados</td></tr>
+        <tr><td>Restablecimiento de contraseña</td><td>Enlace Olvidé mi contraseña</td><td>Usuario</td></tr>
+        <tr><td>Respuesta a lead</td><td>Admin responde formulario de contacto</td><td>Remitente del lead</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 27: CALENDAR INTEGRATION -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-27">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 27 · Flujo Admin 24</div>
+    <div class="slide-section">Sistema · Calendario</div>
+    <h2 class="slide-heading">Integración de Calendario — Cómo Funciona</h2>
+    <p class="slide-desc">La API de Microsoft Graph sincroniza las reservas confirmadas al calendario de Outlook de <code style="color:#74c69d;">info@mayteesgardencenter.com</code> usando credenciales de cliente (no requiere inicio de sesión de usuario).</p>
+    <ul class="slide-steps">
+      <li>App de Azure AD: "Maytees Garden Calendar" registrada en portal.azure.com</li>
+      <li>Permiso: <code>Calendars.ReadWrite</code> (Aplicación, consentido por admin)</li>
+      <li>Auth: flujo de credenciales de cliente → token de acceso válido ~1 hora</li>
+      <li>Crear al confirmar · Actualizar al editar · Eliminar al cancelar</li>
+      <li>Operación nula graceful si las variables de entorno no están configuradas — las reservas siguen funcionando</li>
+    </ul>
+    <div class="tip-box">
+      <strong>El evento incluye:</strong> nombre del cliente, correo, teléfono, ZIP, servicio, tipo de consulta, enlace de videollamada (si es video), notas del cliente y un recordatorio de calendario de 60 minutos. El ID del evento se guarda como <code>Booking.calendarEventId</code>.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1.5rem;">
+    <div style="font-weight: 700; font-size: 0.88rem; color: #111; margin-bottom: 1rem;">Flujo de Sincronización del Calendario</div>
+    <div class="flow-step">
+      <div class="flow-step-num">1</div>
+      <div class="flow-step-body">🗓 El admin hace clic en <strong>"Confirmar y Sincronizar Calendario"</strong> en <code>/admin/bookings</code></div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-step-num">2</div>
+      <div class="flow-step-body">⚡ La app llama a <code>getAccessToken()</code> → POST a <code>login.microsoftonline.com/{tenantId}/oauth2/v2.0/token</code> con <code>client_credentials</code></div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-step-num">3</div>
+      <div class="flow-step-body">📡 Microsoft Graph: <code>POST /users/info@mayteesgardencenter.com/events</code> → crea el evento del calendario → devuelve <code>eventId</code></div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-step-num">4</div>
+      <div class="flow-step-body">💾 Se guarda <code>Booking.calendarEventId</code> y se establece <code>calendarSynced = true</code></div>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-step">
+      <div class="flow-step-num">5</div>
+      <div class="flow-step-body">📧 El cliente recibe el correo de confirmación con los detalles de la consulta</div>
+    </div>
+    <!-- Side note box -->
+    <div style="background: #f0f4ff; border: 1px solid #c7d7fd; border-radius: 8px; padding: 0.75rem; margin-top: 0.75rem; font-size: 0.72rem; color: #1e3a8a; line-height: 1.5;">
+      <div style="font-weight: 700; margin-bottom: 0.3rem;">Azure App Registration</div>
+      Name: Maytees Garden Calendar<br>
+      Tenant: GoDaddy Microsoft 365<br>
+      Permission: Calendars.LeídoWrite (Application)<br>
+      Calendar: info@mayteesgardencenter.com<br>
+      Event: "Garden Consultation — [Name] / [Date] [Time] / 15196 SW 184th St, Miami"
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 28: PART 3 DIVIDER — SUPER ADMIN -->
+<!-- ============================================================ -->
+<div class="slide slide-divider slide-divider-dark" id="slide-28">
+  <div class="divider-content" style="background: radial-gradient(ellipse at center, #1a1a3a 0%, #0d0d0d 70%);">
+    <div style="font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: #a78bfa; margin-bottom: 0.75rem;">Parte 3 de 3</div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 700; color: #f5f0e8; margin-bottom: 1rem;">Super Admin</div>
+    <div style="width: 60px; height: 2px; background: #d97706; margin: 0 auto 1.5rem;"></div>
+    <ul class="divider-list">
+      <li><span class="num" style="color: #a78bfa;">25</span> Resumen del Área de Súper Administrador</li>
+      <li><span class="num" style="color: #a78bfa;">26</span> Gestión de Usuarios — Crear, Editar, Eliminar</li>
+      <li><span class="num" style="color: #a78bfa;">27</span> Cambios de Rol y Restablecer Contraseña</li>
+      <li><span class="num" style="color: #a78bfa;">28</span> Configuración del Sitio (solo lectura)</li>
+    </ul>
+    <div style="margin-top: 2rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.75rem 1.25rem; font-size: 0.75rem; color: rgba(255,255,255,0.5);">
+      Login: maytee@mayteesgardencenter.com / Maytee@Admin2026<br>
+      Route: /superadmin — dark theme, separate from /admin
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 29: SUPER ADMIN AREA OVERVIEW -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-29">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 29 · Flujo Súper Admin 25</div>
+    <div class="slide-section">Súper Admin</div>
+    <h2 class="slide-heading">Súper Administrador — Acceso y Resumen del Área</h2>
+    <p class="slide-desc">El panel de súper admin en <code style="color:#74c69d;">/superadmin</code> — exclusivo para el rol <code>superadmin</code>. El tema gris oscuro lo distingue claramente del panel de administración del negocio.</p>
+    <ul class="slide-steps">
+      <li>Inicio de sesión: maytee@mayteesgardencenter.com / Maytee@Admin2026</li>
+      <li>Protección de ruta: <code>superadmin/layout.tsx</code> verifica role === "superadmin"</li>
+      <li>Independiente de <code>/admin</code> — el personal de Maytee no lo ve</li>
+      <li>Enlace "Admin de Negocios" en el pie de página navega a <code>/admin</code></li>
+      <li>Estadísticas: total de usuarios, cuentas admin y cuentas staff</li>
+    </ul>
+    <div class="tip-box">
+      <strong>El tema oscuro</strong> (fondo <code>#111</code>, barra lateral <code>#1a1a1a</code>) es intencional — la distinción visual evita confusiones entre las herramientas del propietario del producto y el panel de administración de uso diario del negocio.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1rem; background: #111;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <!-- Super admin sidebar -->
+      <div class="mock-sidebar-dark">
+        <div style="padding-bottom: 0.6rem; margin-bottom: 0.6rem; border-bottom: 1px solid #333;">
+          <div style="width: 32px; height: 32px; border-radius: 6px; background: #d97706; display: flex; align-items: center; justify-content: center; margin-bottom: 0.35rem; font-size: 0.8rem;">⚙</div>
+          <div style="font-weight: 700; font-size: 0.78rem; color: #e5e5e5;">Super Admin</div>
+          <div style="font-size: 0.62rem; color: #555;">mayteesgardencenter.com</div>
+        </div>
+        <div class="mock-sidebar-item active-dark" style="background: rgba(217,119,6,0.2); border-radius: 6px; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.6rem;">🏠 <span style="color: #f0f0f0;">Panel de Control</span></div>
+        <div class="mock-sidebar-item" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.6rem; color: #999;">👥 Gestión de Usuarios</div>
+        <div class="mock-sidebar-item" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.6rem; color: #999;">⚙️ Configuración del Sitio</div>
+        <div style="margin-top: auto; padding-top: 0.75rem; border-top: 1px solid #333; font-size: 0.67rem; color: #555;">
+          <div style="cursor: default; padding: 0.3rem 0;">← Admin de Negocios</div>
+          <div style="cursor: default; padding: 0.3rem 0;">← Volver al Sitio</div>
+        </div>
+      </div>
+      <!-- Main area -->
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.3rem;">Super Admin Panel de Control</div>
+        <div style="font-size: 0.73rem; color: #666; margin-bottom: 0.75rem;">Administración del producto web — gestiona cuentas y configuración.</div>
+        <!-- Stat cards -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.75rem;">
+          <div class="stat-card-dark"><div class="stat-number-dark">12</div><div class="stat-label-dark">Total Usuarios</div></div>
+          <div class="stat-card-dark"><div class="stat-number-dark">2</div><div class="stat-label-dark">Cuentas Admin</div></div>
+          <div class="stat-card-dark"><div class="stat-number-dark">1</div><div class="stat-label-dark">Cuentas Staff</div></div>
+        </div>
+        <!-- Feature tiles -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+          <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 0.75rem;">
+            <div style="font-size: 1.2rem; margin-bottom: 0.3rem;">👥</div>
+            <div style="font-weight: 600; font-size: 0.78rem; color: #e5e5e5; margin-bottom: 0.2rem;">Gestión de Usuarios</div>
+            <div style="font-size: 0.68rem; color: #666; line-height: 1.4;">Crea, edita, cambia el rol y elimina cualquier cuenta de usuario. Acceso completo a todos los usuarios del sistema.</div>
+          </div>
+          <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 0.75rem;">
+            <div style="font-size: 1.2rem; margin-bottom: 0.3rem;">⚙️</div>
+            <div style="font-weight: 600; font-size: 0.78rem; color: #e5e5e5; margin-bottom: 0.2rem;">Configuración del Sitio</div>
+            <div style="font-size: 0.68rem; color: #666; line-height: 1.4;">Ver la configuración del sitio. Ajustes editables en la Fase 2 — actualmente controlados por variables de entorno.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 30: SUPER ADMIN USER MANAGEMENT -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-30">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 30 · Flujo Súper Admin 26</div>
+    <div class="slide-section">Súper Admin · Usuarios</div>
+    <h2 class="slide-heading">Súper Administrador — Gestión de Usuarios</h2>
+    <p class="slide-desc">CRUD completo de usuarios en <code style="color:#74c69d;">/superadmin/users</code> — crear cuentas, editar roles, restablecer contraseñas y eliminar usuarios. Las insignias de rol están codificadas por color según el nivel.</p>
+    <ul class="slide-steps">
+      <li>Ámbar = Superadmin · Verde = Admin · Azul = Staff · Gris = Cliente</li>
+      <li>Nuevo Usuario: crear con nombre, correo, contraseña temporal, rol y teléfono</li>
+      <li>Editar: actualizar nombre, rol, teléfono — el cambio de rol toma efecto en el próximo inicio de sesión</li>
+      <li>Eliminar: usuario borrado; las reservas/pedidos asociados establecen <code>userId = null</code></li>
+      <li>Todas las acciones llaman a <code>/api/admin/users</code> y <code>/api/admin/users/[id]</code></li>
+    </ul>
+    <div class="tip-box">
+      <strong>Las sesiones JWT no se invalidan de inmediato</strong> al cambiar el rol — el rol actualizado toma efecto cuando el JWT actual del usuario expira o el usuario cierra sesión y vuelve a iniciarla. Informa a los usuarios que vuelvan a iniciar sesión tras un cambio de rol.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1rem; background: #111;">
+    <div style="display: flex; gap: 0.75rem; height: 100%; min-height: 0;">
+      <div class="mock-sidebar-dark" style="min-width: 150px;">
+        <div style="font-weight: 700; font-size: 0.72rem; color: #888; margin-bottom: 0.5rem; padding-bottom: 0.4rem; border-bottom: 1px solid #333;">⚙ Super Admin</div>
+        <div class="mock-sidebar-item" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.5rem; color: #888;">🏠 Panel de Control</div>
+        <div class="mock-sidebar-item active-dark" style="background: rgba(217,119,6,0.15); border-radius: 6px; display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.5rem;">👥 <span style="color: #f0f0f0;">Gestión de Usuarios</span></div>
+        <div class="mock-sidebar-item" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.5rem; color: #888;">⚙️ Settings</div>
+      </div>
+      <div style="flex: 1; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <div>
+            <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: #f0f0f0;">Gestión de Usuarios</div>
+            <div style="font-size: 0.67rem; color: #666;">12 cuentas</div>
+          </div>
+          <span class="mock-btn mock-btn-amber mock-btn-sm">+ Nueva Cuenta</span>
+        </div>
+        <div style="background: #1a1a1a; border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem;">
+          <table class="mock-table-dark" style="font-size: 0.67rem;">
+            <thead><tr><th>Nombre / Correo</th><th>Rol</th><th>Teléfono</th><th>Creado</th><th>Acciones</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="font-weight: 600; color: #e5e5e5;">Maytee</div><div style="font-size: 0.6rem; color: #666;">maytee@mayteesgardencenter.com</div></td>
+                <td><span style="background: #92400e; color: #fde68a; padding: 0.15rem 0.5rem; border-radius: 99px; font-size: 0.6rem; font-weight: 600;">Superadmin</span></td>
+                <td style="color: #888;">—</td>
+                <td style="color: #888;">May 29</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🔑</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="font-weight: 600; color: #e5e5e5;">Maytee</div><div style="font-size: 0.6rem; color: #666;">maytee@mayteesgarden.com</div></td>
+                <td><span class="mock-badge badge-green" style="font-size: 0.6rem;">Admin</span></td>
+                <td style="color: #888;">(305) 555-0100</td>
+                <td style="color: #888;">May 25</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🔑</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #2a2a2a;">
+                <td><div style="font-weight: 600; color: #e5e5e5;">Maikel Jordan</div><div style="font-size: 0.6rem; color: #666;">mjordanf@gmail.com</div></td>
+                <td><span class="mock-badge badge-gray" style="font-size: 0.6rem;">Customer</span></td>
+                <td style="color: #888;">—</td>
+                <td style="color: #888;">May 29</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🔑</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+              <tr>
+                <td><div style="font-weight: 600; color: #e5e5e5;">Carlos Rivera</div><div style="font-size: 0.6rem; color: #666;">staff@mayteesgarden.com</div></td>
+                <td><span class="mock-badge badge-blue" style="font-size: 0.6rem;">Staff</span></td>
+                <td style="color: #888;">—</td>
+                <td style="color: #888;">May 20</td>
+                <td style="display: flex; gap: 0.3rem;"><span style="cursor:default; color:#888;">✏</span> <span style="cursor:default; color:#888;">🔑</span> <span style="cursor:default; color:#888;">🗑</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Edit modal -->
+        <div style="background: #1a1a1a; border: 1px solid #444; border-radius: 10px; padding: 0.65rem; font-size: 0.72rem;">
+          <div style="font-weight: 600; color: #e5e5e5; margin-bottom: 0.4rem;">✏ Editar Usuario — Maikel Jordan</div>
+          <div class="form-row">
+            <div><label class="form-label-dark">Nombre</label><input class="mock-input-dark" value="Maikel Jordan" readonly></div>
+            <div>
+              <label class="form-label-dark">Rol</label>
+              <select class="mock-input-dark"><option>customer</option><option>staff</option><option>admin</option><option>superadmin</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Teléfono (optional)</label>
+            <input class="mock-input-dark" value="(786) 555-0100" readonly>
+          </div>
+          <div style="display: flex; gap: 0.4rem; margin-top: 0.25rem;">
+            <span class="mock-btn mock-btn-amber mock-btn-sm">Guardar Cambios</span>
+            <span class="mock-btn mock-btn-sm" style="background: #333; color: #888;">Cancelar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 31: SUPER ADMIN: PASSWORD RESET & SETTINGS -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-31">
+  <div class="slide-left">
+    <div class="slide-label">Diapositiva 31 · Flujo Súper Admin 27–28</div>
+    <div class="slide-section">Súper Admin · Restablecer Contraseña y Configuración</div>
+    <h2 class="slide-heading">Súper Administrador — Restablecer Contraseña y Cambiar Roles</h2>
+    <p class="slide-desc">Dos operaciones críticas del súper admin: restablecer contraseñas de usuarios fuera de banda y ver (actualmente de solo lectura) la configuración del sitio web.</p>
+    <ul class="slide-steps">
+      <li>Restablecer Contraseña: ingresar nueva contraseña temporal → se almacena <code>bcrypt.hash</code> en la base de datos</li>
+      <li>Comunicar la contraseña temporal al usuario fuera de banda (canal seguro)</li>
+      <li>El usuario debe cambiarla vía el flujo de Olvidé mi Contraseña tras el primer inicio de sesión</li>
+      <li>Página de configuración: nombre del negocio, dirección, teléfono, correo y horario (solo lectura)</li>
+      <li>Fase 2: configuración editable vía interfaz sin cambios de código</li>
+    </ul>
+    <div class="tip-box">
+      <strong>El restablecimiento de contraseña vía súper admin</strong> omite el correo — sobreescribe directamente el <code>passwordHash</code> del usuario. Úsalo para contraseñas de admin olvidadas cuando el flujo de restablecimiento por correo no está disponible. La configuración actualmente está codificada en los componentes y plantillas de correo.
+    </div>
+  </div>
+  <div class="slide-right" style="padding: 1rem; background: #111;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; height: 100%; min-height: 0; align-content: start;">
+      <!-- Contraseña reset panel -->
+      <div>
+        <div style="font-weight: 700; font-size: 0.82rem; color: #ccc; margin-bottom: 0.5rem;">🔑 Restablecer Contraseña</div>
+        <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 0.75rem;">
+          <div style="font-size: 0.72rem; color: #888; margin-bottom: 0.5rem;">Restableciendo para: <strong style="color: #ccc;">Maikel Jordan</strong></div>
+          <div class="form-group">
+            <label class="form-label-dark">Nueva Contraseña</label>
+            <input class="mock-input-dark" value="TempPass2026!" type="password" readonly>
+            <div style="font-size: 0.63rem; color: #666; margin-top: 0.2rem;">Mínimo 8 caracteres</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Confirmar Contraseña</label>
+            <input class="mock-input-dark" value="TempPass2026!" type="password" readonly>
+          </div>
+          <span class="mock-btn mock-btn-amber mock-btn-sm">Restablecer Contraseña</span>
+        </div>
+        <!-- Success state -->
+        <div style="background: #1a2e1a; border: 1px solid #3a5a3a; border-radius: 10px; padding: 0.6rem; margin-top: 0.5rem; font-size: 0.72rem; color: #4ade80; display: flex; align-items: center; gap: 0.4rem;">
+          ✓ Contraseña actualizada correctamente. Comparte la contraseña temporal de forma segura con el usuario.
+        </div>
+      </div>
+      <!-- Website settings -->
+      <div>
+        <div style="font-weight: 700; font-size: 0.82rem; color: #ccc; margin-bottom: 0.5rem;">⚙️ Configuración del Sitio</div>
+        <div style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px; padding: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label-dark">Nombre del Negocio</label>
+            <input class="mock-input-dark" value="Maytee's Garden Center" readonly style="opacity: 0.7; cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Dirección</label>
+            <input class="mock-input-dark" value="15196 SW 184th St, Miami FL 33187" readonly style="opacity: 0.7; cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Teléfono</label>
+            <input class="mock-input-dark" value="(786) 227-6616" readonly style="opacity: 0.7; cursor: not-allowed;">
+          </div>
+          <div class="form-group">
+            <label class="form-label-dark">Correo de Contacto</label>
+            <input class="mock-input-dark" value="info@mayteesgardencenter.com" readonly style="opacity: 0.7; cursor: not-allowed;">
+          </div>
+          <div style="background: #252525; border: 1px solid #444; border-radius: 6px; padding: 0.5rem; font-size: 0.68rem; color: #888; margin-top: 0.3rem; line-height: 1.4;">
+            ℹ️ Ajustes editables en la Fase 2. Los campos actualmente están controlados por variables de entorno y constantes de los componentes.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SLIDE 32: END SLIDE -->
+<!-- ============================================================ -->
+<div class="slide" id="slide-32">
+  <div class="slide-left" style="justify-content: center;">
+    <div class="slide-label" style="color: #bc4b35;">Fin del Tour de Funciones</div>
+    <h1 class="slide-heading" style="font-size: 2.2rem; line-height: 1.1; margin-bottom: 1.25rem;">Maytee's Garden Center</h1>
+    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: rgba(245,240,232,0.8);">
+        <span style="color: #74c69d; font-size: 1rem;">✓</span> 32 diapositivas · 30 flujos de usuario completos
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: rgba(245,240,232,0.8);">
+        <span style="color: #74c69d; font-size: 1rem;">✓</span> 3 portales: Cliente · Admin · Súper Admin
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: rgba(245,240,232,0.8);">
+        <span style="color: #74c69d; font-size: 1rem;">✓</span> Square · Shippo · Resend · Anthropic · Microsoft Graph · Neon
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; color: rgba(245,240,232,0.8);">
+        <span style="color: #74c69d; font-size: 1rem;">✓</span> Next.js 14 · PostgreSQL · NextAuth · Prisma · Tailwind
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.5rem;">
+      <a href="https://maytees-garden.vercel.app" style="color: #74c69d; font-size: 0.82rem; text-decoration: none;">🔗 maytees-garden.vercel.app</a>
+      <a href="https://mayteesgardencenter.com" style="color: rgba(213,201,176,0.5); font-size: 0.82rem; text-decoration: none;">🔗 mayteesgardencenter.com (coming soon)</a>
+    </div>
+    <div class="tip-box">
+      <strong>© 2026 Maytee's Garden Center</strong><br>15196 SW 184th St · Miami, FL 33187<br>(786) 227-6616 · info@mayteesgardencenter.com
+    </div>
+  </div>
+  <div class="slide-right cover-brand" style="background: linear-gradient(160deg, #0d1f18 0%, #1a3a28 50%, #0d1f18 100%);">
+    <div style="margin-bottom: 1.5rem;">
+      <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="49" fill="#2d6a4f" stroke="#40916c" stroke-width="1.5"/>
+        <path class="botanical-leaf" d="M50 78 C50 78 28 65 28 44 C28 30 38 22 50 22 C62 22 72 30 72 44 C72 65 50 78 50 78Z" fill="#74c69d" opacity="0.9"/>
+        <path d="M50 78 L50 32" stroke="#1a3a28" stroke-width="2" stroke-linecap="round"/>
+        <path d="M50 60 C41 54 31 50 28 42" stroke="#1a3a28" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+        <path d="M50 48 C59 42 69 38 72 30" stroke="#1a3a28" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+    </div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 700; color: #f5f0e8; line-height: 1.1; margin-bottom: 0.4rem;">Maytee's</div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: #d5c9b0; letter-spacing: 0.15em; margin-bottom: 2rem; text-transform: uppercase;">Garden Center</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; width: 100%; max-width: 340px; margin-bottom: 1.5rem;">
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Next.js 14<br><span style="color:#74c69d; font-size: 0.6rem;">App Router</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">PostgreSQL<br><span style="color:#74c69d; font-size: 0.6rem;">Neon Serverless</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Square<br><span style="color:#74c69d; font-size: 0.6rem;">Payments</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Shippo<br><span style="color:#74c69d; font-size: 0.6rem;">Envío</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Resend<br><span style="color:#74c69d; font-size: 0.6rem;">Email</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">MS Graph<br><span style="color:#74c69d; font-size: 0.6rem;">Calendar</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Anthropic<br><span style="color:#74c69d; font-size: 0.6rem;">Claude AI</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Prisma<br><span style="color:#74c69d; font-size: 0.6rem;">ORM</span></div>
+      <div style="background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.6rem 0.4rem; text-align: center; font-size: 0.68rem; color: #d5c9b0; line-height: 1.4;">Vercel<br><span style="color:#74c69d; font-size: 0.6rem;">Hosting + Cron</span></div>
+    </div>
+    <div style="font-size: 0.72rem; color: rgba(213,201,176,0.4); text-align: center;">Miami, FL · 2026 · mayteesgardencenter.com</div>
+  </div>
+</div>
+
+</div><!-- end #presentation -->
+
+<div id="controls">
+  <button id="prev">← Anterior</button>
+  <span id="counter">1 / 32</span>
+  <button id="next">Siguiente →</button>
+  <button id="autoplay">▶ Auto</button>
+</div>
+<div id="progress-bar" style="width: 3.125%;"></div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+let autoplayInterval = null;
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  document.getElementById('counter').textContent = (current + 1) + ' / ' + slides.length;
+  document.getElementById('progress-bar').style.width = (((current + 1) / slides.length) * 100) + '%';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') goTo(current - 1);
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'a' || e.key === 'A') toggleAutoplay();
+});
+
+document.getElementById('prev').addEventListener('click', function() { goTo(current - 1); });
+document.getElementById('next').addEventListener('click', function() { goTo(current + 1); });
+document.getElementById('autoplay').addEventListener('click', toggleAutoplay);
+
+function toggleAutoplay() {
+  if (autoplayInterval) {
+    clearInterval(autoplayInterval);
+    autoplayInterval = null;
+    document.getElementById('autoplay').textContent = '▶ Auto';
+  } else {
+    autoplayInterval = setInterval(function() {
+      if (current < slides.length - 1) goTo(current + 1);
+      else { clearInterval(autoplayInterval); autoplayInterval = null; document.getElementById('autoplay').textContent = '▶ Auto'; }
+    }, 7000);
+    document.getElementById('autoplay').textContent = '⏸ Pausa';
+  }
+}
+
+goTo(0);
+</script>
+</body>
+</html>
