@@ -19,6 +19,7 @@ export default async function PlantsPage() {
       category: true, inStock: true, featured: true,
       tags: true, careLevel: true, sunlight: true, water: true,
       onlineStock: true, onlinePrice: true,
+      potSize: true, plantHeight: true, weight: true,
     },
   })
 

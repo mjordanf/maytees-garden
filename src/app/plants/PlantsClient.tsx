@@ -12,6 +12,7 @@ type Plant = {
   category: string; inStock: boolean; featured: boolean
   tags: string; careLevel: string; sunlight: string; water: string
   onlineStock: number; onlinePrice: number | null
+  potSize: string | null; plantHeight: string | null; weight: number | null
 }
 
 const CATEGORIES = ['all','tropical','flowering','palms','native','edible','succulents']
@@ -146,6 +147,20 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
               </div>
               <p className="text-xs text-gray-400 italic mb-2">{plant.nameEs}</p>
               <p className="text-gray-600 text-xs leading-relaxed line-clamp-2 mb-3">{plant.descriptionEn}</p>
+              {(plant.potSize || plant.plantHeight) && (
+                <div className="flex gap-1.5 flex-wrap mb-2">
+                  {plant.potSize && (
+                    <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-100">
+                      🪴 {plant.potSize}
+                    </span>
+                  )}
+                  {plant.plantHeight && (
+                    <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-100">
+                      📏 {plant.plantHeight}
+                    </span>
+                  )}
+                </div>
+              )}
               <div className="flex gap-3 text-xs text-gray-400 border-t border-gray-100 pt-2 mb-3">
                 <span title="Care Level">{CARE_LEVELS[plant.careLevel]}</span>
                 <span title="Sunlight">{SUNLIGHT[plant.sunlight]}</span>
@@ -215,6 +230,28 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
                     <p className="text-sm font-semibold text-green-800">{s.value}</p>
                   </div>
                 ))}
+                {selected.potSize && (
+                  <div className="text-center bg-green-50 rounded-xl p-3">
+                    <p className="text-xs text-gray-400 mb-1">Pot Size</p>
+                    <p className="text-sm font-semibold text-green-800">{selected.potSize}</p>
+                  </div>
+                )}
+                {selected.plantHeight && (
+                  <div className="text-center bg-green-50 rounded-xl p-3">
+                    <p className="text-xs text-gray-400 mb-1">Height</p>
+                    <p className="text-sm font-semibold text-green-800">{selected.plantHeight}</p>
+                  </div>
+                )}
+                {selected.weight && (
+                  <div className="text-center bg-green-50 rounded-xl p-3">
+                    <p className="text-xs text-gray-400 mb-1">Weight</p>
+                    <p className="text-sm font-semibold text-green-800">
+                      {selected.weight >= 16
+                        ? `${(selected.weight / 16).toFixed(1)} lb`
+                        : `${selected.weight} oz`}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Stock info in modal */}

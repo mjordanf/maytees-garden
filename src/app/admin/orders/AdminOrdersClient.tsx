@@ -44,7 +44,7 @@ export default function AdminOrdersClient({ initialOrders }: { initialOrders: St
   const [actionLoading, setActionLoading] = useState<string | null>(null)
 
   // Shippo rate selector state
-  const [ratesForOrder, setRatesForOrder] = useState<Record<string, Rate[]>>({})
+  const [shippingRates, setShippingRates] = useState<Record<string, { rates: Rate[]; parcel?: { length: number; width: number; height: number; weightOz: number } }>>({})
   const [selectedRates, setSelectedRates] = useState<Record<string, string>>({})
   const [loadingRates, setLoadingRates] = useState<string | null>(null)
   const [purchasingLabel, setPurchasingLabel] = useState<string | null>(null)
@@ -86,9 +86,9 @@ export default function AdminOrdersClient({ initialOrders }: { initialOrders: St
         }),
       })
       const data = await res.json()
-      setRatesForOrder(prev => ({ ...prev, [order.id]: data.rates ?? [] }))
+      setShippingRates(prev => ({ ...prev, [order.id]: { rates: data.rates ?? [], parcel: data.parcel } }))
     } catch {
-      setRatesForOrder(prev => ({ ...prev, [order.id]: [] }))
+      setShippingRates(prev => ({ ...prev, [order.id]: { rates: [] } }))
     } finally {
       setLoadingRates(null)
     }
@@ -254,11 +254,17 @@ export default function AdminOrdersClient({ initialOrders }: { initialOrders: St
                                     <Truck className="w-3 h-3" />
                                     {loadingRates === order.id ? 'Loading rates…' : 'Get Shipping Rates'}
                                   </button>
-                                  {ratesForOrder[order.id] && (
+                                  {shippingRates[order.id] && (
                                     <div className="space-y-1">
-                                      {ratesForOrder[order.id].length === 0
+                                      {shippingRates[order.id].parcel && (
+                                        <p className="text-xs text-gray-400 mt-1 mb-3">
+                                          📦 Parcel: {shippingRates[order.id].parcel!.length} × {shippingRates[order.id].parcel!.width} × {shippingRates[order.id].parcel!.height} in
+                                          · {(shippingRates[order.id].parcel!.weightOz / 16).toFixed(1)} lbs
+                                        </p>
+                                      )}
+                                      {shippingRates[order.id].rates.length === 0
                                         ? <p className="text-xs text-red-500">No rates available</p>
-                                        : ratesForOrder[order.id].map(rate => (
+                                        : shippingRates[order.id].rates.map(rate => (
                                           <label key={rate.objectId} className="flex items-center gap-2 text-xs cursor-pointer">
                                             <input
                                               type="radio"

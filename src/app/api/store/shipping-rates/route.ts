@@ -18,21 +18,34 @@ export async function POST(req: NextRequest) {
       items: { plantId: string; qty: number }[]
     }
 
-    // Fetch plants to get weight
+    // Fetch plants to get weight and box dimensions
     const plantIds = items.map((i) => i.plantId)
     const plants = await prisma.plant.findMany({
       where: { id: { in: plantIds } },
-      select: { id: true, weight: true },
+      select: { id: true, weight: true, boxLength: true, boxWidth: true, boxHeight: true },
     })
 
-    // Calculate total weight — default 16 oz (1 lb) per plant if weight not set
-    const totalWeight = items.reduce((sum, item) => {
-      const plant = plants.find((p) => p.id === item.plantId)
-      const weightPerUnit = plant?.weight ?? 16
-      return sum + weightPerUnit * item.qty
-    }, 0)
+    // Find max box dimensions across all cart items
+    let maxLength = 12, maxWidth = 10, maxHeight = 8, totalWeight = 0
 
-    const parcel = { weight: totalWeight, length: 12, width: 12, height: 12 }
+    for (const item of items) {
+      const plant = plants.find(p => p.id === item.plantId)
+      const weightPerUnit = plant?.weight ?? 32  // default 2 lbs = 32 oz
+      totalWeight += weightPerUnit * item.qty
+
+      if (plant?.boxLength && plant?.boxWidth && plant?.boxHeight) {
+        maxLength = Math.max(maxLength, plant.boxLength)
+        maxWidth  = Math.max(maxWidth,  plant.boxWidth)
+        maxHeight = Math.max(maxHeight, plant.boxHeight)
+      }
+    }
+
+    const parcel = {
+      length: String(maxLength),
+      width:  String(maxWidth),
+      height: String(maxHeight),
+      weight: String(totalWeight / 16), // convert oz to lbs for Shippo
+    }
 
     let rates = await getRates(toAddress, parcel)
 
@@ -45,7 +58,7 @@ export async function POST(req: NextRequest) {
     // Sort cheapest first
     rates.sort((a, b) => a.price - b.price)
 
-    return NextResponse.json({ rates })
+    return NextResponse.json({ rates, parcel: { length: maxLength, width: maxWidth, height: maxHeight, weightOz: totalWeight } })
   } catch (err) {
     console.error('[shipping-rates]', err)
     return NextResponse.json({ rates: FLAT_RATE_FALLBACK })

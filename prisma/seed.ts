@@ -140,6 +140,8 @@ async function main() {
       careLevel: 'easy',
       sunlight: 'full',
       water: 'low',
+      potSize: '1 gallon', plantHeight: '12"–18"',
+      boxLength: 10, boxWidth: 10, boxHeight: 14,
     },
     {
       nameEn: 'Bird of Paradise',
@@ -154,6 +156,8 @@ async function main() {
       careLevel: 'easy',
       sunlight: 'full',
       water: 'moderate',
+      potSize: '3 gallon', plantHeight: '3–4 ft',
+      boxLength: 14, boxWidth: 14, boxHeight: 20,
     },
     {
       nameEn: 'Areca Palm',
@@ -168,6 +172,8 @@ async function main() {
       careLevel: 'easy',
       sunlight: 'partial',
       water: 'moderate',
+      potSize: '7 gallon', plantHeight: '5–6 ft',
+      boxLength: 16, boxWidth: 16, boxHeight: 36,
     },
     {
       nameEn: 'Ixora',
@@ -182,6 +188,8 @@ async function main() {
       careLevel: 'easy',
       sunlight: 'full',
       water: 'moderate',
+      potSize: '1 gallon', plantHeight: '10"–14"',
+      boxLength: 10, boxWidth: 10, boxHeight: 12,
     },
     {
       nameEn: 'Dwarf Olive Tree',

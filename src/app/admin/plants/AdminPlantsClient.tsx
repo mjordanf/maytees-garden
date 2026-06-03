@@ -1,6 +1,6 @@
 'use client'
-import { useState, useRef } from 'react'
-import { Plus, Pencil, Trash2, Camera, X, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
+import { useState, useRef, useEffect, useMemo } from 'react'
+import { Plus, Pencil, Trash2, Camera, X, Loader2, CheckCircle, AlertCircle, Search } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import { useI18n } from '@/lib/i18n'
 
@@ -13,6 +13,11 @@ type Plant = {
   onlineStock: number; onsiteStock: number
   onlinePrice: number | null | undefined; weight: number | null | undefined
   shippingClass: string | null | undefined
+  potSize: string | null | undefined
+  plantHeight: string | null | undefined
+  boxLength: number | null | undefined
+  boxWidth: number | null | undefined
+  boxHeight: number | null | undefined
 }
 type PlantForm = Omit<Plant, 'id'>
 
@@ -52,6 +57,8 @@ const BLANK: PlantForm = {
   careLevel:'easy', sunlight:'full', water:'moderate',
   onlineStock: 0, onsiteStock: 0, onlinePrice: undefined, weight: undefined,
   shippingClass: 'standard',
+  potSize: '', plantHeight: '',
+  boxLength: undefined, boxWidth: undefined, boxHeight: undefined,
 }
 
 async function fetchPlantImage(name: string): Promise<string | null> {
@@ -95,6 +102,60 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
   const [editingStockId, setEditingStockId] = useState<string | null>(null)
   const [editingStockField, setEditingStockField] = useState<'onlineStock' | 'onsiteStock' | null>(null)
   const [stockInputVal, setStockInputVal] = useState<string>('')
+
+  // Search / filter / sort / pagination state
+  const [search, setSearch]                     = useState('')
+  const [debouncedSearch, setDebouncedSearch]   = useState('')
+  const [categoryFilter, setCategoryFilter]     = useState<string[]>([])
+  const [stockFilter, setStockFilter]           = useState<'all'|'instock'|'low'|'out'>('all')
+  const [featuredFilter, setFeaturedFilter]     = useState<'all'|'featured'>('all')
+  const [sortField, setSortField]               = useState<'nameEn'|'price'|'onlineStock'>('nameEn')
+  const [sortDir, setSortDir]                   = useState<'asc'|'desc'>('asc')
+  const [page, setPage]                         = useState(1)
+  const [pageSize, setPageSize]                 = useState(25)
+
+  // Debounce search 300ms
+  useEffect(() => {
+    const t = setTimeout(() => { setDebouncedSearch(search); setPage(1) }, 300)
+    return () => clearTimeout(t)
+  }, [search])
+
+  // Filtered + sorted + paginated (useMemo)
+  const filtered = useMemo(() => {
+    let list = [...plants]
+    // Search across nameEn, nameEs, category, tags
+    if (debouncedSearch) {
+      const q = debouncedSearch.toLowerCase()
+      list = list.filter(p =>
+        p.nameEn.toLowerCase().includes(q) ||
+        p.nameEs.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.tags.toLowerCase().includes(q)
+      )
+    }
+    // Category multi-select
+    if (categoryFilter.length > 0) list = list.filter(p => categoryFilter.includes(p.category))
+    // Stock filter
+    if (stockFilter === 'instock') list = list.filter(p => p.onlineStock > 3)
+    if (stockFilter === 'low')     list = list.filter(p => p.onlineStock > 0 && p.onlineStock <= 3)
+    if (stockFilter === 'out')     list = list.filter(p => p.onlineStock === 0)
+    // Featured filter
+    if (featuredFilter === 'featured') list = list.filter(p => p.featured)
+    // Sort
+    list.sort((a, b) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let av: any = a[sortField], bv: any = b[sortField]
+      if (typeof av === 'string') av = av.toLowerCase()
+      if (typeof bv === 'string') bv = bv.toLowerCase()
+      return sortDir === 'asc' ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1)
+    })
+    return list
+    // NOTE: if plant count exceeds 500, consider moving to server-side pagination
+  }, [plants, debouncedSearch, categoryFilter, stockFilter, featuredFilter, sortField, sortDir])
+
+  const totalFiltered = filtered.length
+  const totalPages    = Math.max(1, Math.ceil(totalFiltered / pageSize))
+  const paginated     = filtered.slice((page - 1) * pageSize, page * pageSize)
 
   const set = <K extends keyof PlantForm>(k: K, v: PlantForm[K]) =>
     setForm(f => ({ ...f, [k]: v }))
@@ -281,6 +342,13 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
     )
   }
 
+  // Helper to toggle sort on a column
+  const handleSortCol = (col: 'nameEn' | 'price' | 'onlineStock') => {
+    if (sortField === col) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
+    else { setSortField(col); setSortDir('asc') }
+    setPage(1)
+  }
+
   return (
     <div className="space-y-6">
 
@@ -299,22 +367,113 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
         </button>
       </div>
 
+      {/* Search bar row */}
+      <div className="flex gap-3 mb-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            className="input pl-10 pr-8"
+            placeholder="Search plants by name, category, or tag..."
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1) }}
+          />
+          {search && (
+            <button onClick={() => { setSearch(''); setPage(1) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">×</button>
+          )}
+        </div>
+        <select className="input w-28" value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); setPage(1) }}>
+          <option value={10}>10 / page</option>
+          <option value={25}>25 / page</option>
+          <option value={50}>50 / page</option>
+        </select>
+      </div>
+
+      {/* Filter row */}
+      <div className="flex flex-wrap gap-3 mb-4">
+        {/* Category multi-select pills */}
+        <div className="flex gap-1.5 flex-wrap">
+          {['tropical','flowering','palms','succulents','edible','native'].map(cat => (
+            <button key={cat} onClick={() => {
+              setCategoryFilter(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat])
+              setPage(1)
+            }} className={`px-3 py-1 rounded-full text-xs font-medium capitalize transition-all ${categoryFilter.includes(cat) ? 'bg-green-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-green-400'}`}>
+              {cat}
+            </button>
+          ))}
+        </div>
+        {/* Stock filter */}
+        {(['all','instock','low','out'] as const).map(s => (
+          <button key={s} onClick={() => { setStockFilter(s); setPage(1) }}
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${stockFilter === s ? 'bg-green-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-green-400'}`}>
+            {s === 'all' ? 'All Stock' : s === 'instock' ? 'In Stock' : s === 'low' ? 'Low Stock' : 'Out of Stock'}
+          </button>
+        ))}
+        {/* Featured filter */}
+        <button onClick={() => { setFeaturedFilter(f => f === 'all' ? 'featured' : 'all'); setPage(1) }}
+          className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${featuredFilter === 'featured' ? 'bg-yellow-500 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-yellow-400'}`}>
+          ★ Featured Only
+        </button>
+        {/* Clear all */}
+        {(debouncedSearch || categoryFilter.length > 0 || stockFilter !== 'all' || featuredFilter !== 'all') && (
+          <button onClick={() => { setSearch(''); setDebouncedSearch(''); setCategoryFilter([]); setStockFilter('all'); setFeaturedFilter('all'); setPage(1) }}
+            className="px-3 py-1 text-xs text-red-500 hover:text-red-700">
+            Clear all filters
+          </button>
+        )}
+      </div>
+
+      {/* Results summary */}
+      <p className="text-sm text-gray-500 mb-3">
+        Showing {Math.min((page-1)*pageSize+1, totalFiltered)}–{Math.min(page*pageSize, totalFiltered)} of {totalFiltered} plants
+        {totalFiltered !== plants.length && ` (filtered from ${plants.length})`}
+      </p>
+
       {/* Table */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                {(isEs
-                  ? ['Planta','Categoría','Precio','Online Stock','Onsite Stock','Disponibilidad','Destacada','Acciones']
-                  : ['Plant','Category','Price','Online Stock','Onsite Stock','Availability','Featured','Actions']
-                ).map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
-                ))}
+                {/* Sortable: Plant */}
+                <th
+                  className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-800 select-none"
+                  onClick={() => handleSortCol('nameEn')}
+                >
+                  {isEs ? 'Planta' : 'Plant'} {sortField === 'nameEn' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  {isEs ? 'Categoría' : 'Category'}
+                </th>
+                {/* Sortable: Price */}
+                <th
+                  className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-800 select-none"
+                  onClick={() => handleSortCol('price')}
+                >
+                  {isEs ? 'Precio' : 'Price'} {sortField === 'price' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}
+                </th>
+                {/* Sortable: Online Stock */}
+                <th
+                  className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-800 select-none"
+                  onClick={() => handleSortCol('onlineStock')}
+                >
+                  {isEs ? 'Online Stock' : 'Online Stock'} {sortField === 'onlineStock' ? (sortDir === 'asc' ? '↑' : '↓') : <span className="text-gray-300">↕</span>}
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  {isEs ? 'Onsite Stock' : 'Onsite Stock'}
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  {isEs ? 'Disponibilidad' : 'Availability'}
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  {isEs ? 'Destacada' : 'Featured'}
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  {isEs ? 'Acciones' : 'Actions'}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {plants.map(plant => (
+              {paginated.map(plant => (
                 <tr key={plant.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
@@ -403,6 +562,30 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
             </tbody>
           </table>
         </div>
+
+        {/* Pagination bar */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+            <button onClick={() => setPage(p => Math.max(1, p-1))} disabled={page === 1}
+              className="px-3 py-1 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50">← Prev</button>
+            <div className="flex gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i+1)
+                .filter(n => n === 1 || n === totalPages || Math.abs(n - page) <= 1)
+                .reduce((acc: (number|'...')[], n, i, arr) => {
+                  if (i > 0 && n - (arr[i-1] as number) > 1) acc.push('...')
+                  acc.push(n); return acc
+                }, [])
+                .map((n, i) => n === '...' ? <span key={`e${i}`} className="px-2 py-1 text-gray-400">…</span> :
+                  <button key={n} onClick={() => setPage(n as number)}
+                    className={`px-3 py-1 text-sm rounded-lg ${page === n ? 'bg-green-600 text-white' : 'border border-gray-200 hover:bg-gray-50'}`}>
+                    {n}
+                  </button>
+                )}
+            </div>
+            <button onClick={() => setPage(p => Math.min(totalPages, p+1))} disabled={page === totalPages}
+              className="px-3 py-1 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50">Next →</button>
+          </div>
+        )}
       </div>
 
       {/* Delete confirmation */}
@@ -585,40 +768,19 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
                 </div>
               </div>
 
-              {/* ── Online Price + Shipping ── */}
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="label">
-                    Online Price ($)
-                    <span className="text-xs font-normal text-gray-400 ml-1">(optional)</span>
-                  </label>
-                  <input
-                    className="input"
-                    type="number" min="0" step="0.01"
-                    placeholder={`Same as base ($${form.price})`}
-                    value={form.onlinePrice ?? ''}
-                    onChange={e => set('onlinePrice', e.target.value ? parseFloat(e.target.value) : undefined)}
-                  />
-                </div>
-                <div>
-                  <label className="label">
-                    Weight (oz)
-                    <span className="text-xs font-normal text-gray-400 ml-1">(optional)</span>
-                  </label>
-                  <input
-                    className="input"
-                    type="number" min="0" step="0.1"
-                    value={form.weight ?? ''}
-                    onChange={e => set('weight', e.target.value ? parseFloat(e.target.value) : undefined)}
-                    placeholder="16"
-                  />
-                </div>
-                <div>
-                  <label className="label">Shipping Class</label>
-                  <select className="input" value={form.shippingClass ?? 'standard'} onChange={e => set('shippingClass', e.target.value)}>
-                    {SHIPPING_CLASSES.map(c => <option key={c} value={c}>{cap(c)}</option>)}
-                  </select>
-                </div>
+              {/* ── Online Price ── */}
+              <div>
+                <label className="label">
+                  Online Price ($)
+                  <span className="text-xs font-normal text-gray-400 ml-1">(optional)</span>
+                </label>
+                <input
+                  className="input"
+                  type="number" min="0" step="0.01"
+                  placeholder={`Same as base ($${form.price})`}
+                  value={form.onlinePrice ?? ''}
+                  onChange={e => set('onlinePrice', e.target.value ? parseFloat(e.target.value) : undefined)}
+                />
               </div>
 
               {/* ── Care details ── */}
@@ -654,6 +816,100 @@ export default function AdminPlantsClient({ initialPlants }: { initialPlants: Pl
                   onChange={e => set('tags', e.target.value)}
                   placeholder="tropical, colorful, drought-tolerant"
                 />
+              </div>
+
+              {/* ── Pot Size + Plant Height + Weight ── */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="label">Pot Size</label>
+                  <input
+                    className="input"
+                    value={form.potSize ?? ''}
+                    onChange={e => set('potSize', e.target.value)}
+                    placeholder="e.g. 3 gallon"
+                  />
+                </div>
+                <div>
+                  <label className="label">Plant Height</label>
+                  <input
+                    className="input"
+                    value={form.plantHeight ?? ''}
+                    onChange={e => set('plantHeight', e.target.value)}
+                    placeholder='e.g. 3–4 ft or 18"–24"'
+                  />
+                </div>
+                <div>
+                  <label className="label">
+                    Weight (oz)
+                    <span className="text-xs font-normal text-gray-400 ml-1">(optional)</span>
+                  </label>
+                  <input
+                    className="input"
+                    type="number" min="0" step="0.1"
+                    value={form.weight ?? ''}
+                    onChange={e => set('weight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                    placeholder="16"
+                  />
+                </div>
+              </div>
+
+              {/* ── Shipping & Packaging ── */}
+              <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 space-y-4">
+                <div>
+                  <p className="text-sm font-semibold text-gray-700">
+                    📦 Shipping &amp; Packaging{' '}
+                    <span className="text-xs font-normal text-gray-400">(not shown to customers)</span>
+                  </p>
+                </div>
+
+                {/* Shipping Class */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="label">Shipping Class</label>
+                    <select className="input" value={form.shippingClass ?? 'standard'} onChange={e => set('shippingClass', e.target.value)}>
+                      {SHIPPING_CLASSES.map(c => <option key={c} value={c}>{cap(c)}</option>)}
+                    </select>
+                  </div>
+                  <div />{/* spacer */}
+                </div>
+
+                {/* Box Dimensions */}
+                <div>
+                  <label className="label">Box Dimensions (inches)</label>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <input
+                        className="input"
+                        type="number" min="0" step="0.1"
+                        value={form.boxLength ?? ''}
+                        onChange={e => set('boxLength', e.target.value ? parseFloat(e.target.value) : undefined)}
+                        placeholder="Length"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        className="input"
+                        type="number" min="0" step="0.1"
+                        value={form.boxWidth ?? ''}
+                        onChange={e => set('boxWidth', e.target.value ? parseFloat(e.target.value) : undefined)}
+                        placeholder="Width"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        className="input"
+                        type="number" min="0" step="0.1"
+                        value={form.boxHeight ?? ''}
+                        onChange={e => set('boxHeight', e.target.value ? parseFloat(e.target.value) : undefined)}
+                        placeholder="Height"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-400">
+                  Used to automatically calculate shipping rates when generating labels.
+                </p>
               </div>
 
               {/* ── Toggles ── */}

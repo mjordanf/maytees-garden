@@ -137,6 +137,20 @@ export default async function HomePage() {
                   </div>
                   <p className="text-xs text-gray-400 italic mb-3">{plant.nameEs}</p>
                   <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{plant.descriptionEn}</p>
+                  {(plant.potSize || plant.plantHeight) && (
+                    <div className="flex gap-1.5 flex-wrap mt-2">
+                      {plant.potSize && (
+                        <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-100">
+                          🪴 {plant.potSize}
+                        </span>
+                      )}
+                      {plant.plantHeight && (
+                        <span className="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full border border-green-100">
+                          📏 {plant.plantHeight}
+                        </span>
+                      )}
+                    </div>
+                  )}
                   <div className="mt-4 pt-3 border-t border-gray-100 flex gap-4 text-xs text-gray-400">
                     <span>{CARE_LEVELS[plant.careLevel]}</span>
                     <span>{SUNLIGHT[plant.sunlight]}</span>

@@ -81,6 +81,11 @@ model Plant {
   careLevel   String     @default("easy") // "easy" | "moderate" | "expert"
   sunlight    String     @default("full") // "full" | "partial" | "shade"
   water       String     @default("moderate")
+  potSize     String?    // e.g. "3 gallon"
+  plantHeight String?    // e.g. '3–4 ft' or '18"–24"'
+  boxLength   Float?     // shipping box length in inches
+  boxWidth    Float?     // shipping box width in inches
+  boxHeight   Float?     // shipping box height in inches
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 

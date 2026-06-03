@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma'
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions)
   const role = (session?.user as any)?.role
-  if (!session || (role !== 'admin' && role !== 'staff')) {
+  if (!session || !['admin', 'staff', 'superadmin'].includes(role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions)
   const role = (session?.user as any)?.role
-  if (!session || (role !== 'admin' && role !== 'staff')) {
+  if (!session || !['admin', 'staff', 'superadmin'].includes(role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 

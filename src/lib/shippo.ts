@@ -26,7 +26,10 @@ export type ShippoAddress = {
   name: string; street1: string; city: string
   state: string; zip: string; country: string; phone?: string; email?: string
 }
-export type ShippoParcel = { weight: number; length: number; width: number; height: number }
+export type ShippoParcel = {
+  length: string; width: string; height: string
+  weight: string  // in lbs as string
+}
 
 export async function getRates(toAddress: ShippoAddress, parcel: ShippoParcel): Promise<{
   objectId: string; carrier: string; service: string; price: number; days: number | null; currency: string
@@ -36,7 +39,14 @@ export async function getRates(toAddress: ShippoAddress, parcel: ShippoParcel): 
     const shipment = await shippoClient.shipments.create({
       addressFrom: FROM_ADDRESS as any,
       addressTo:   toAddress as any,
-      parcels:     [{ weight: String(parcel.weight), massUnit: 'oz' as any, length: String(parcel.length), width: String(parcel.width), height: String(parcel.height), distanceUnit: 'in' as any }],
+      parcels:     [{
+        length: parcel.length,
+        width:  parcel.width,
+        height: parcel.height,
+        distanceUnit: 'in' as any,
+        weight: parcel.weight,
+        massUnit: 'lb' as any,
+      }],
       async:       false,
     })
     const rates = (shipment as any).rates ?? []
