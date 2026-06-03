@@ -3,8 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Users, Settings, LayoutDashboard, ArrowLeft, Shield } from 'lucide-react'
+import { Users, Settings, LayoutDashboard, ArrowLeft, Shield, FileText } from 'lucide-react'
 
 export default async function SuperAdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions)
@@ -33,6 +32,7 @@ export default async function SuperAdminLayout({ children }: { children: React.R
             { href: '/superadmin',          icon: LayoutDashboard, label: 'Dashboard' },
             { href: '/superadmin/users',    icon: Users,           label: 'User Management' },
             { href: '/superadmin/settings', icon: Settings,        label: 'Website Settings' },
+            { href: '/superadmin/content',  icon: FileText,        label: 'Content' },
           ].map(({ href, icon: Icon, label }) => (
             <Link
               key={href}

@@ -334,3 +334,27 @@ model StoreOrderItem {
   order StoreOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
   plant Plant      @relation(fields: [plantId], references: [id])
 }
+
+model ContentBlock {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  page      String
+  label     String
+  type      String   @default("text")
+  valueEn   String   @default("")
+  valueEs   String   @default("")
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+  versions  ContentVersion[]
+}
+
+model ContentVersion {
+  id             String       @id @default(cuid())
+  contentBlockId String
+  valueEn        String
+  valueEs        String
+  savedBy        String?
+  savedAt        DateTime     @default(now())
+  note           String?
+  contentBlock   ContentBlock @relation(fields: [contentBlockId], references: [id], onDelete: Cascade)
+}

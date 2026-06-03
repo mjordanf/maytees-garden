@@ -9,7 +9,7 @@ import { useI18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 import { useCart } from '@/lib/cart-context'
 
-export default function Navbar() {
+export default function Navbar({ editorOffset = false }: { editorOffset?: boolean }) {
   const { data: session } = useSession()
   const { t, lang, setLang } = useI18n()
   const pathname = usePathname()
@@ -35,7 +35,7 @@ export default function Navbar() {
   ]
 
   return (
-    <nav className={cn(
+    <nav style={editorOffset ? { top: '48px' } : undefined} className={cn(
       'fixed top-0 inset-x-0 z-50 transition-all duration-300',
       scrolled || open
         ? 'bg-white/95 backdrop-blur-md shadow-md'
@@ -120,6 +120,17 @@ export default function Navbar() {
                         <Shield className="w-4 h-4" /> Super Admin
                       </Link>
                     )}
+                    {role === 'superadmin' && (
+                      <button
+                        onClick={async () => {
+                          await fetch('/api/cms/editor/enable', { method: 'POST' })
+                          window.location.reload()
+                        }}
+                        className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-50 text-green-700 font-medium w-full text-left"
+                      >
+                        <span>✏️</span> Editor Mode
+                      </button>
+                    )}
                     <button
                       onClick={() => { signOut({ callbackUrl: '/' }); setUserMenu(false) }}
                       className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-50 text-red-500 w-full"
@@ -172,6 +183,17 @@ export default function Navbar() {
                 )}
                 {role === 'superadmin' && (
                   <Link href="/superadmin" className="block text-center py-2 text-sm text-amber-600 font-semibold" onClick={() => setOpen(false)}>Super Admin</Link>
+                )}
+                {role === 'superadmin' && (
+                  <button
+                    onClick={async () => {
+                      await fetch('/api/cms/editor/enable', { method: 'POST' })
+                      window.location.reload()
+                    }}
+                    className="w-full text-center py-2 text-sm text-green-700 font-medium"
+                  >
+                    ✏️ Editor Mode
+                  </button>
                 )}
                 <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full text-center py-2 text-sm text-red-500 font-medium">{t('nav.logout')}</button>
               </>

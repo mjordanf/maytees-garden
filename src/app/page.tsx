@@ -1,9 +1,12 @@
 export const dynamic = 'force-dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { Star, ArrowRight, Tv, Leaf, Users, Award, MapPin } from 'lucide-react'
 import { CARE_LEVELS, SUNLIGHT, formatCurrency } from '@/lib/utils'
+import { getContent, c } from '@/lib/content'
+import EditorOverlay from '@/components/cms/EditorOverlay'
 
 async function getData() {
   const [featuredPlants, testimonials, services, gallery] = await Promise.all([
@@ -17,6 +20,9 @@ async function getData() {
 
 export default async function HomePage() {
   const { featuredPlants, testimonials, services, gallery } = await getData()
+  const content = await getContent('home')
+  const cookieStore = await cookies()
+  const isEditorMode = cookieStore.get('cms_editor_mode')?.value === '1'
 
   return (
     <div className="overflow-x-hidden">
@@ -39,13 +45,12 @@ export default async function HomePage() {
             As Seen on TV · Miami's #1 Boutique Nursery
           </div>
 
-          <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-tight mb-6 animate-slide-up">
-            Transform Your Garden Into a{' '}
-            <span className="text-green-300">Tropical Paradise</span>
+          <h1 data-cms-key="home.hero.headline" className="font-serif text-5xl sm:text-6xl md:text-7xl font-bold leading-tight mb-6 animate-slide-up">
+            {c(content, 'home.hero.headline', 'Transform Your Garden Into a Tropical Paradise')}
           </h1>
 
-          <p className="text-lg sm:text-xl text-white/85 max-w-2xl mx-auto mb-10 leading-relaxed animate-slide-up">
-            Maytee rescues, designs, and installs stunning South Florida gardens — tailored to your home, your climate, and your life.
+          <p data-cms-key="home.hero.subheadline" className="text-lg sm:text-xl text-white/85 max-w-2xl mx-auto mb-10 leading-relaxed animate-slide-up">
+            {c(content, 'home.hero.subheadline', 'Maytee rescues, designs, and installs stunning South Florida gardens — tailored to your home, your climate, and your life.')}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up">
@@ -83,21 +88,21 @@ export default async function HomePage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="section-title">Why South Florida Chooses Maytee</h2>
+            <h2 data-cms-key="home.features.title" className="section-title">{c(content, 'home.features.title', 'Why South Florida Chooses Maytee')}</h2>
             <p className="section-subtitle">The "lawyer of the plants" — advocating for your garden before ever picking up a shovel.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { icon: '🌱', title: 'Plant Rescue First', desc: 'We evaluate before we remove. Maytee\'s signature approach saves your existing plants and your budget.' },
-              { icon: '☀️', title: 'Miami Climate Expert', desc: 'Every recommendation is tailored to South Florida\'s unique heat, humidity, and tropical growing season.' },
-              { icon: '🎨', title: 'Deeply Personal Design', desc: 'No cookie-cutter gardens. Every design reflects your taste, lifestyle, and the soul of your home.' },
-              { icon: '📺', title: 'As Seen on TV', desc: 'Featured in South Florida media — bringing professional-grade expertise and passion to every client.' },
+              { icon: '🌱', titleKey: 'home.features.rescue_title', descKey: 'home.features.rescue_desc', titleFb: 'Plant Rescue First', descFb: "We evaluate before we remove. Maytee's signature approach saves your existing plants and your budget." },
+              { icon: '☀️', titleKey: 'home.features.local_title', descKey: 'home.features.local_desc', titleFb: 'Miami Climate Expert', descFb: "Every recommendation is tailored to South Florida's unique heat, humidity, and tropical growing season." },
+              { icon: '🎨', titleKey: 'home.features.personal_title', descKey: 'home.features.personal_desc', titleFb: 'Deeply Personal Design', descFb: 'No cookie-cutter gardens. Every design reflects your taste, lifestyle, and the soul of your home.' },
+              { icon: '📺', titleKey: 'home.features.tv_title', descKey: 'home.features.tv_desc', titleFb: 'As Seen on TV', descFb: 'Featured in South Florida media — bringing professional-grade expertise and passion to every client.' },
             ].map((f, i) => (
               <div key={i} className="text-center p-6 rounded-2xl hover:bg-green-50 transition-colors group">
                 <div className="text-4xl mb-4">{f.icon}</div>
-                <h3 className="font-serif text-lg font-bold text-green-800 mb-2">{f.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
+                <h3 data-cms-key={f.titleKey} className="font-serif text-lg font-bold text-green-800 mb-2">{c(content, f.titleKey, f.titleFb)}</h3>
+                <p data-cms-key={f.descKey} className="text-gray-500 text-sm leading-relaxed">{c(content, f.descKey, f.descFb)}</p>
               </div>
             ))}
           </div>
@@ -322,11 +327,11 @@ export default async function HomePage() {
           <Image src="https://images.unsplash.com/photo-1534710961216-75c88202f43e?auto=format&fit=crop&w=1920&q=80" alt="" fill className="object-cover" />
         </div>
         <div className="relative z-10 max-w-3xl mx-auto text-center px-4">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to Transform<br />Your Garden?
+          <h2 data-cms-key="home.cta.headline" className="font-serif text-4xl md:text-5xl font-bold text-white mb-6">
+            {c(content, 'home.cta.headline', 'Ready for Your Transformation?')}
           </h2>
-          <p className="text-green-200 text-lg mb-10 leading-relaxed">
-            Book a personalized consultation with Maytee. She'll visit your space, evaluate what you have, and design something truly one-of-a-kind.
+          <p data-cms-key="home.cta.subtext" className="text-green-200 text-lg mb-10 leading-relaxed">
+            {c(content, 'home.cta.subtext', "Let Maytee design the garden you've always imagined. Book a consultation and get a personalized design proposal.")}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/booking" className="btn-terra text-base px-10 py-4 shadow-2xl">
@@ -339,6 +344,7 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {isEditorMode && <EditorOverlay page="home" />}
     </div>
   )
 }

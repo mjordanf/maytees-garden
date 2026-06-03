@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
+import { cookies } from 'next/headers'
 import './globals.css'
 import { Providers } from './providers'
 import MainLayout from '@/components/layout/MainLayout'
+import EditorToolbar from '@/components/cms/EditorToolbar'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -45,12 +47,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies()
+  const isEditorMode = cookieStore.get('cms_editor_mode')?.value === '1'
+
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="bg-cream font-sans antialiased">
+      <body className="bg-cream font-sans antialiased" style={isEditorMode ? { paddingTop: '48px' } : undefined}>
+        {isEditorMode && <EditorToolbar pageName="Page" />}
         <Providers>
-          <MainLayout>{children}</MainLayout>
+          <MainLayout editorMode={isEditorMode}>{children}</MainLayout>
         </Providers>
       </body>
     </html>
