@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
+import { put } from '@vercel/blob'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif']
-const MAX_BYTES = 10 * 1024 * 1024 // 10 MB
+const MAX_BYTES = 10 * 1024 * 1024
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   const role = (session?.user as any)?.role
-  if (!session || (role !== 'admin' && role !== 'staff')) {
+  if (!session || !['admin', 'staff', 'superadmin'].includes(role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
@@ -24,13 +23,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'File too large (max 10 MB)' }, { status: 400 })
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer())
   const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
-  const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-  const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'plants')
+  const filename = `uploads/plants/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+  const blob = await put(filename, file, { access: 'public' })
 
-  await mkdir(uploadDir, { recursive: true })
-  await writeFile(path.join(uploadDir, filename), buffer)
-
-  return NextResponse.json({ url: `/uploads/plants/${filename}` })
+  return NextResponse.json({ url: blob.url })
 }

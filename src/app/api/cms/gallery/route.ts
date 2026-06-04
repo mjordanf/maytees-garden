@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { writeFile, mkdir } from 'fs/promises'
-import path from 'path'
+import { put } from '@vercel/blob'
 import { revalidatePath } from 'next/cache'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -28,20 +27,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'File too large (max 15 MB)' }, { status: 400 })
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer())
-  const ext      = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
-  const filename = `gallery-${Date.now()}.${ext}`
-  const dir      = path.join(process.cwd(), 'public', 'gallery')
-  await mkdir(dir, { recursive: true })
-  await writeFile(path.join(dir, filename), buffer)
+  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
+  const filename = `gallery/gallery-${Date.now()}.${ext}`
+  const blob = await put(filename, file, { access: 'public' })
 
-  // Get highest sortOrder and put new item at end
   const last = await prisma.galleryItem.findFirst({ orderBy: { sortOrder: 'desc' } })
   const sortOrder = (last?.sortOrder ?? 0) + 1
 
   const item = await prisma.galleryItem.create({
     data: {
-      imageUrl:  `/gallery/${filename}`,
+      imageUrl:  blob.url,
       captionEn,
       captionEs,
       category,
@@ -52,4 +47,13 @@ export async function POST(req: NextRequest) {
 
   revalidatePath('/gallery')
   return NextResponse.json({ item })
+}
+
+export async function GET() {
+  const session = await getServerSession(authOptions)
+  if ((session?.user as any)?.role !== 'superadmin') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+  }
+  const items = await prisma.galleryItem.findMany({ orderBy: { sortOrder: 'asc' } })
+  return NextResponse.json({ items })
 }
