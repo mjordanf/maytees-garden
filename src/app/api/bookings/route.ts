@@ -10,12 +10,32 @@ import {
 import {
   createCalendarEvent, updateCalendarEvent, deleteCalendarEvent,
 } from '@/lib/microsoft-graph'
+import { rateLimit } from '@/lib/rate-limit'
+import { sanitizeText } from '@/lib/sanitize'
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   const body    = await req.json()
 
-  const { serviceId, appointmentDate, clientName, clientEmail, clientPhone, zipCode, notes, meetingPreference, slotDate, slotStart, slotEnd } = body
+  const clientEmail = sanitizeText(body.clientEmail ?? '')
+  const { success } = rateLimit(`bookings:${clientEmail}`, 10, 60 * 60 * 1000)
+  if (!success) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': '3600' } },
+    )
+  }
+
+  const serviceId        = body.serviceId
+  const appointmentDate  = body.appointmentDate
+  const clientName       = sanitizeText(body.clientName  ?? '')
+  const clientPhone      = sanitizeText(body.clientPhone ?? '')
+  const zipCode          = sanitizeText(body.zipCode     ?? '')
+  const notes            = sanitizeText(body.notes       ?? '')
+  const meetingPreference = body.meetingPreference
+  const slotDate         = body.slotDate
+  const slotStart        = body.slotStart
+  const slotEnd          = body.slotEnd
 
   if (!clientName || !clientEmail || !appointmentDate) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { sendNewsletterConfirmation } from '@/lib/email'
 import { randomBytes } from 'crypto'
+import { rateLimit } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
   const { email, name } = await req.json()
@@ -11,6 +12,15 @@ export async function POST(req: NextRequest) {
   }
 
   const normalised = email.toLowerCase().trim()
+
+  const { success } = rateLimit(`newsletter:${normalised}`, 3, 60 * 60 * 1000)
+  if (!success) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': '3600' } },
+    )
+  }
+
   const existing = await prisma.newsletterSubscriber.findUnique({ where: { email: normalised } })
 
   const baseUrl = process.env.NEXTAUTH_URL ?? 'https://mayteesgardencenter.com'
@@ -20,7 +30,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ alreadySubscribed: true })
     }
 
-    // Unconfirmed — resend confirmation
     const confirmToken = randomBytes(32).toString('hex')
     const unsubToken = existing.unsubscribeToken ?? randomBytes(16).toString('hex')
 
@@ -42,7 +51,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ pending: true })
   }
 
-  // New subscriber
   const confirmToken    = randomBytes(32).toString('hex')
   const unsubscribeToken = randomBytes(16).toString('hex')
 

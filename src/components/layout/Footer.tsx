@@ -175,9 +175,11 @@ export default function Footer() {
 
         <div className="mt-12 pt-6 border-t border-green-700 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-green-400">
           <p>© {year} Maytee's Garden Center. All rights reserved.</p>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+          <div className="flex flex-wrap gap-4 justify-center md:justify-end">
+            <Link href="/privacy"  className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms"    className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link href="/shipping" className="hover:text-white transition-colors">Shipping Policy</Link>
+            <Link href="/returns"  className="hover:text-white transition-colors">Returns</Link>
           </div>
         </div>
       </div>

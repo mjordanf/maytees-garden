@@ -5,6 +5,7 @@ import './globals.css'
 import { Providers } from './providers'
 import MainLayout from '@/components/layout/MainLayout'
 import EditorToolbar from '@/components/cms/EditorToolbar'
+import CookieBanner from '@/components/CookieBanner'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -57,6 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {isEditorMode && <EditorToolbar pageName="Page" />}
         <Providers>
           <MainLayout editorMode={isEditorMode}>{children}</MainLayout>
+          <CookieBanner />
         </Providers>
       </body>
     </html>

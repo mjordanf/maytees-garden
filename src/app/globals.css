@@ -106,3 +106,15 @@
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
 }
+
+/* Legal pages */
+.prose-legal { @apply text-gray-700 leading-relaxed; }
+.prose-legal section { @apply mb-10; }
+.prose-legal h2 { @apply font-serif text-2xl font-bold text-green-800 mb-4 mt-8; }
+.prose-legal p { @apply mb-4 text-gray-700; }
+.prose-legal ul { @apply list-disc pl-6 mb-4 space-y-2; }
+.prose-legal ol { @apply list-decimal pl-6 mb-4 space-y-2; }
+.prose-legal li { @apply text-gray-700; }
+.prose-legal a { @apply text-green-700 underline hover:text-green-900; }
+.prose-legal address { @apply not-italic text-gray-700 mt-2; }
+.prose-legal strong { @apply font-semibold text-gray-800; }

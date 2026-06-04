@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
+import { sanitizeText, sanitizeRichText } from '@/lib/sanitize'
 
 const PAGE_PATHS: Record<string, string> = {
   home: '/', about: '/about', contact: '/contact', footer: '/',
@@ -14,9 +15,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const session = await getServerSession(authOptions)
   if (!session || (session?.user as any)?.role !== 'superadmin') return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
-  const { valueEn, valueEs } = await req.json()
+  const body     = await req.json()
   const existing = await prisma.contentBlock.findUnique({ where: { id: params.id } })
   if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  const sanitize = existing.type === 'richtext' ? sanitizeRichText : sanitizeText
+  const valueEn  = body.valueEn !== undefined ? sanitize(body.valueEn) : existing.valueEn
+  const valueEs  = body.valueEs !== undefined ? sanitize(body.valueEs) : existing.valueEs
 
   const userId = (session.user as any)?.id as string | undefined
 
