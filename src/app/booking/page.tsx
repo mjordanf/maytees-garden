@@ -1,7 +1,9 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
+import { redirect } from 'next/navigation'
 import { Calendar, Clock, User, CheckCircle } from 'lucide-react'
 import { useSession } from 'next-auth/react'
+import { FLAGS } from '@/lib/phase-flags'
 
 type Service = { id: string; label: string }
 type Slot    = { start: string; end: string; type: string }
@@ -20,6 +22,8 @@ function toMonthKey(year: number, month: number) {
 }
 
 export default function BookingPage() {
+  if (!FLAGS.SHOW_BOOKING) redirect('/contact')
+
   const { data: session } = useSession()
   const today = new Date()
   const [year, setYear]   = useState(today.getFullYear())

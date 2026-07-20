@@ -9,6 +9,7 @@ import { formatCurrency } from '@/lib/utils'
 import { getContent, c } from '@/lib/content'
 import EditorOverlay from '@/components/cms/EditorOverlay'
 import ServicesEditor from '@/components/cms/ServicesEditor'
+import { FLAGS } from '@/lib/phase-flags'
 
 export const metadata: Metadata = {
   title: 'Garden Services',
@@ -77,9 +78,15 @@ export default async function ServicesPage() {
                         <p className="font-semibold text-green-700 text-sm flex items-center gap-1"><Clock className="w-3 h-3" />{service.duration} min</p>
                       </div>
                     </div>
-                    <Link href="/booking" className="btn-primary w-fit">
-                      Book This Service <ArrowRight className="w-4 h-4" />
-                    </Link>
+                    {FLAGS.SHOW_BOOKING ? (
+                      <Link href="/booking" className="btn-primary w-fit">
+                        Book This Service <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    ) : (
+                      <Link href="/contact" className="btn-primary w-fit">
+                        Contact Us About This Service <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))}
@@ -132,7 +139,11 @@ export default async function ServicesPage() {
             ))}
           </div>
           <div className="mt-8">
-            <Link href="/booking" className="btn-terra">Schedule a Consultation</Link>
+            {FLAGS.SHOW_BOOKING ? (
+              <Link href="/booking" className="btn-terra">Schedule a Consultation</Link>
+            ) : (
+              <Link href="/contact" className="btn-terra">Contact Us</Link>
+            )}
           </div>
         </div>
       </section>

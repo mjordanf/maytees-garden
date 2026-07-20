@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
 import { LayoutDashboard, Heart, Calendar, ShoppingBag, Settings, Leaf, MessageSquare } from 'lucide-react'
+import { FLAGS } from '@/lib/phase-flags'
 
 const navItems = [
   { href: '/portal',              icon: LayoutDashboard, label: 'Dashboard'         },
@@ -14,6 +15,8 @@ const navItems = [
 ]
 
 export default async function PortalLayout({ children }: { children: React.ReactNode }) {
+  if (!FLAGS.SHOW_PORTAL) redirect('/')
+
   const session = await getServerSession(authOptions)
   if (!session) redirect('/auth/login?callbackUrl=/portal')
 

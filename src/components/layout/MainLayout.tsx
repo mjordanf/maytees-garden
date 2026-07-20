@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import AIChatWidget from '@/components/chat/AIChatWidget'
+import { FLAGS } from '@/lib/phase-flags'
 
 export default function MainLayout({ children, editorMode = false }: { children: React.ReactNode; editorMode?: boolean }) {
   const pathname = usePathname()
@@ -13,7 +14,7 @@ export default function MainLayout({ children, editorMode = false }: { children:
       {!isSuperAdmin && <Navbar editorOffset={editorMode} />}
       <main className="min-h-screen">{children}</main>
       {!isSuperAdmin && <Footer />}
-      {!isSuperAdmin && <AIChatWidget />}
+      {!isSuperAdmin && FLAGS.SHOW_AI_CHAT && <AIChatWidget />}
     </>
   )
 }

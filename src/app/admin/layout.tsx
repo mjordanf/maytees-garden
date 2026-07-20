@@ -4,8 +4,11 @@ import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { LayoutDashboard, Users, Leaf, Calendar, CalendarDays, MessageSquare, FileText, Shield, Inbox, ShoppingBag } from 'lucide-react'
+import { FLAGS } from '@/lib/phase-flags'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  if (!FLAGS.SHOW_ADMIN) redirect('/')
+
   const session = await getServerSession(authOptions)
   const role    = (session?.user as any)?.role
 

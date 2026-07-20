@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { Leaf, Instagram, Facebook, MapPin, Clock, Phone, Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import { FLAGS } from '@/lib/phase-flags'
 
 function NewsletterForm() {
   const [email, setEmail] = useState('')
@@ -112,11 +113,11 @@ export default function Footer() {
             <h3 className="font-semibold text-white mb-4 text-sm tracking-wider uppercase">Explore</h3>
             <ul className="space-y-2.5">
               {[
-                { href: '/plants',   label: 'Plant Catalog'    },
+                ...(FLAGS.SHOW_PLANTS_PAGE ? [{ href: '/plants', label: 'Plant Catalog' }] : []),
                 { href: '/services', label: 'Garden Services'  },
                 { href: '/gallery',  label: 'Project Gallery'  },
                 { href: '/about',    label: 'About Maytee'     },
-                { href: '/booking',  label: 'Book a Consultation' },
+                ...(FLAGS.SHOW_BOOKING_NAV ? [{ href: '/booking', label: 'Book a Consultation' }] : []),
               ].map(l => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-green-200 hover:text-white text-sm transition-colors">
@@ -128,15 +129,20 @@ export default function Footer() {
           </div>
 
           {/* Account */}
+          {(FLAGS.SHOW_LOGIN || FLAGS.SHOW_PORTAL) && (
           <div>
             <h3 className="font-semibold text-white mb-4 text-sm tracking-wider uppercase">Account</h3>
             <ul className="space-y-2.5">
               {[
-                { href: '/auth/login',           label: 'Log In'            },
-                { href: '/auth/register',         label: 'Create Account'    },
-                { href: '/portal',               label: 'My Dashboard'      },
-                { href: '/portal/favorites',     label: 'Saved Plants'      },
-                { href: '/portal/appointments',  label: 'My Appointments'   },
+                ...(FLAGS.SHOW_LOGIN ? [
+                  { href: '/auth/login',    label: 'Log In'         },
+                  { href: '/auth/register', label: 'Create Account' },
+                ] : []),
+                ...(FLAGS.SHOW_PORTAL ? [
+                  { href: '/portal',              label: 'My Dashboard'    },
+                  { href: '/portal/favorites',    label: 'Saved Plants'    },
+                  { href: '/portal/appointments', label: 'My Appointments' },
+                ] : []),
               ].map(l => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-green-200 hover:text-white text-sm transition-colors">
@@ -146,6 +152,7 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+          )}
 
           {/* Contact */}
           <div>

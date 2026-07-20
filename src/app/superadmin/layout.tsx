@@ -4,8 +4,11 @@ import { authOptions } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Users, Settings, LayoutDashboard, ArrowLeft, Shield, FileText } from 'lucide-react'
+import { FLAGS } from '@/lib/phase-flags'
 
 export default async function SuperAdminLayout({ children }: { children: React.ReactNode }) {
+  if (!FLAGS.SHOW_ADMIN) redirect('/')
+
   const session = await getServerSession(authOptions)
   const role = (session?.user as any)?.role
 

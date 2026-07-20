@@ -3,10 +3,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
-import { Star, ArrowRight, Tv, Leaf, Users, Award, MapPin } from 'lucide-react'
+import { Star, ArrowRight, Tv, Leaf, Users, Award, MapPin, Instagram, Facebook } from 'lucide-react'
 import { CARE_LEVELS, SUNLIGHT, formatCurrency } from '@/lib/utils'
 import { getContent, c } from '@/lib/content'
 import EditorOverlay from '@/components/cms/EditorOverlay'
+import { FLAGS } from '@/lib/phase-flags'
 
 async function getData() {
   const [featuredPlants, testimonials, services, gallery] = await Promise.all([
@@ -54,12 +55,20 @@ export default async function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up">
-            <Link href="/booking" className="btn-terra text-base px-8 py-4 shadow-2xl">
-              Book a Free Consultation
-            </Link>
-            <Link href="/plants" className="btn-secondary border-white text-white hover:bg-white hover:text-green-800 text-base px-8 py-4">
-              Explore Plants <ArrowRight className="w-4 h-4" />
-            </Link>
+            {FLAGS.SHOW_BOOKING ? (
+              <Link href="/booking" className="btn-terra text-base px-8 py-4 shadow-2xl">
+                Book a Free Consultation
+              </Link>
+            ) : (
+              <Link href="/contact" className="btn-terra text-base px-8 py-4 shadow-2xl">
+                Contact Us
+              </Link>
+            )}
+            {FLAGS.SHOW_PLANTS_PAGE && (
+              <Link href="/plants" className="btn-secondary border-white text-white hover:bg-white hover:text-green-800 text-base px-8 py-4">
+                Explore Plants <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
           </div>
 
           <div className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-8 text-white/75 text-sm">
@@ -110,6 +119,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Featured Plants ── */}
+      {FLAGS.SHOW_PLANTS_PAGE && (
       <section className="py-20 bg-cream">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -172,6 +182,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ── Services ── */}
       <section className="py-20 bg-green-800">
@@ -194,9 +205,15 @@ export default async function HomePage() {
                   <p className="text-green-100 text-sm leading-relaxed line-clamp-2 mb-4">{service.descriptionEn}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-green-300 font-semibold text-sm">{service.priceNote ?? `Starting at $${service.price}`}</span>
-                    <Link href="/booking" className="btn-terra text-sm py-2 px-4">
-                      Book Now
-                    </Link>
+                    {FLAGS.SHOW_BOOKING ? (
+                      <Link href="/booking" className="btn-terra text-sm py-2 px-4">
+                        Book Now
+                      </Link>
+                    ) : (
+                      <Link href="/services" className="btn-terra text-sm py-2 px-4">
+                        Learn More
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -291,6 +308,24 @@ export default async function HomePage() {
               <Link href="/about" className="btn-primary">
                 Read Maytee's Story <ArrowRight className="w-4 h-4" />
               </Link>
+
+              <div className="flex gap-3 mt-6">
+                <a href="https://www.instagram.com/maytees_garden_center/" target="_blank" rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="w-9 h-9 bg-green-100 hover:bg-green-600 hover:text-white text-green-700 rounded-full flex items-center justify-center transition-colors">
+                  <Instagram className="w-4 h-4" />
+                </a>
+                <a href="https://www.facebook.com/mayteesgardencenter/" target="_blank" rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="w-9 h-9 bg-green-100 hover:bg-green-600 hover:text-white text-green-700 rounded-full flex items-center justify-center transition-colors">
+                  <Facebook className="w-4 h-4" />
+                </a>
+                <a href="https://www.etsy.com/shop/MayteesGarden" target="_blank" rel="noopener noreferrer"
+                  aria-label="Etsy"
+                  className="w-9 h-9 bg-green-100 hover:bg-green-600 hover:text-white text-green-700 rounded-full flex items-center justify-center transition-colors text-xs font-bold">
+                  E
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -328,15 +363,21 @@ export default async function HomePage() {
         </div>
         <div className="relative z-10 max-w-3xl mx-auto text-center px-4">
           <h2 data-cms-key="home.cta.headline" className="font-serif text-4xl md:text-5xl font-bold text-white mb-6">
-            {c(content, 'home.cta.headline', 'Ready for Your Transformation?')}
+            {FLAGS.SHOW_BOOKING ? c(content, 'home.cta.headline', 'Ready for Your Transformation?') : "Ready to Transform Your Garden?"}
           </h2>
           <p data-cms-key="home.cta.subtext" className="text-green-200 text-lg mb-10 leading-relaxed">
-            {c(content, 'home.cta.subtext', "Let Maytee design the garden you've always imagined. Book a consultation and get a personalized design proposal.")}
+            {FLAGS.SHOW_BOOKING ? c(content, 'home.cta.subtext', "Let Maytee design the garden you've always imagined. Book a consultation and get a personalized design proposal.") : "Get in touch and let's talk."}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/booking" className="btn-terra text-base px-10 py-4 shadow-2xl">
-              Book Your Consultation
-            </Link>
+            {FLAGS.SHOW_BOOKING ? (
+              <Link href="/booking" className="btn-terra text-base px-10 py-4 shadow-2xl">
+                Book Your Consultation
+              </Link>
+            ) : (
+              <Link href="/contact" className="btn-terra text-base px-10 py-4 shadow-2xl">
+                Get in Touch
+              </Link>
+            )}
             <Link href="/contact" className="text-white border border-white/40 rounded-full px-8 py-4 text-base font-semibold hover:bg-white/10 transition-colors">
               Send a Message
             </Link>

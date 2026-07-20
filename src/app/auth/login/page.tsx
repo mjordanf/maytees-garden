@@ -2,12 +2,15 @@
 import { useState } from 'react'
 import { signIn, getSession } from 'next-auth/react'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, redirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Eye, EyeOff } from 'lucide-react'
+import { FLAGS } from '@/lib/phase-flags'
 
 export default function LoginPage() {
+  if (!FLAGS.SHOW_LOGIN) redirect('/')
+
   const router = useRouter()
   const [email, setEmail]     = useState('')
   const [password, setPassword] = useState('')

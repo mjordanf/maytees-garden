@@ -8,6 +8,7 @@ import { Menu, X, ChevronDown, User, LayoutDashboard, LogOut, Shield, ShoppingCa
 import { useI18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 import { useCart } from '@/lib/cart-context'
+import { FLAGS } from '@/lib/phase-flags'
 
 export default function Navbar({ editorOffset = false }: { editorOffset?: boolean }) {
   const { data: session } = useSession()
@@ -27,7 +28,7 @@ export default function Navbar({ editorOffset = false }: { editorOffset?: boolea
   const { totalItems } = useCart()
 
   const navLinks = [
-    { href: '/plants',   label: t('nav.plants')   },
+    ...(FLAGS.SHOW_PLANTS_PAGE ? [{ href: '/plants', label: t('nav.plants') }] : []),
     { href: '/services', label: t('nav.services')  },
     { href: '/gallery',  label: t('nav.gallery')   },
     { href: '/about',    label: t('nav.about')     },
@@ -75,21 +76,29 @@ export default function Navbar({ editorOffset = false }: { editorOffset?: boolea
               {lang === 'en' ? 'ES' : 'EN'}
             </button>
 
-            <Link href="/booking" className="btn-primary text-sm py-2">
-              {t('nav.booking')}
-            </Link>
+            {FLAGS.SHOW_BOOKING_NAV ? (
+              <Link href="/booking" className="btn-primary text-sm py-2">
+                {t('nav.booking')}
+              </Link>
+            ) : (
+              <Link href="/contact" className="btn-primary text-sm py-2">
+                Contact Us
+              </Link>
+            )}
 
             {/* Cart Icon */}
-            <Link href="/shop/cart" className="relative flex items-center justify-center w-9 h-9 text-gray-600 hover:text-green-700 transition-colors">
-              <ShoppingCart className="w-5 h-5" />
-              {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center leading-none">
-                  {totalItems > 99 ? '99+' : totalItems}
-                </span>
-              )}
-            </Link>
+            {FLAGS.SHOW_CART && (
+              <Link href="/shop/cart" className="relative flex items-center justify-center w-9 h-9 text-gray-600 hover:text-green-700 transition-colors">
+                <ShoppingCart className="w-5 h-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center leading-none">
+                    {totalItems > 99 ? '99+' : totalItems}
+                  </span>
+                )}
+              </Link>
+            )}
 
-            {session ? (
+            {FLAGS.SHOW_LOGIN && (session ? (
               <div className="relative">
                 <button
                   onClick={() => setUserMenu(!userMenu)}
@@ -144,7 +153,7 @@ export default function Navbar({ editorOffset = false }: { editorOffset?: boolea
               <Link href="/auth/login" className="text-sm font-medium text-gray-600 hover:text-green-700">
                 {t('nav.login')}
               </Link>
-            )}
+            ))}
           </div>
 
           {/* Mobile Menu Button */}
@@ -172,10 +181,16 @@ export default function Navbar({ editorOffset = false }: { editorOffset?: boolea
             </Link>
           ))}
           <div className="pt-3 border-t border-gray-100 space-y-2">
-            <Link href="/booking" className="btn-primary w-full text-center text-sm" onClick={() => setOpen(false)}>
-              {t('nav.booking')}
-            </Link>
-            {session ? (
+            {FLAGS.SHOW_BOOKING_NAV ? (
+              <Link href="/booking" className="btn-primary w-full text-center text-sm" onClick={() => setOpen(false)}>
+                {t('nav.booking')}
+              </Link>
+            ) : (
+              <Link href="/contact" className="btn-primary w-full text-center text-sm" onClick={() => setOpen(false)}>
+                Contact Us
+              </Link>
+            )}
+            {FLAGS.SHOW_LOGIN && (session ? (
               <>
                 <Link href="/portal" className="block text-center py-2 text-sm text-green-700 font-medium" onClick={() => setOpen(false)}>{t('nav.portal')}</Link>
                 {(role === 'admin' || role === 'staff') && (
@@ -199,7 +214,7 @@ export default function Navbar({ editorOffset = false }: { editorOffset?: boolea
               </>
             ) : (
               <Link href="/auth/login" className="block text-center py-2 text-sm text-green-700 font-medium" onClick={() => setOpen(false)}>{t('nav.login')}</Link>
-            )}
+            ))}
             <button
               onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
               className="w-full text-center py-2 text-xs font-bold text-gray-400 border border-gray-200 rounded-lg"

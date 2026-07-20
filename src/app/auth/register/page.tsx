@@ -1,11 +1,14 @@
 'use client'
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, redirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import { FLAGS } from '@/lib/phase-flags'
 
 export default function RegisterPage() {
+  if (!FLAGS.SHOW_REGISTER) redirect('/')
+
   const router = useRouter()
   const [form, setForm] = useState({ name: '', email: '', password: '', zip: '', phone: '', newsletter: false })
   const [error, setError]     = useState('')

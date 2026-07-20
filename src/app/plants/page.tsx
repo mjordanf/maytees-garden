@@ -1,8 +1,10 @@
 export const dynamic = 'force-dynamic'
 import { Metadata } from 'next'
 import Image from 'next/image'
+import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { CARE_LEVELS, SUNLIGHT, WATER, formatCurrency } from '@/lib/utils'
+import { FLAGS } from '@/lib/phase-flags'
 import PlantsClient from './PlantsClient'
 
 export const metadata: Metadata = {
@@ -11,6 +13,8 @@ export const metadata: Metadata = {
 }
 
 export default async function PlantsPage() {
+  if (!FLAGS.SHOW_PLANTS_PAGE) redirect('/')
+
   const plants = await prisma.plant.findMany({
     orderBy: { featured: 'desc' },
     select: {
