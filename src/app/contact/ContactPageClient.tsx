@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { MapPin, Clock, Phone, Mail, CheckCircle, Instagram, Facebook } from 'lucide-react'
+import { c, type ContentMap } from '@/lib/content'
+import { useI18n } from '@/lib/i18n'
 
 const SERVICE_OPTIONS = [
   'Landscape Design Consultation',
@@ -12,19 +14,22 @@ const SERVICE_OPTIONS = [
 ]
 
 interface Props {
-  title: string
-  subtitle: string
-  address?: string
-  hours?: string
-  phone?: string
-  email?: string
+  content: ContentMap
 }
 
-export default function ContactPageClient({ title, subtitle, address, hours, phone, email }: Props) {
+export default function ContactPageClient({ content }: Props) {
+  const { t, lang } = useI18n()
   const [form, setForm] = useState({ name: '', email: '', phone: '', zip: '', service: '', message: '' })
   const [loading, setLoading] = useState(false)
   const [sent, setSent]       = useState(false)
   const [error, setError]     = useState('')
+
+  const title    = c(content, 'contact.title',    t('contact.title'), lang)
+  const subtitle = c(content, 'contact.subtitle', t('contact.subtitle'), lang)
+  const address  = c(content, 'contact.info.address', '15196 SW 184th St\nMiami, FL 33187', lang)
+  const hours    = c(content, 'contact.info.hours',   'Monday–Sunday: 9 AM – 5:30 PM\nFriday–Saturday: until 6 PM', lang)
+  const phone    = c(content, 'contact.info.phone',   '(786) 227-6616', lang)
+  const email    = c(content, 'contact.info.email',   'info@mayteesgardencenter.com', lang)
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
 
@@ -62,45 +67,45 @@ export default function ContactPageClient({ title, subtitle, address, hours, pho
                     <CheckCircle className="w-8 h-8 text-green-600" />
                   </div>
                   <h2 className="font-serif text-2xl font-bold text-green-800 mb-2">Message Sent!</h2>
-                  <p className="text-gray-500">Thank you! We&apos;ll be in touch within 24 hours.</p>
+                  <p className="text-gray-500">{t('contact.success')}</p>
                 </div>
               ) : (
                 <>
-                  <h2 className="font-serif text-2xl font-bold text-green-800 mb-6">Send a Message</h2>
+                  <h2 className="font-serif text-2xl font-bold text-green-800 mb-6">{t('contact.submit')}</h2>
                   {error && <p className="bg-red-50 text-red-600 text-sm rounded-xl p-3 mb-4">{error}</p>}
 
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="label">Full Name *</label>
+                        <label className="label">{t('contact.name')} *</label>
                         <input className="input" required value={form.name} onChange={e => set('name', e.target.value)} placeholder="Maria Santos" />
                       </div>
                       <div>
-                        <label className="label">Zip Code</label>
+                        <label className="label">{t('contact.zip')}</label>
                         <input className="input" value={form.zip} onChange={e => set('zip', e.target.value)} placeholder="33187" />
                       </div>
                     </div>
                     <div>
-                      <label className="label">Email Address *</label>
+                      <label className="label">{t('contact.email')} *</label>
                       <input className="input" type="email" required value={form.email} onChange={e => set('email', e.target.value)} placeholder="maria@email.com" />
                     </div>
                     <div>
-                      <label className="label">Phone Number</label>
+                      <label className="label">{t('contact.phone')}</label>
                       <input className="input" value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="(305) 555-0000" />
                     </div>
                     <div>
-                      <label className="label">Service Interested In</label>
+                      <label className="label">{t('contact.service')}</label>
                       <select className="input" value={form.service} onChange={e => set('service', e.target.value)}>
                         <option value="">Select a service...</option>
                         {SERVICE_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="label">Your Message *</label>
+                      <label className="label">{t('contact.message')} *</label>
                       <textarea className="input resize-none h-32" required value={form.message} onChange={e => set('message', e.target.value)} placeholder="Tell us about your space, your goals, and any questions you have..." />
                     </div>
                     <button type="submit" disabled={loading} className="btn-primary w-full py-4">
-                      {loading ? 'Sending...' : 'Send Message'}
+                      {loading ? 'Sending...' : t('contact.submit')}
                     </button>
                   </form>
                 </>
@@ -113,10 +118,10 @@ export default function ContactPageClient({ title, subtitle, address, hours, pho
                 <h3 className="font-serif text-xl font-bold text-green-800 mb-5">Find Us</h3>
                 <div className="space-y-4">
                   {[
-                    { icon: MapPin, title: 'Address', cmsKey: 'contact.info.address', text: address || '15196 SW 184th St\nMiami, FL 33187' },
-                    { icon: Clock,  title: 'Hours',   cmsKey: 'contact.info.hours',   text: hours   || 'Monday–Sunday: 9 AM – 5:30 PM\nFriday–Saturday: until 6 PM' },
-                    { icon: Phone,  title: 'Phone',   cmsKey: 'contact.info.phone',   text: phone   || '(786) 227-6616' },
-                    { icon: Mail,   title: 'Email',   cmsKey: 'contact.info.email',   text: email   || 'info@mayteesgardencenter.com' },
+                    { icon: MapPin, title: 'Address', cmsKey: 'contact.info.address', text: address },
+                    { icon: Clock,  title: 'Hours',   cmsKey: 'contact.info.hours',   text: hours   },
+                    { icon: Phone,  title: 'Phone',   cmsKey: 'contact.info.phone',   text: phone   },
+                    { icon: Mail,   title: 'Email',   cmsKey: 'contact.info.email',   text: email   },
                   ].map(({ icon: Icon, title, cmsKey, text }) => (
                     <div key={title} className="flex gap-3">
                       <div className="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center shrink-0">

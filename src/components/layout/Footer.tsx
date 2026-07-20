@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { Leaf, Instagram, Facebook, MapPin, Clock, Phone, Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import { useI18n } from '@/lib/i18n'
 
 function NewsletterForm() {
   const [email, setEmail] = useState('')
@@ -71,6 +72,7 @@ function NewsletterForm() {
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const { t, lang } = useI18n()
 
   return (
     <footer className="bg-green-800 text-white">
@@ -89,7 +91,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-green-200 text-sm leading-relaxed mb-5">
-              Miami's most beloved boutique nursery & landscape design studio — rescuing plants, transforming spaces, one garden at a time.
+              {t('footer.tagline')}
             </p>
             <div className="flex gap-3">
               <a href="https://www.instagram.com/maytees_garden_center/" target="_blank" rel="noopener noreferrer"
@@ -109,14 +111,14 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm tracking-wider uppercase">Explore</h3>
+            <h3 className="font-semibold text-white mb-4 text-sm tracking-wider uppercase">{t('footer.links_title')}</h3>
             <ul className="space-y-2.5">
               {[
-                { href: '/plants',   label: 'Plant Catalog'    },
-                { href: '/services', label: 'Garden Services'  },
-                { href: '/gallery',  label: 'Project Gallery'  },
-                { href: '/about',    label: 'About Maytee'     },
-                { href: '/booking',  label: 'Book a Consultation' },
+                { href: '/plants',   label: t('nav.plants')   },
+                { href: '/services', label: t('nav.services') },
+                { href: '/gallery',  label: t('nav.gallery')  },
+                { href: '/about',    label: t('nav.about')    },
+                { href: '/booking',  label: t('nav.booking')  },
               ].map(l => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-green-200 hover:text-white text-sm transition-colors">
@@ -129,14 +131,14 @@ export default function Footer() {
 
           {/* Account */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm tracking-wider uppercase">Account</h3>
+            <h3 className="font-semibold text-white mb-4 text-sm tracking-wider uppercase">{t('nav.portal')}</h3>
             <ul className="space-y-2.5">
               {[
-                { href: '/auth/login',           label: 'Log In'            },
-                { href: '/auth/register',         label: 'Create Account'    },
-                { href: '/portal',               label: 'My Dashboard'      },
-                { href: '/portal/favorites',     label: 'Saved Plants'      },
-                { href: '/portal/appointments',  label: 'My Appointments'   },
+                { href: '/auth/login',           label: t('nav.login')          },
+                { href: '/auth/register',        label: t('nav.register')       },
+                { href: '/portal',               label: t('portal.dashboard')   },
+                { href: '/portal/favorites',     label: t('portal.favorites')   },
+                { href: '/portal/appointments',  label: t('portal.appointments')},
               ].map(l => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-green-200 hover:text-white text-sm transition-colors">
@@ -153,11 +155,11 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2.5 text-sm text-green-200">
                 <MapPin className="w-4 h-4 mt-0.5 text-green-400 shrink-0" />
-                15196 SW 184th St<br />Miami, FL 33187
+                {t('footer.address')}
               </li>
               <li className="flex items-center gap-2.5 text-sm text-green-200">
                 <Clock className="w-4 h-4 text-green-400 shrink-0" />
-                Mon–Sun: 9 AM – 5:30 PM<br />(Fri–Sat until 6 PM)
+                {t('footer.hours')}
               </li>
               <li className="flex items-center gap-2.5 text-sm text-green-200">
                 <Phone className="w-4 h-4 text-green-400 shrink-0" />
@@ -174,7 +176,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-green-700 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-green-400">
-          <p>© {year} Maytee's Garden Center. All rights reserved.</p>
+          <p>© {year} Maytee's Garden Center. {lang === 'es' ? 'Todos los derechos reservados.' : 'All rights reserved.'}</p>
           <div className="flex flex-wrap gap-4 justify-center md:justify-end">
             <Link href="/privacy"  className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="/terms"    className="hover:text-white transition-colors">Terms of Service</Link>
