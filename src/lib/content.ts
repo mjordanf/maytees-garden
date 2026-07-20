@@ -15,7 +15,7 @@ export async function getContent(page: string): Promise<ContentMap> {
   }
 }
 
-// Helper to get EN value with fallback
-export function c(content: ContentMap, key: string, fallback = ''): string {
-  return content[key]?.en || fallback
+// Helper to get the localized value with fallback
+export function c(content: ContentMap, key: string, fallback = '', lang: 'en' | 'es' = 'en'): string {
+  return (lang === 'es' ? content[key]?.es : content[key]?.en) || content[key]?.en || fallback
 }
