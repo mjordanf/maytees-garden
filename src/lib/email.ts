@@ -634,3 +634,143 @@ export async function sendPasswordResetEmail(opts: { name: string; email: string
   `
   await sendEmail(opts.email, 'Reset your password — Maytee\'s Garden Center', layout('Password Reset Request', body))
 }
+
+// ── Returns ────────────────────────────────────────────────────────────────
+
+export async function sendReturnRequestReceived(to: string, opts: {
+  customerName: string
+  returnNumber: string
+  orderNumber: string
+  reason: string
+  isDamageClaim: boolean
+}) {
+  const body = `
+    <p>Hi <strong>${opts.customerName}</strong>,</p>
+    <p>We've received your return request. Here are the details:</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
+      ${[
+        ['Return #',    opts.returnNumber],
+        ['Order #',     opts.orderNumber],
+        ['Reason',      opts.reason],
+      ].map(([k, v], i) => `
+        <tr>
+          <td style="padding:8px 12px;background:${i%2===0?'#f9fafb':'#fff'};border:1px solid #e5e7eb;width:35%;color:#2d6a4f;font-weight:bold">${k}</td>
+          <td style="padding:8px 12px;background:${i%2===0?'#f9fafb':'#fff'};border:1px solid #e5e7eb">${v}</td>
+        </tr>`).join('')}
+    </table>
+    ${opts.isDamageClaim ? `
+    <p style="background:#fffbeb;border-left:3px solid #f59e0b;padding:12px 16px;border-radius:0 8px 8px 0;font-size:14px">
+      <strong>Damage claim received.</strong> Please ensure your photos clearly show the damage. We aim to resolve damage claims within <strong>24 hours</strong>.
+    </p>` : ''}
+    <p><strong>What happens next:</strong> Our team will review your request within <strong>1–2 business days</strong>. You'll receive an email once a decision has been made.</p>
+    <p>Questions? Email <a href="mailto:info@mayteesgardencenter.com" style="color:#2d6a4f">info@mayteesgardencenter.com</a> and reference your return number <strong>${opts.returnNumber}</strong>.</p>
+    <p style="margin-top:24px">Thank you,<br><strong>Maytee's Garden Center</strong></p>
+  `
+  await sendEmail(to, `Return request received — ${opts.returnNumber}`, layout('Return Request Received', body))
+}
+
+export async function sendReturnApproved(to: string, opts: {
+  customerName: string
+  returnNumber: string
+  refundAmount: number
+  labelUrl: string | null
+  trackingNumber: string | null
+  isDamageClaim: boolean
+}) {
+  const body = `
+    <p>Hi <strong>${opts.customerName}</strong>,</p>
+    <p>Great news — your return request <strong>${opts.returnNumber}</strong> has been <strong style="color:#2d6a4f">approved</strong>!</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
+      <tr><td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;width:35%;color:#2d6a4f;font-weight:bold">Refund Amount</td>
+          <td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb"><strong>$${opts.refundAmount.toFixed(2)}</strong></td></tr>
+      <tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;color:#2d6a4f;font-weight:bold">Refund Timeline</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb">5–10 business days to your original payment method</td></tr>
+      ${opts.trackingNumber ? `<tr><td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;color:#2d6a4f;font-weight:bold">Return Tracking</td>
+          <td style="padding:8px 12px;background:#f9fafb;border:1px solid #e5e7eb;font-family:monospace"><strong>${opts.trackingNumber}</strong></td></tr>` : ''}
+    </table>
+    ${opts.labelUrl ? `
+    <p style="text-align:center;margin:28px 0">
+      <a href="${opts.labelUrl}" style="display:inline-block;background:#2d6a4f;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px">⬇ Download Return Label</a>
+    </p>
+    <p><strong>Return instructions:</strong></p>
+    <ol style="padding-left:20px;line-height:1.8;font-size:14px">
+      <li>Print the return label above</li>
+      <li>Pack your item securely in the original packaging if possible</li>
+      <li>Attach the label to the outside of the package</li>
+      <li>Drop off at any USPS, UPS, or FedEx location</li>
+    </ol>` : '<p>Our team will contact you separately with return shipping instructions.</p>'}
+    <p>Questions? Reply to this email or contact <a href="mailto:info@mayteesgardencenter.com" style="color:#2d6a4f">info@mayteesgardencenter.com</a>.</p>
+    <p style="margin-top:24px">Thank you,<br><strong>Maytee's Garden Center</strong></p>
+  `
+  await sendEmail(to, `Your return is approved — refund & label inside | ${opts.returnNumber}`, layout('Return Approved ✓', body))
+}
+
+export async function sendReturnRejected(to: string, opts: {
+  customerName: string
+  returnNumber: string
+  rejectionReason: string
+  adminNotes?: string | null
+}) {
+  const body = `
+    <p>Hi <strong>${opts.customerName}</strong>,</p>
+    <p>We've reviewed your return request <strong>${opts.returnNumber}</strong> and unfortunately we're unable to process this return at this time.</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
+      <tr><td style="padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;width:35%;color:#991b1b;font-weight:bold">Reason</td>
+          <td style="padding:8px 12px;background:#fef2f2;border:1px solid #fecaca">${opts.rejectionReason}</td></tr>
+      ${opts.adminNotes ? `<tr><td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb;color:#2d6a4f;font-weight:bold">Additional Notes</td>
+          <td style="padding:8px 12px;background:#fff;border:1px solid #e5e7eb">${opts.adminNotes}</td></tr>` : ''}
+    </table>
+    <p>If you believe this decision was made in error or have additional information to share, please reply to this email — we're happy to take another look.</p>
+    <p style="margin-top:24px">Thank you for your understanding,<br><strong>Maytee's Garden Center</strong></p>
+  `
+  await sendEmail(to, `Update on your return request — ${opts.returnNumber}`, layout('Return Request Update', body))
+}
+
+export async function sendReturnReceived(to: string, opts: {
+  customerName: string
+  returnNumber: string
+  refundAmount: number
+}) {
+  const body = `
+    <p>Hi <strong>${opts.customerName}</strong>,</p>
+    <p>We've received your return for request <strong>${opts.returnNumber}</strong>. Thank you for sending it back!</p>
+    <p>Your refund of <strong>$${opts.refundAmount.toFixed(2)}</strong> will be processed within <strong>3–5 business days</strong> and credited to your original payment method.</p>
+    <p>You'll see the credit appear on your statement within 5–10 business days of processing, depending on your bank.</p>
+    <p>Questions? Contact us at <a href="mailto:info@mayteesgardencenter.com" style="color:#2d6a4f">info@mayteesgardencenter.com</a>.</p>
+    <p style="margin-top:24px">Thank you,<br><strong>Maytee's Garden Center</strong></p>
+  `
+  await sendEmail(to, `We received your return — ${opts.returnNumber}`, layout('Return Received 📦', body))
+}
+
+export async function sendReturnAlert(to: string, opts: {
+  returnNumber: string
+  customerName: string
+  customerEmail: string
+  reason: string
+  isDamageClaim: boolean
+  orderNumber: string
+  orderTotal: number
+}) {
+  const baseUrl = process.env.NEXTAUTH_URL ?? 'https://mayteesgardencenter.com'
+  const body = `
+    <p>A new return request has been submitted and requires your review.</p>
+    ${opts.isDamageClaim ? '<p style="background:#fef3c7;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:0 8px 8px 0;font-weight:bold">⚠️ DAMAGE CLAIM — requires prompt review</p>' : ''}
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px">
+      ${[
+        ['Return #',     opts.returnNumber],
+        ['Order #',      opts.orderNumber],
+        ['Customer',     opts.customerName],
+        ['Email',        opts.customerEmail],
+        ['Reason',       opts.reason],
+        ['Order Total',  `$${opts.orderTotal.toFixed(2)}`],
+        ['Type',         opts.isDamageClaim ? '🚨 Damage Claim' : 'Standard Return'],
+      ].map(([k, v], i) => `
+        <tr>
+          <td style="padding:8px 12px;background:${i%2===0?'#f9fafb':'#fff'};border:1px solid #e5e7eb;width:35%;color:#2d6a4f;font-weight:bold">${k}</td>
+          <td style="padding:8px 12px;background:${i%2===0?'#f9fafb':'#fff'};border:1px solid #e5e7eb">${v}</td>
+        </tr>`).join('')}
+    </table>
+    <p><a href="${baseUrl}/admin/returns" style="display:inline-block;background:#2d6a4f;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:14px">Review in Admin Panel</a></p>
+  `
+  await sendEmail(to, `New return request — ${opts.customerName} · ${opts.returnNumber}`, layout('New Return Request', body))
+}

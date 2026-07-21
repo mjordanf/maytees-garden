@@ -77,3 +77,58 @@ export async function purchaseLabel(rateId: string): Promise<{ labelUrl: string;
     trackingNumber: (txn as any).trackingNumber ?? (txn as any).tracking_number ?? '',
   }
 }
+
+// Generate a prepaid return label (customer ships back to Maytee's)
+export async function createReturnLabel(opts: {
+  customerName: string
+  customerAddress: { street1: string; city: string; state: string; zip: string }
+  parcel?: { length: string; width: string; height: string; weight: string }
+}): Promise<{ labelUrl: string; trackingNumber: string }> {
+  if (!shippoClient) throw new Error('Shippo not configured')
+
+  const parcel = opts.parcel ?? { length: '12', width: '10', height: '8', weight: '5' }
+
+  const shipment = await shippoClient.shipments.create({
+    addressFrom: {
+      name:    opts.customerName,
+      street1: opts.customerAddress.street1,
+      city:    opts.customerAddress.city,
+      state:   opts.customerAddress.state,
+      zip:     opts.customerAddress.zip,
+      country: 'US',
+    } as any,
+    addressTo: FROM_ADDRESS as any,
+    parcels: [{
+      length:       parcel.length,
+      width:        parcel.width,
+      height:       parcel.height,
+      distanceUnit: 'in' as any,
+      weight:       parcel.weight,
+      massUnit:     'lb' as any,
+    }],
+    async: false,
+  })
+
+  const rates: any[] = (shipment as any).rates ?? []
+  if (!rates.length) throw new Error('No return shipping rates available')
+
+  // Pick cheapest available rate
+  const cheapest = rates
+    .filter((r: any) => r.objectId || r.object_id)
+    .sort((a: any, b: any) => parseFloat(a.amount ?? '999') - parseFloat(b.amount ?? '999'))[0]
+
+  const rateId = cheapest?.objectId ?? cheapest?.object_id
+  if (!rateId) throw new Error('No valid rate found for return label')
+
+  const txn = await shippoClient.transactions.create({ rate: rateId, async: false } as any)
+  const status = (txn as any).status
+  if (status !== 'SUCCESS') {
+    const messages = (txn as any).messages ?? []
+    throw new Error(messages.map((m: any) => m.text).join(', ') || 'Return label creation failed')
+  }
+
+  return {
+    labelUrl:       (txn as any).labelUrl ?? (txn as any).label_url ?? '',
+    trackingNumber: (txn as any).trackingNumber ?? (txn as any).tracking_number ?? '',
+  }
+}
