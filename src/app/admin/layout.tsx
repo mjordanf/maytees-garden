@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { LayoutDashboard, Users, Leaf, Calendar, CalendarDays, MessageSquare, FileText, Shield, Inbox, ShoppingBag } from 'lucide-react'
+import { LayoutDashboard, Users, Leaf, Calendar, CalendarDays, MessageSquare, FileText, Shield, Inbox, ShoppingBag, RotateCcw } from 'lucide-react'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions)
@@ -13,7 +13,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect('/')
   }
 
-  const unreadCount = await prisma.inboxMessage.count({ where: { read: false } })
+  const unreadCount    = await prisma.inboxMessage.count({ where: { read: false } })
+  const pendingReturns = await prisma.returnRequest.count({ where: { status: 'requested' } })
 
   const navItems = [
     { href: '/admin',          icon: LayoutDashboard, label: 'Dashboard',    badge: null },
@@ -21,6 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: '/admin/bookings',      icon: Calendar,      label: 'Bookings',     badge: null },
     { href: '/admin/availability',  icon: CalendarDays,  label: 'Availability', badge: null },
     { href: '/admin/orders',        icon: ShoppingBag,   label: 'Orders',       badge: null },
+    { href: '/admin/returns',       icon: RotateCcw,     label: 'Returns',      badge: pendingReturns > 0 ? pendingReturns : null },
     { href: '/admin/plants',   icon: Leaf,            label: 'Plant Catalog',badge: null },
     { href: '/admin/users',    icon: Users,           label: 'Customers',    badge: null },
     { href: '/admin/leads',    icon: MessageSquare,   label: 'Leads',        badge: null },

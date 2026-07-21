@@ -23,14 +23,15 @@ model User {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 
-  accounts      Account[]
-  sessions      Session[]
-  bookings      Booking[]
-  favorites     Favorite[]
-  orders        Order[]
-  auditLogs     AuditLog[]
-  inboxMessages InboxMessage[]
-  storeOrders   StoreOrder[]
+  accounts       Account[]
+  sessions       Session[]
+  bookings       Booking[]
+  favorites      Favorite[]
+  orders         Order[]
+  auditLogs      AuditLog[]
+  inboxMessages  InboxMessage[]
+  storeOrders    StoreOrder[]
+  returnRequests ReturnRequest[]
 }
 
 model Account {
@@ -297,8 +298,40 @@ model StoreOrder {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  user  User?           @relation(fields: [userId], references: [id])
-  items StoreOrderItem[]
+  user          User?           @relation(fields: [userId], references: [id])
+  items         StoreOrderItem[]
+  returnRequest ReturnRequest?
+}
+
+model ReturnRequest {
+  id            String   @id @default(cuid())
+  returnNumber  String   @unique
+  storeOrderId  String   @unique
+  userId        String
+
+  reason        String
+  reasonDetail  String?
+  isDamageClaim Boolean  @default(false)
+  photoUrls     String   @default("")
+
+  status          String   @default("requested")
+  adminNotes      String?
+  rejectionReason String?
+  refundType      String?
+  refundAmount    Float?
+
+  squareRefundId String?
+  refundedAt     DateTime?
+
+  shippoLabelUrl String?
+  returnTracking String?
+  labelSentAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  storeOrder StoreOrder @relation(fields: [storeOrderId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
 }
 
 model AvailabilityTemplate {

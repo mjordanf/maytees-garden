@@ -22,6 +22,8 @@ const TABS = [
   { key: 'customer-message', label: 'Messages' },
   { key: 'booking-alert',    label: 'Booking Alerts' },
   { key: 'contact-form',     label: 'Contact Forms' },
+  { key: 'order-placed',     label: 'Orders' },
+  { key: 'return-request',   label: 'Returns' },
 ]
 
 export default function AdminInboxClient({ messages: initial }: { messages: InboxMessage[] }) {
