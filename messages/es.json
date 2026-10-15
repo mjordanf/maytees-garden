@@ -11,7 +11,8 @@
     "register": "Registrarse",
     "portal": "Mi Cuenta",
     "admin": "Panel Admin",
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "etsy": "Compra en Etsy"
   },
   "hero": {
     "tagline": "El Vivero Boutique Más Querido de Miami",
@@ -44,13 +45,15 @@
     "filter_palms": "Palmas",
     "filter_native": "Nativas de Florida",
     "filter_edible": "Comestibles",
-    "filter_succulents": "Suculentas"
+    "filter_succulents": "Suculentas",
+    "contact_cta": "Pregunta por Esta Planta"
   },
   "services": {
     "title": "Servicios de Jardín",
     "subtitle": "Desde el concepto de diseño hasta el cuidado a largo plazo — todo lo que necesita tu jardín del sur de Florida",
     "book_service": "Reservar Este Servicio",
-    "learn_more": "Saber Más"
+    "learn_more": "Saber Más",
+    "custom_quote": "Cotización personalizada — contáctenos"
   },
   "gallery": {
     "title": "Jardines Completados",
@@ -143,5 +146,11 @@
     "placeholder": "Pregunta sobre plantas, cuidados o tu jardín...",
     "send": "Enviar",
     "welcome": "¡Hola! Soy el asistente de jardín de Maytee. ¡Pregúntame sobre plantas, consejos de cuidado, ideas de diseño o cualquier cosa sobre la jardinería en el sur de Florida! 🌿"
+  },
+  "etsy": {
+    "badge": "Compra en Línea",
+    "title": "Llévate un Pedazo del Jardín a Casa",
+    "subtitle": "Nuestra tienda en línea llegará pronto. Mientras tanto, puedes pedir plantas, esquejes y artículos de jardín en la tienda de Etsy de Maytee — enviados directo a tu puerta.",
+    "cta": "Visita Nuestra Tienda en Etsy"
   }
 }

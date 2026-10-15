@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { getContent } from '@/lib/content'
+import { withoutPrices } from '@/lib/phase-flags'
 import HomeClient from './HomeClient'
 
 async function getData() {
@@ -22,9 +23,9 @@ export default async function HomePage() {
 
   return (
     <HomeClient
-      featuredPlants={featuredPlants}
+      featuredPlants={isEditorMode ? featuredPlants : featuredPlants.map(withoutPrices)}
       testimonials={testimonials}
-      services={services}
+      services={isEditorMode ? services : services.map(withoutPrices)}
       gallery={gallery}
       content={content}
       isEditorMode={isEditorMode}

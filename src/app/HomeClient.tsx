@@ -1,12 +1,12 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Star, ArrowRight, Tv, Leaf, Users, Award, MapPin, Instagram, Facebook } from 'lucide-react'
+import { Star, ArrowRight, Tv, Leaf, Users, Award, MapPin, Instagram, Facebook, ShoppingBag, ExternalLink } from 'lucide-react'
 import { CARE_LEVELS, SUNLIGHT, formatCurrency } from '@/lib/utils'
 import { c, type ContentMap } from '@/lib/content'
 import { useI18n } from '@/lib/i18n'
 import EditorOverlay from '@/components/cms/EditorOverlay'
-import { FLAGS } from '@/lib/phase-flags'
+import { FLAGS, ETSY_SHOP_URL } from '@/lib/phase-flags'
 
 type Plant = {
   id: string; nameEn: string; nameEs: string; descriptionEn: string; price: number
@@ -144,16 +144,18 @@ export default function HomeClient({ featuredPlants, testimonials, services, gal
                   />
                   <div className="absolute top-3 left-3 flex gap-2">
                     <span className="badge-green">{plant.category}</span>
-                    {plant.inStock
+                    {FLAGS.SHOW_STOCK && (plant.inStock
                       ? <span className="badge bg-white/90 text-green-700">{t('plants.in_stock')}</span>
-                      : <span className="badge bg-white/90 text-red-500">{t('plants.out_of_stock')}</span>}
+                      : <span className="badge bg-white/90 text-red-500">{t('plants.out_of_stock')}</span>)}
                   </div>
                   <div className="absolute top-3 right-3 text-2xl">{SUNLIGHT[plant.sunlight]?.split(' ')[0]}</div>
                 </div>
                 <div className="p-5">
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-serif font-bold text-green-800 text-lg leading-tight">{lang === 'es' ? plant.nameEs || plant.nameEn : plant.nameEn}</h3>
-                    <span className="font-bold text-terra-500 text-lg shrink-0 ml-2">{formatCurrency(plant.price)}</span>
+                    {FLAGS.SHOW_PRICES && (
+                      <span className="font-bold text-terra-500 text-lg shrink-0 ml-2">{formatCurrency(plant.price)}</span>
+                    )}
                   </div>
                   <p className="text-xs text-gray-400 italic mb-3">{lang === 'es' ? plant.nameEn : plant.nameEs}</p>
                   <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">{plant.descriptionEn}</p>
@@ -189,6 +191,25 @@ export default function HomeClient({ featuredPlants, testimonials, services, gal
       </section>
       )}
 
+      {/* ── Shop on Etsy (until our own online store launches) ── */}
+      {FLAGS.SHOW_ETSY_PROMO && (
+      <section className="py-16 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl bg-gradient-to-br from-terra-500 to-terra-600 text-white px-6 py-12 sm:px-12 text-center shadow-xl">
+            <div className="inline-flex items-center gap-2 bg-white/15 border border-white/25 rounded-full px-4 py-1.5 text-xs font-semibold tracking-widest uppercase mb-5">
+              <ShoppingBag className="w-3.5 h-3.5" /> {t('etsy.badge')}
+            </div>
+            <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">{t('etsy.title')}</h2>
+            <p className="text-white/90 text-lg max-w-2xl mx-auto mb-8 leading-relaxed">{t('etsy.subtitle')}</p>
+            <a href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-white text-terra-600 font-semibold rounded-full px-8 py-4 shadow-lg hover:bg-cream transition-colors">
+              {t('etsy.cta')} <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      </section>
+      )}
+
       {/* ── Services ── */}
       <section className="py-20 bg-green-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -209,7 +230,7 @@ export default function HomeClient({ featuredPlants, testimonials, services, gal
                   <p className="text-green-200 text-xs mb-3 italic">{lang === 'es' ? service.nameEn : service.nameEs}</p>
                   <p className="text-green-100 text-sm leading-relaxed line-clamp-2 mb-4">{service.descriptionEn}</p>
                   <div className="flex items-center justify-between">
-                    <span className="text-green-300 font-semibold text-sm">{service.priceNote ?? `Starting at $${service.price}`}</span>
+                    <span className="text-green-300 font-semibold text-sm">{FLAGS.SHOW_PRICES ? (service.priceNote ?? `Starting at $${service.price}`) : t('services.custom_quote')}</span>
                     {FLAGS.SHOW_BOOKING ? (
                       <Link href="/booking" className="btn-terra text-sm py-2 px-4">
                         {t('services.book_service')}

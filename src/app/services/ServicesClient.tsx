@@ -65,7 +65,7 @@ export default function ServicesClient({ services, content, isEditorMode }: Prop
                     <div className="flex items-center gap-4 mb-6">
                       <div className="bg-green-50 rounded-xl px-4 py-2">
                         <p className="text-xs text-gray-400">Investment</p>
-                        <p className="font-semibold text-green-700 text-sm">{service.priceNote ?? (service.price ? formatCurrency(service.price) : 'Custom quote')}</p>
+                        <p className="font-semibold text-green-700 text-sm">{FLAGS.SHOW_PRICES ? (service.priceNote ?? (service.price ? formatCurrency(service.price) : 'Custom quote')) : t('services.custom_quote')}</p>
                       </div>
                       <div className="bg-green-50 rounded-xl px-4 py-2">
                         <p className="text-xs text-gray-400">Duration</p>

@@ -11,7 +11,8 @@
     "register": "Sign Up",
     "portal": "My Account",
     "admin": "Admin Panel",
-    "logout": "Log Out"
+    "logout": "Log Out",
+    "etsy": "Shop on Etsy"
   },
   "hero": {
     "tagline": "Miami's Most Beloved Nursery & Garden Designer",
@@ -44,13 +45,15 @@
     "filter_palms": "Palms",
     "filter_native": "Native Florida",
     "filter_edible": "Edible",
-    "filter_succulents": "Succulents"
+    "filter_succulents": "Succulents",
+    "contact_cta": "Ask About This Plant"
   },
   "services": {
     "title": "Garden Services",
     "subtitle": "From design concept to long-term care — everything your South Florida garden needs",
     "book_service": "Book This Service",
-    "learn_more": "Learn More"
+    "learn_more": "Learn More",
+    "custom_quote": "Custom quote — contact us"
   },
   "gallery": {
     "title": "Completed Gardens",
@@ -143,5 +146,11 @@
     "placeholder": "Ask about plants, care tips, or your garden...",
     "send": "Send",
     "welcome": "Hi! I'm Maytee's garden assistant. Ask me about plants, care tips, design ideas, or anything about South Florida gardening! 🌿"
+  },
+  "etsy": {
+    "badge": "Shop Online",
+    "title": "Take a Piece of the Garden Home",
+    "subtitle": "Our online store is coming soon. In the meantime, you can order plants, cuttings and garden goodies from Maytee's Etsy shop — shipped right to your door.",
+    "cta": "Visit Our Etsy Shop"
   }
 }

@@ -8,7 +8,7 @@ import { Menu, X, ChevronDown, User, LayoutDashboard, LogOut, Shield, ShoppingCa
 import { useI18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 import { useCart } from '@/lib/cart-context'
-import { FLAGS } from '@/lib/phase-flags'
+import { FLAGS, ETSY_SHOP_URL } from '@/lib/phase-flags'
 
 export default function Navbar({ editorOffset = false }: { editorOffset?: boolean }) {
   const { data: session } = useSession()
@@ -27,9 +27,10 @@ export default function Navbar({ editorOffset = false }: { editorOffset?: boolea
   const role = (session?.user as any)?.role
   const { totalItems } = useCart()
 
-  const navLinks = [
+  const navLinks: { href: string; label: string; external?: boolean }[] = [
     ...(FLAGS.SHOW_PLANTS_PAGE ? [{ href: '/plants', label: t('nav.plants') }] : []),
     { href: '/services', label: t('nav.services')  },
+    ...(FLAGS.SHOW_ETSY_PROMO ? [{ href: ETSY_SHOP_URL, label: t('nav.etsy'), external: true }] : []),
     { href: '/gallery',  label: t('nav.gallery')   },
     { href: '/about',    label: t('nav.about')     },
     { href: '/contact',  label: t('nav.contact')   },
@@ -52,7 +53,17 @@ export default function Navbar({ editorOffset = false }: { editorOffset?: boolea
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-6">
-            {navLinks.map(link => (
+            {navLinks.map(link => link.external ? (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-link text-terra-500 font-semibold"
+              >
+                {link.label}
+              </a>
+            ) : (
               <Link
                 key={link.href}
                 href={link.href}
@@ -170,7 +181,18 @@ export default function Navbar({ editorOffset = false }: { editorOffset?: boolea
       {/* Mobile Menu */}
       {open && (
         <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-1 shadow-lg">
-          {navLinks.map(link => (
+          {navLinks.map(link => link.external ? (
+            <a
+              key={link.href}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block px-3 py-2.5 text-sm font-semibold text-terra-500 hover:bg-green-50 rounded-lg"
+              onClick={() => setOpen(false)}
+            >
+              {link.label}
+            </a>
+          ) : (
             <Link
               key={link.href}
               href={link.href}

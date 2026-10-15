@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { getContent } from '@/lib/content'
+import { withoutPrices } from '@/lib/phase-flags'
 import ServicesClient from './ServicesClient'
 
 export const metadata: Metadata = {
@@ -19,5 +20,5 @@ export default async function ServicesPage() {
     getContent('services'),
   ])
 
-  return <ServicesClient services={services} content={content} isEditorMode={isEditorMode} />
+  return <ServicesClient services={isEditorMode ? services : services.map(withoutPrices)} content={content} isEditorMode={isEditorMode} />
 }

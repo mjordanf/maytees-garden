@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { CARE_LEVELS, SUNLIGHT, WATER, formatCurrency } from '@/lib/utils'
-import { FLAGS } from '@/lib/phase-flags'
+import { FLAGS, withoutPrices } from '@/lib/phase-flags'
 import PlantsClient from './PlantsClient'
 
 export const metadata: Metadata = {
@@ -38,7 +38,7 @@ export default async function PlantsPage() {
           </p>
         </div>
 
-        <PlantsClient plants={plants} />
+        <PlantsClient plants={plants.map(withoutPrices)} />
       </div>
     </div>
   )

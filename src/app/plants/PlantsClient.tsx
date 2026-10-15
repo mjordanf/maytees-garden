@@ -1,10 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { Heart, Search } from 'lucide-react'
+import { Heart, Search, ExternalLink } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { CARE_LEVELS, SUNLIGHT, WATER, formatCurrency, cn } from '@/lib/utils'
 import { useCart } from '@/lib/cart-context'
+import { useI18n } from '@/lib/i18n'
+import { FLAGS, ETSY_SHOP_URL } from '@/lib/phase-flags'
 
 type Plant = {
   id: string; nameEn: string; nameEs: string
@@ -20,6 +22,7 @@ const CATEGORIES = ['all','tropical','flowering','palms','native','edible','succ
 export default function PlantsClient({ plants }: { plants: Plant[] }) {
   const { data: session, status } = useSession()
   const { addItem } = useCart()
+  const { t } = useI18n()
   const [category, setCategory] = useState('all')
   const [search, setSearch]     = useState('')
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
@@ -28,7 +31,7 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
 
   // Load existing favorites from DB when user is authenticated
   useEffect(() => {
-    if (status !== 'authenticated') return
+    if (!FLAGS.SHOW_FAVORITES || status !== 'authenticated') return
     fetch('/api/favorites')
       .then(r => r.ok ? r.json() : null)
       .then(data => {
@@ -122,18 +125,22 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
           <div key={plant.id} id={plant.id} className="card plant-card-hover group cursor-pointer" onClick={() => setSelected(plant)}>
             <div className="relative h-52 overflow-hidden">
               <Image src={plant.imageUrl} alt={plant.nameEn} unoptimized fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute top-3 left-3">
-                <span className={cn('badge', plant.inStock ? 'bg-white/90 text-green-700' : 'bg-white/90 text-red-500')}>
-                  {plant.inStock ? '● In Stock' : '○ Out of Stock'}
-                </span>
-              </div>
-              <button
-                onClick={e => { e.stopPropagation(); toggleFavorite(plant.id) }}
-                className={cn('absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all',
-                  favorites.has(plant.id) ? 'bg-terra-500 text-white' : 'bg-white/90 text-gray-400 hover:text-terra-500')}
-              >
-                <Heart className={cn('w-4 h-4', favorites.has(plant.id) && 'fill-current')} />
-              </button>
+              {FLAGS.SHOW_STOCK && (
+                <div className="absolute top-3 left-3">
+                  <span className={cn('badge', plant.inStock ? 'bg-white/90 text-green-700' : 'bg-white/90 text-red-500')}>
+                    {plant.inStock ? '● In Stock' : '○ Out of Stock'}
+                  </span>
+                </div>
+              )}
+              {FLAGS.SHOW_FAVORITES && (
+                <button
+                  onClick={e => { e.stopPropagation(); toggleFavorite(plant.id) }}
+                  className={cn('absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all',
+                    favorites.has(plant.id) ? 'bg-terra-500 text-white' : 'bg-white/90 text-gray-400 hover:text-terra-500')}
+                >
+                  <Heart className={cn('w-4 h-4', favorites.has(plant.id) && 'fill-current')} />
+                </button>
+              )}
               {plant.featured && (
                 <div className="absolute bottom-3 left-3">
                   <span className="badge bg-green-600 text-white">★ Featured</span>
@@ -143,7 +150,9 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
             <div className="p-4">
               <div className="flex justify-between items-start mb-1">
                 <h3 className="font-serif font-bold text-green-800 leading-tight">{plant.nameEn}</h3>
-                <span className="font-bold text-terra-500 shrink-0 ml-2">{formatCurrency(plant.onlinePrice ?? plant.price)}</span>
+                {FLAGS.SHOW_PRICES && (
+                  <span className="font-bold text-terra-500 shrink-0 ml-2">{formatCurrency(plant.onlinePrice ?? plant.price)}</span>
+                )}
               </div>
               <p className="text-xs text-gray-400 italic mb-2">{plant.nameEs}</p>
               <p className="text-gray-600 text-xs leading-relaxed line-clamp-2 mb-3">{plant.descriptionEn}</p>
@@ -165,6 +174,7 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
                 <span title="Care Level">{CARE_LEVELS[plant.careLevel]}</span>
                 <span title="Sunlight">{SUNLIGHT[plant.sunlight]}</span>
               </div>
+              {FLAGS.SHOW_ADD_TO_CART && (
               <div className="flex items-center justify-between">
                 {plant.onlineStock === 0 ? (
                   <span className="badge bg-red-100 text-red-500 text-xs">Out of Stock</span>
@@ -182,6 +192,7 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
                   </div>
                 )}
               </div>
+              )}
             </div>
           </div>
         ))}
@@ -209,7 +220,9 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
                   <h2 className="font-serif text-2xl font-bold text-green-800">{selected.nameEn}</h2>
                   <p className="text-gray-400 italic text-sm">{selected.nameEs}</p>
                 </div>
-                <span className="font-bold text-terra-500 text-2xl">{formatCurrency(selected.price)}</span>
+                {FLAGS.SHOW_PRICES && (
+                  <span className="font-bold text-terra-500 text-2xl">{formatCurrency(selected.price)}</span>
+                )}
               </div>
 
               <div className="flex gap-2 my-4 flex-wrap">
@@ -255,6 +268,7 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
               </div>
 
               {/* Stock info in modal */}
+              {FLAGS.SHOW_STOCK && (
               <div className="mb-4">
                 {selected.onlineStock === 0 ? (
                   <span className="badge bg-red-100 text-red-500">Out of Stock</span>
@@ -264,15 +278,18 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
                   <span className="badge bg-green-100 text-green-700">{selected.onlineStock} in stock</span>
                 )}
               </div>
+              )}
 
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
+                {FLAGS.SHOW_FAVORITES && (
                 <button onClick={() => toggleFavorite(selected.id)}
                   className={cn('flex-1 py-3 rounded-full font-semibold text-sm flex items-center justify-center gap-2 transition-all border-2',
                     favorites.has(selected.id) ? 'bg-terra-500 text-white border-terra-500' : 'border-green-600 text-green-600 hover:bg-green-600 hover:text-white')}>
                   <Heart className={cn('w-4 h-4', favorites.has(selected.id) && 'fill-current')} />
                   {favorites.has(selected.id) ? 'Saved' : 'Save Plant'}
                 </button>
-                {selected.onlineStock > 0 && (
+                )}
+                {FLAGS.SHOW_ADD_TO_CART && selected.onlineStock > 0 && (
                   <button
                     onClick={e => { handleAddToCart(selected, e); }}
                     className="flex-1 bg-green-600 text-white text-sm py-3 rounded-full font-semibold hover:bg-green-700 transition-colors"
@@ -280,9 +297,21 @@ export default function PlantsClient({ plants }: { plants: Plant[] }) {
                     {addedIds.has(selected.id) ? 'Added!' : 'Add to Cart'}
                   </button>
                 )}
-                <a href="/booking" className="flex-1 btn-primary text-sm py-3 text-center">
-                  Book a Consultation
-                </a>
+                {FLAGS.SHOW_BOOKING ? (
+                  <a href="/booking" className="flex-1 btn-primary text-sm py-3 text-center">
+                    Book a Consultation
+                  </a>
+                ) : (
+                  <a href="/contact" className="flex-1 btn-primary text-sm py-3 text-center">
+                    {t('plants.contact_cta')}
+                  </a>
+                )}
+                {FLAGS.SHOW_ETSY_PROMO && (
+                  <a href={ETSY_SHOP_URL} target="_blank" rel="noopener noreferrer"
+                    className="flex-1 py-3 rounded-full font-semibold text-sm flex items-center justify-center gap-2 border-2 border-terra-500 text-terra-500 hover:bg-terra-500 hover:text-white transition-all">
+                    {t('nav.etsy')} <ExternalLink className="w-4 h-4" />
+                  </a>
+                )}
               </div>
             </div>
           </div>
