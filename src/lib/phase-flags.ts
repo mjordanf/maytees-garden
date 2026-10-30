@@ -5,8 +5,8 @@ export const PHASE = {
   CURRENT: Number(process.env.NEXT_PUBLIC_PHASE ?? 1),
 }
 
-// Set NEXT_PUBLIC_ENABLE_LOGIN=true to open login (e.g. for CMS editing) without moving to Phase 2
-const LOGIN_ENABLED = PHASE.CURRENT >= 2 || process.env.NEXT_PUBLIC_ENABLE_LOGIN === 'true'
+// Set NEXT_ENABLE_LOGIN=true to open login (e.g. for CMS editing) without moving to Phase 2
+const LOGIN_ENABLED = PHASE.CURRENT >= 2 || process.env.NEXT_ENABLE_LOGIN === 'true'
 
 export const FLAGS = {
   // Navigation & Auth

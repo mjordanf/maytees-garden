@@ -9,6 +9,10 @@ const securityHeaders = [
 ]
 
 const nextConfig = {
+  // Not NEXT_PUBLIC_, so it must be passed through to reach client components
+  env: {
+    NEXT_ENABLE_LOGIN: process.env.NEXT_ENABLE_LOGIN ?? '',
+  },
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }]
   },
