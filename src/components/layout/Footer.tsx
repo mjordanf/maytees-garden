@@ -138,6 +138,8 @@ export default function Footer() {
               {[
                 ...(FLAGS.SHOW_LOGIN ? [
                   { href: '/auth/login',    label: t('nav.login')    },
+                ] : []),
+                ...(FLAGS.SHOW_REGISTER ? [
                   { href: '/auth/register', label: t('nav.register') },
                 ] : []),
                 ...(FLAGS.SHOW_PORTAL ? [

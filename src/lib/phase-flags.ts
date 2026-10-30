@@ -1,21 +1,25 @@
 export const PHASE = {
   // Set to 1 for Phase 1 launch (static only)
-  // Set to 2 for full app (all features)
+  // Set to 2 for accounts, CMS editor, booking, portal and admin (no purchasing)
+  // Set to 3 for full app (adds prices, stock, cart and shop)
   CURRENT: Number(process.env.NEXT_PUBLIC_PHASE ?? 1),
 }
 
+// Set NEXT_PUBLIC_ENABLE_LOGIN=true to open login (e.g. for CMS editing) without moving to Phase 2
+const LOGIN_ENABLED = PHASE.CURRENT >= 2 || process.env.NEXT_PUBLIC_ENABLE_LOGIN === 'true'
+
 export const FLAGS = {
   // Navigation & Auth
-  SHOW_LOGIN:          PHASE.CURRENT >= 2,
+  SHOW_LOGIN:          LOGIN_ENABLED,
   SHOW_REGISTER:       PHASE.CURRENT >= 2,
-  SHOW_USER_DROPDOWN:  PHASE.CURRENT >= 2,
-  SHOW_CART:           PHASE.CURRENT >= 2,
+  SHOW_USER_DROPDOWN:  LOGIN_ENABLED,
+  SHOW_CART:           PHASE.CURRENT >= 3,
 
-  // Plant catalog — browsable in every phase; Phase 1 is informational only
+  // Plant catalog — browsable in every phase; informational only until Phase 3
   SHOW_PLANTS_PAGE:    true,
-  SHOW_PRICES:         PHASE.CURRENT >= 2,
-  SHOW_STOCK:          PHASE.CURRENT >= 2,
-  SHOW_ADD_TO_CART:    PHASE.CURRENT >= 2,
+  SHOW_PRICES:         PHASE.CURRENT >= 3,
+  SHOW_STOCK:          PHASE.CURRENT >= 3,
+  SHOW_ADD_TO_CART:    PHASE.CURRENT >= 3,
   SHOW_FAVORITES:      PHASE.CURRENT >= 2,
 
   // Booking
@@ -30,13 +34,13 @@ export const FLAGS = {
   SHOW_ADMIN:          PHASE.CURRENT >= 2,
 
   // E-Commerce
-  SHOW_SHOP:           PHASE.CURRENT >= 2,
+  SHOW_SHOP:           PHASE.CURRENT >= 3,
 
   // CMS
-  SHOW_CMS_EDITOR:     PHASE.CURRENT >= 2,
+  SHOW_CMS_EDITOR:     LOGIN_ENABLED,
 
   // Etsy is the online store until our own shop launches
-  SHOW_ETSY_PROMO:     PHASE.CURRENT < 2,
+  SHOW_ETSY_PROMO:     PHASE.CURRENT < 3,
 }
 
 export const ETSY_SHOP_URL = 'https://www.etsy.com/shop/MayteesGarden'

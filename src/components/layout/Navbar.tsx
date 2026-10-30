@@ -127,15 +127,17 @@ export default function Navbar({ editorOffset = false }: { editorOffset?: boolea
                       <p className="text-sm font-semibold text-gray-800 truncate">{session.user?.name}</p>
                       <p className="text-xs text-gray-400 truncate">{session.user?.email}</p>
                     </div>
-                    <Link href="/portal" className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-50 text-gray-700" onClick={() => setUserMenu(false)}>
-                      <LayoutDashboard className="w-4 h-4" /> {t('nav.portal')}
-                    </Link>
-                    {(role === 'admin' || role === 'staff') && (
+                    {FLAGS.SHOW_PORTAL && (
+                      <Link href="/portal" className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-50 text-gray-700" onClick={() => setUserMenu(false)}>
+                        <LayoutDashboard className="w-4 h-4" /> {t('nav.portal')}
+                      </Link>
+                    )}
+                    {FLAGS.SHOW_ADMIN && (role === 'admin' || role === 'staff') && (
                       <Link href="/admin" className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-50 text-gray-700" onClick={() => setUserMenu(false)}>
                         <Shield className="w-4 h-4" /> {t('nav.admin')}
                       </Link>
                     )}
-                    {role === 'superadmin' && (
+                    {FLAGS.SHOW_ADMIN && role === 'superadmin' && (
                       <Link href="/superadmin" className="flex items-center gap-2 px-4 py-2.5 text-sm hover:bg-gray-50 text-amber-600 font-medium" onClick={() => setUserMenu(false)}>
                         <Shield className="w-4 h-4" /> Super Admin
                       </Link>
@@ -214,11 +216,13 @@ export default function Navbar({ editorOffset = false }: { editorOffset?: boolea
             )}
             {FLAGS.SHOW_LOGIN && (session ? (
               <>
-                <Link href="/portal" className="block text-center py-2 text-sm text-green-700 font-medium" onClick={() => setOpen(false)}>{t('nav.portal')}</Link>
-                {(role === 'admin' || role === 'staff') && (
+                {FLAGS.SHOW_PORTAL && (
+                  <Link href="/portal" className="block text-center py-2 text-sm text-green-700 font-medium" onClick={() => setOpen(false)}>{t('nav.portal')}</Link>
+                )}
+                {FLAGS.SHOW_ADMIN && (role === 'admin' || role === 'staff') && (
                   <Link href="/admin" className="block text-center py-2 text-sm text-green-700 font-medium" onClick={() => setOpen(false)}>{t('nav.admin')}</Link>
                 )}
-                {role === 'superadmin' && (
+                {FLAGS.SHOW_ADMIN && role === 'superadmin' && (
                   <Link href="/superadmin" className="block text-center py-2 text-sm text-amber-600 font-semibold" onClick={() => setOpen(false)}>Super Admin</Link>
                 )}
                 {role === 'superadmin' && (

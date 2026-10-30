@@ -28,7 +28,8 @@ export default function LoginPage() {
     } else {
       const session = await getSession()
       const role = (session?.user as any)?.role
-      router.push(role === 'superadmin' ? '/superadmin' : '/portal')
+      if (role === 'superadmin') router.push(FLAGS.SHOW_ADMIN ? '/superadmin' : '/')
+      else router.push(FLAGS.SHOW_PORTAL ? '/portal' : '/')
     }
   }
 
@@ -73,12 +74,14 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-gray-100">
-            <p className="text-center text-sm text-gray-500">
-              Don't have an account?{' '}
-              <Link href="/auth/register" className="text-green-600 font-semibold hover:underline">Sign up free</Link>
-            </p>
-          </div>
+          {FLAGS.SHOW_REGISTER && (
+            <div className="mt-6 pt-6 border-t border-gray-100">
+              <p className="text-center text-sm text-gray-500">
+                Don't have an account?{' '}
+                <Link href="/auth/register" className="text-green-600 font-semibold hover:underline">Sign up free</Link>
+              </p>
+            </div>
+          )}
 
           {/* Test credentials hint */}
         </div>
