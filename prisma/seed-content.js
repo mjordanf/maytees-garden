@@ -50,7 +50,7 @@ const blocks = [
   { key: "services.area.subtitle", page: "services", label: "Service Area Subtitle", type: "text", valueEn: "We serve residential and commercial clients across all of Miami-Dade County and parts of Broward County.", valueEs: "Atendemos a clientes residenciales y comerciales en todo el condado de Miami-Dade y partes del condado de Broward." },
   // FOOTER
   { key: 'footer.tagline',               page: 'footer',  label: 'Footer Tagline',        type: 'text',     valueEn: "Miami's most beloved boutique nursery & landscape design studio.",                                           valueEs: 'El vivero boutique y estudio de paisajismo más querido de Miami.' },
-  { key: 'footer.hours',                 page: 'footer',  label: 'Footer Hours',          type: 'text',     valueEn: 'Hours: Mon–Sun 9AM–5:30PM (Fri–Sat until 6PM)',                                                             valueEs: 'Horario: Lun–Dom 9AM–5:30PM (Vie–Sáb hasta 6PM)' },
+  { key: 'footer.hours',                 page: 'footer',  label: 'Footer Hours',          type: 'text',     valueEn: 'Hours: Mon–Sun 9AM–5:30PM (Fri–Sat until 6PM)',                                                             valueEs: 'Horario: Lun–Dom 9AM–5:30PM (Vie–Sáb hasta las 6PM)' },
 ]
 
 async function main() {

@@ -5,7 +5,9 @@ import './globals.css'
 import { Providers } from './providers'
 import MainLayout from '@/components/layout/MainLayout'
 import EditorToolbar from '@/components/cms/EditorToolbar'
+import EditorOverlay from '@/components/cms/EditorOverlay'
 import CookieBanner from '@/components/CookieBanner'
+import { getContent } from '@/lib/content'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -51,13 +53,16 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies()
   const isEditorMode = cookieStore.get('cms_editor_mode')?.value === '1'
+  const footerContent = await getContent('footer')
 
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="bg-cream font-sans antialiased" style={isEditorMode ? { paddingTop: '48px' } : undefined}>
         {isEditorMode && <EditorToolbar pageName="Page" />}
         <Providers>
-          <MainLayout editorMode={isEditorMode}>{children}</MainLayout>
+          <MainLayout editorMode={isEditorMode} footerContent={footerContent}>{children}</MainLayout>
+          {/* Footer is on every page, so its fields get their own overlay */}
+          {isEditorMode && <EditorOverlay page="footer" />}
           <CookieBanner />
         </Providers>
       </body>

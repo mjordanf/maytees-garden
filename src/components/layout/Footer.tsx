@@ -4,6 +4,7 @@ import { Leaf, Instagram, Facebook, MapPin, Clock, Phone, Loader2 } from 'lucide
 import { useState } from 'react'
 import { FLAGS } from '@/lib/phase-flags'
 import { useI18n } from '@/lib/i18n'
+import { c, type ContentMap } from '@/lib/content'
 
 function NewsletterForm() {
   const [email, setEmail] = useState('')
@@ -71,7 +72,7 @@ function NewsletterForm() {
   )
 }
 
-export default function Footer() {
+export default function Footer({ content = {} }: { content?: ContentMap }) {
   const year = new Date().getFullYear()
   const { t, lang } = useI18n()
 
@@ -168,7 +169,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2.5 text-sm text-green-200">
                 <Clock className="w-4 h-4 text-green-400 shrink-0" />
-                {t('footer.hours')}
+                <span data-cms-key="footer.hours">{c(content, 'footer.hours', t('footer.hours'), lang)}</span>
               </li>
               <li className="flex items-center gap-2.5 text-sm text-green-200">
                 <Phone className="w-4 h-4 text-green-400 shrink-0" />
