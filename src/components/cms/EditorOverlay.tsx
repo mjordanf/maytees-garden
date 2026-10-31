@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import { useI18n } from '@/lib/i18n'
 
 interface Block {
   id: string; key: string; label: string; type: string
@@ -10,6 +11,7 @@ interface Version {
 }
 
 export default function EditorOverlay({ page }: { page: string }) {
+  const { lang } = useI18n()
   const [blocks, setBlocks] = useState<Record<string, Block>>({})
   const [activePop, setActivePop] = useState<{ key: string; rect: DOMRect } | null>(null)
   const [popEn, setPopEn] = useState('')
@@ -87,7 +89,7 @@ export default function EditorOverlay({ page }: { page: string }) {
         setActivePop({ key, rect })
         setPopEn(block.valueEn)
         setPopEs(block.valueEs)
-        setPopLang('en')
+        setPopLang(lang)
         setSaveStatus('idle')
       }
 
@@ -107,7 +109,7 @@ export default function EditorOverlay({ page }: { page: string }) {
     })
 
     return () => cleanups.forEach(fn => fn())
-  }, [blocks])
+  }, [blocks, lang])
 
   // Close popover on outside click
   useEffect(() => {
@@ -143,7 +145,7 @@ export default function EditorOverlay({ page }: { page: string }) {
         if (el) {
           // Update text nodes only (not the pill button)
           Array.from(el.childNodes).forEach(node => {
-            if (node.nodeType === Node.TEXT_NODE) node.textContent = popEn
+            if (node.nodeType === Node.TEXT_NODE) node.textContent = lang === 'es' ? (popEs || popEn) : popEn
           })
           el.style.outline = '2px solid #16a34a'
           setTimeout(() => { el.style.outline = '' }, 1200)
@@ -180,7 +182,7 @@ export default function EditorOverlay({ page }: { page: string }) {
       const el = document.querySelector(`[data-cms-key="${historyPanel.block.key}"]`) as HTMLElement
       if (el) {
         Array.from(el.childNodes).forEach(node => {
-          if (node.nodeType === Node.TEXT_NODE) node.textContent = b.valueEn
+          if (node.nodeType === Node.TEXT_NODE) node.textContent = lang === 'es' ? (b.valueEs || b.valueEn) : b.valueEn
         })
         el.style.outline = '2px solid #16a34a'
         setTimeout(() => { el.style.outline = '' }, 1200)
