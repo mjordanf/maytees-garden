@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { useI18n } from '@/lib/i18n'
 
 interface Block {
@@ -12,6 +13,7 @@ interface Version {
 
 export default function EditorOverlay({ page }: { page: string }) {
   const { lang } = useI18n()
+  const router = useRouter()
   const [blocks, setBlocks] = useState<Record<string, Block>>({})
   const [activePop, setActivePop] = useState<{ key: string; rect: DOMRect } | null>(null)
   const [popEn, setPopEn] = useState('')
@@ -150,6 +152,8 @@ export default function EditorOverlay({ page }: { page: string }) {
           el.style.outline = '2px solid #16a34a'
           setTimeout(() => { el.style.outline = '' }, 1200)
         }
+        // Re-fetch server content so the page's copy matches, e.g. when switching language
+        router.refresh()
         setSaveStatus('saved')
         setTimeout(() => { setActivePop(null); setSaveStatus('idle') }, 800)
       } else {
@@ -188,6 +192,7 @@ export default function EditorOverlay({ page }: { page: string }) {
         setTimeout(() => { el.style.outline = '' }, 1200)
       }
       setHistoryPanel(null)
+      router.refresh()
     }
   }
 
